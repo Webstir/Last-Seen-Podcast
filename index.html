@@ -95,6 +95,108 @@
       background: rgba(255, 255, 255, 0.1);
       border-color: rgba(255, 255, 255, 0.5);
     }
+    
+    .password-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+    
+    .password-modal.active {
+      display: flex;
+    }
+    
+    .password-content {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      backdrop-filter: blur(10px);
+    }
+    
+    .password-content h3 {
+      margin: 0 0 1rem 0;
+      font-size: 1.2rem;
+      color: #fff;
+      font-weight: 400;
+    }
+    
+    .password-input {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 1rem 0;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    
+    .password-input:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .password-input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .password-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+    
+    .password-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      background: transparent;
+      color: #fff;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      transition: all 0.3s ease;
+    }
+    
+    .password-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .password-btn.primary {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .password-btn.primary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .error-message {
+      color: #ff6b6b;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .error-message.show {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -109,7 +211,7 @@
         <p>The investigation continues. Our podcast is currently being prepared in a dimension just beyond your reach.</p>
       </div>
       
-      <a href="demo.html" class="demo-link">Enter the Demo →</a>
+      <button id="demo-button" class="demo-link">Enter the Demo →</button>
       
       <div class="placeholder-status">
         STATUS: UNDER CONSTRUCTION<br>
@@ -119,7 +221,83 @@
     </div>
   </section>
 
+  <!-- Password Modal -->
+  <div id="password-modal" class="password-modal">
+    <div class="password-content">
+      <h3>Access Restricted</h3>
+      <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem;">Enter the dimensional password to proceed</p>
+      <input type="password" id="password-input" class="password-input" placeholder="Enter password..." autocomplete="off">
+      <div id="error-message" class="error-message">Incorrect password. Try again.</div>
+      <div class="password-buttons">
+        <button id="submit-password" class="password-btn primary">Enter</button>
+        <button id="cancel-password" class="password-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // Password protection
+    const CORRECT_PASSWORD = 'Bambi'; // Change this to your desired password
+    
+    const demoButton = document.getElementById('demo-button');
+    const passwordModal = document.getElementById('password-modal');
+    const passwordInput = document.getElementById('password-input');
+    const submitPassword = document.getElementById('submit-password');
+    const cancelPassword = document.getElementById('cancel-password');
+    const errorMessage = document.getElementById('error-message');
+    
+    // Show password modal when demo button is clicked
+    demoButton.addEventListener('click', function() {
+      passwordModal.classList.add('active');
+      passwordInput.focus();
+    });
+    
+    // Handle password submission
+    function checkPassword() {
+      const enteredPassword = passwordInput.value.trim();
+      
+      if (enteredPassword === CORRECT_PASSWORD) {
+        // Correct password - redirect to demo
+        window.location.href = 'demo.html';
+      } else {
+        // Wrong password - show error
+        errorMessage.classList.add('show');
+        passwordInput.value = '';
+        passwordInput.focus();
+        
+        // Hide error after 3 seconds
+        setTimeout(() => {
+          errorMessage.classList.remove('show');
+        }, 3000);
+      }
+    }
+    
+    // Submit password on Enter key
+    passwordInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        checkPassword();
+      }
+    });
+    
+    // Submit password on button click
+    submitPassword.addEventListener('click', checkPassword);
+    
+    // Close modal on cancel
+    cancelPassword.addEventListener('click', function() {
+      passwordModal.classList.remove('active');
+      passwordInput.value = '';
+      errorMessage.classList.remove('show');
+    });
+    
+    // Close modal on outside click
+    passwordModal.addEventListener('click', function(e) {
+      if (e.target === passwordModal) {
+        passwordModal.classList.remove('active');
+        passwordInput.value = '';
+        errorMessage.classList.remove('show');
+      }
+    });
+    
     // Add some ambient sound if available
     const audio = new Audio('soft-rain-on-a-tile-roof-14515.mp3');
     audio.loop = true;
