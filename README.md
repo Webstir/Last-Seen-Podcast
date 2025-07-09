@@ -25,20 +25,9 @@ A mysterious, atmospheric website for the Last Seen podcast - investigating miss
 - **JavaScript**: Audio management, modal functionality, scroll detection
 - **Audio**: Multiple layered soundscapes for immersive experience
 
-## Setup
-
-1. Clone this repository
-2. Ensure all audio and video files are in the root directory
-3. Deploy to GitHub Pages
-4. Configure custom domain in GitHub Pages settings
-
-## Custom Domain
-
-This site is configured for `lastseenpodcast.com` via the CNAME file.
-
 ## Legal
 
-This is a fan-created project and is not affiliated with CBS Studios Inc. or The Twilight Zone franchise.
+This is not affiliated with CBS Studios Inc. or The Twilight Zone franchise.
 
 ---
 
