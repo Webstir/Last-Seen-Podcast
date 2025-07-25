@@ -356,21 +356,7 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Handle whisper audio separately
-    const contactPanel = document.querySelector('.panel.contact');
-    if (contactPanel) {
-      const whisperAudio = contactPanel.querySelector('.whisper-audio');
-      if (whisperAudio) {
-        if (currentSectionIndex === 3 && !isMuted) { // Contact is index 3
-          if (whisperAudio.paused) {
-            whisperAudio.volume = 0.03; // 3% volume for whisper
-            whisperAudio.play().catch(()=>{});
-          }
-        } else {
-          whisperAudio.pause();
-        }
-      }
-    }
+
   }
 
   muteBtn.addEventListener('click', () => {
@@ -461,20 +447,17 @@ document.addEventListener('DOMContentLoaded', function() {
       title: 'About Quinn',
       content: `
         <h2>Quinn</h2>
-        <p><strong>Lead Investigator & Host</strong></p>
-        <p>Quinn has been investigating mysterious disappearances for over a decade. A former investigative journalist, they turned to podcasting after discovering a pattern of unexplained vanishings in abandoned locations throughout the country.</p>
-        <p>Known for their methodical approach and ability to find connections others miss, Quinn brings a unique perspective to each case. Their background in journalism provides the foundation for thorough research and compelling storytelling.</p>
-        <p>When not investigating disappearances, Quinn can be found exploring forgotten places, documenting their findings, and piecing together the stories of those who never returned from the Twilight Zone.</p>
+        <p>I'm Quinn–co-host of Last Seen in the Twilight Zone. I've been a fierce Victim Advocate here in Binghamton, NY since 2011 when I graduated from SUNY Cortland. I received my degrees in both Sociology and Psychology with a deep curiosity about human nature and the social dynamics that fosters criminal behavior. For me, Victim Advocacy isn't vocational–it's aligned with my life's purpose. I experienced trauma throughout my childhood and know firsthand the pain of prolonged silence. Sharing my story as an adult has created so many pathways to healing that simply never seemed possible to me, as a child that experienced sexual abuse. As an adult, I've able seek justice for myself during the #MeToo era, as a direct result of the passing of the Child Victims Act.</p>
+        <p>Allie and I are here to share stories for those who no longer can. For the families sitting at home desperately waiting for answers and praying for justice. For our neighbors who deserve protection, who are often silenced and who I am proud to advocate for. And to shine our light on some of the very real (and very dark) events that we remember most vividly while growing up, here in the Twilight Zone. It is an absolute honor and a privilege to share these stories and I will do my best to do so with grace; for the good of all and the harm of none.</p>
       `
     },
     allie: {
       title: 'About Allie',
       content: `
         <h2>Allie</h2>
-        <p><strong>Technical Producer & Researcher</strong></p>
-        <p>Allie handles the technical aspects of the podcast, from audio production to digital research. With a background in sound engineering and a fascination with the unexplained, they bring both technical expertise and creative vision to each episode.</p>
-        <p>Their work includes field recording in abandoned locations, audio restoration of found recordings, and deep-dive research into historical cases. Allie's attention to detail has uncovered crucial evidence in several investigations.</p>
-        <p>Allie believes that every sound, every detail, and every piece of evidence tells a story. Their technical skills help bring those stories to life for listeners, creating an immersive experience that draws audiences deeper into each mystery.</p>
+        <p>Hi, I'm Allie, co-host of Last Seen in the Twilight Zone. My interest in true crime runs deeper than curiosity; it's rooted in personal experience. Growing up in this area felt like living in the Twilight Zone, surrounded by stories that didn't make sense and justice that often felt out of reach. As I got older, that feeling never left. I've now spent over a decade working in fields that keep me into close contact with high-profile criminal cases and their actual victims. I've seen firsthand how the system works and how often it fails the very people it's designed to protect.</p>
+        <p>Then, in 2015, my aunt was murdered. Ever since, I've had a drive to seek truth, to ask the hard questions, and to never forget the people behind the headlines. About the only TV I watch is true crime documentaries. Together, Quinn and I will dig into cold cases, murders, and disappearances that deserve more attention. We share these stories with empathy, accuracy, and a relentless determination to bring light to the darkest corners of the actual Twilight Zone.</p>
+        <p>This podcast is for the unheard. The lost. The silenced. Because every victim has a story, and every story deserves to be told.</p>
       `
     }
   };

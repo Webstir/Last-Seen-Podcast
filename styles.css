@@ -356,6 +356,8 @@ body, html {
   backdrop-filter: blur(2px);
   background: rgba(0,0,0,0.3);
   position: absolute;
+  padding: 20px;
+  top: 50px;
 
 }
 
