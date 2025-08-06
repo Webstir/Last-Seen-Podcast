@@ -74,7 +74,7 @@ body, html {
 }
 
 .bathroom {
-  background-image: url('./two_women_leaning_against_the_wall_in_a_dingy_1970s_b7bc0c9d-88d9-4c83-b1e2-c7eb877941bf.png');
+  background-image: url('./quinn-allie-about-us-bathroom.jpg');
 }
 
 .basement {
@@ -357,7 +357,7 @@ body, html {
   background: rgba(0,0,0,0.3);
   position: absolute;
   padding: 20px;
-  top: 50px;
+  bottom: 20vh;
 
 }
 
