@@ -312,6 +312,98 @@ body, html {
   animation: rays-fade 4s ease-in-out infinite alternate;
 }
 
+.countdown-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.countdown-title {
+  font-family: 'Fira Mono', 'Courier New', monospace, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 12px rgba(0,0,0,0.7), 0 1px 0 #222;
+}
+
+.countdown-timer {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.countdown-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+}
+
+.countdown-number {
+  font-family: 'Fira Mono', 'Courier New', monospace, sans-serif;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #ffd700;
+  text-shadow: 2px 2px 12px rgba(0,0,0,0.8), 0 1px 0 #222;
+  line-height: 1;
+}
+
+.countdown-label {
+  font-family: 'Fira Mono', 'Courier New', monospace, sans-serif;
+  font-size: 0.8rem;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 0.5rem;
+  opacity: 0.8;
+}
+
+.countdown-subtitle {
+  font-family: 'Fira Mono', 'Courier New', monospace, sans-serif;
+  font-size: 1rem;
+  color: #ffffff;
+  opacity: 0.7;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 768px) {
+  .countdown-container {
+    padding: 1.5rem;
+    margin: 0 1rem;
+  }
+  
+  .countdown-title {
+    font-size: 1.2rem;
+  }
+  
+  .countdown-timer {
+    gap: 1rem;
+  }
+  
+  .countdown-unit {
+    min-width: 50px;
+  }
+  
+  .countdown-number {
+    font-size: 2rem;
+  }
+  
+  .countdown-label {
+    font-size: 0.7rem;
+  }
+}
+
 @keyframes rays-fade {
   0%   { opacity: 0.7; }
   50%  { opacity: 0.95; }

@@ -376,6 +376,30 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', setPanelHeight);
   setPanelHeight();
 
+  // Countdown timer functionality
+  function updateCountdown() {
+    const launchDate = new Date('October 1, 2025 00:00:00').getTime();
+    const now = new Date().getTime();
+    const distance = launchDate - now;
+
+    if (distance > 0) {
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      document.getElementById('days').textContent = days.toString();
+    } else {
+      // Launch day has arrived
+      document.getElementById('days').textContent = '0';
+      
+      const countdownContainer = document.querySelector('.countdown-container');
+      if (countdownContainer) {
+        countdownContainer.innerHTML = '<div class="countdown-title">🎉 Launch Day! 🎉</div><div class="countdown-subtitle">The podcast is now live!</div>';
+      }
+    }
+  }
+
+  // Update countdown every day (86400000 ms = 24 hours)
+  updateCountdown();
+  setInterval(updateCountdown, 86400000);
+
   // Living room dust motes effect
   const livingRoom = document.querySelector('.panel.living-room');
   const livingCanvas = livingRoom ? livingRoom.querySelector('.living-dust') : null;
