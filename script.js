@@ -147,6 +147,7 @@ window.addEventListener('DOMContentLoaded', () => {
     isMuted = state;
     audios.forEach(a => { if (a) a.muted = isMuted; });
     muteBtn.textContent = isMuted ? '🔇' : '🔊';
+    muteBtn.classList.toggle('unmuted', !isMuted);
     playCurrentRoomAudio(); // Always update playback on mute toggle
   }
 
@@ -384,14 +385,20 @@ window.addEventListener('DOMContentLoaded', () => {
 
     if (distance > 0) {
       const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      document.getElementById('days').textContent = days.toString();
+      const atticDaysElement = document.getElementById('attic-days');
+      if (atticDaysElement) {
+        atticDaysElement.textContent = days.toString().padStart(2, '0');
+      }
     } else {
       // Launch day has arrived
-      document.getElementById('days').textContent = '0';
+      const atticDaysElement = document.getElementById('attic-days');
+      if (atticDaysElement) {
+        atticDaysElement.textContent = '00';
+      }
       
-      const countdownContainer = document.querySelector('.countdown-container');
-      if (countdownContainer) {
-        countdownContainer.innerHTML = '<div class="countdown-title">🎉 Launch Day! 🎉</div><div class="countdown-subtitle">The podcast is now live!</div>';
+      const countdownDisplay = document.querySelector('.countdown-display');
+      if (countdownDisplay) {
+        countdownDisplay.innerHTML = '<div class="countdown-label">🎉 LAUNCH DAY! 🎉</div><div class="countdown-number">LIVE</div><div class="countdown-subtitle">THE PODCAST IS NOW LIVE!</div>';
       }
     }
   }
@@ -399,6 +406,43 @@ window.addEventListener('DOMContentLoaded', () => {
   // Update countdown every day (86400000 ms = 24 hours)
   updateCountdown();
   setInterval(updateCountdown, 86400000);
+
+  // Hamburger menu functionality
+  const hamburgerMenu = document.getElementById('hamburger-menu');
+  const navigationMenu = document.getElementById('navigation-menu');
+  const menuLinks = document.querySelectorAll('.menu-link');
+
+  hamburgerMenu.addEventListener('click', () => {
+    hamburgerMenu.classList.toggle('active');
+    navigationMenu.classList.toggle('active');
+  });
+
+  // Close menu when clicking on a link
+  menuLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = link.getAttribute('href').substring(1);
+      const targetSection = document.getElementById(targetId);
+      
+      if (targetSection) {
+        targetSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+      
+      hamburgerMenu.classList.remove('active');
+      navigationMenu.classList.remove('active');
+    });
+  });
+
+  // Close menu when clicking outside
+  navigationMenu.addEventListener('click', (e) => {
+    if (e.target === navigationMenu) {
+      hamburgerMenu.classList.remove('active');
+      navigationMenu.classList.remove('active');
+    }
+  });
 
   // Living room dust motes effect
   const livingRoom = document.querySelector('.panel.living-room');
