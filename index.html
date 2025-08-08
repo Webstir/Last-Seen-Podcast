@@ -79,6 +79,53 @@
       100% { transform: translateY(1px); }
     }
     
+    .index-social-links {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .index-social-link {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      padding: 0.5rem 0;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      position: relative;
+    }
+    
+    .index-social-link {
+      text-decoration: underline;
+      text-decoration-color: rgba(255, 255, 255, 0.5);
+      text-underline-offset: 2px;
+    }
+    
+    .index-social-link:hover {
+      color: #ffffff;
+      transform: translateY(-1px);
+      text-decoration-color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .index-social-link.patreon:hover {
+      color: #ff6b6b;
+      text-decoration-color: rgba(255, 107, 107, 0.8);
+    }
+    
+    .index-social-link.facebook:hover {
+      color: #4a90e2;
+      text-decoration-color: rgba(74, 144, 226, 0.8);
+    }
+    
+    .index-social-link.instagram:hover {
+      color: #e1306c;
+      text-decoration-color: rgba(225, 48, 108, 0.8);
+    }
+    
     .demo-link {
       display: inline-block;
       margin-top: 1rem;
@@ -218,10 +265,16 @@
       
       <button id="demo-button" class="demo-link">Enter the Demo →</button>
       
+      <div class="index-social-links">
+        <a href="https://www.patreon.com/c/LastSeenintheTwilightZone" class="index-social-link patreon" target="_blank" rel="noopener">Support us on Patreon →</a>
+        <a href="https://www.facebook.com/share/g/16gqYRs5e3/" class="index-social-link facebook" target="_blank" rel="noopener">Join the conversation on Facebook →</a>
+        <a href="https://www.instagram.com/lastseeninthetwilightzone/" class="index-social-link instagram" target="_blank" rel="noopener">Follow our Instagram →</a>
+      </div>
+      
       <div class="placeholder-status">
         STATUS: UNDER CONSTRUCTION<br>
         DIMENSION: IN PROGRESS<br>
-        ETA: SOON
+        ETA: <span id="launch-countdown">Loading...</span> DAYS
       </div>
     </div>
   </section>
@@ -312,6 +365,25 @@
     document.addEventListener('click', function() {
       audio.play().catch(e => console.log('Audio autoplay prevented'));
     }, { once: true });
+
+    // Countdown timer functionality
+    function updateLaunchCountdown() {
+      const launchDate = new Date('October 1, 2025 00:00:00').getTime();
+      const now = new Date().getTime();
+      const distance = launchDate - now;
+
+      if (distance > 0) {
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        document.getElementById('launch-countdown').textContent = days.toString();
+      } else {
+        // Launch day has arrived
+        document.getElementById('launch-countdown').textContent = '0';
+      }
+    }
+
+    // Update countdown every day
+    updateLaunchCountdown();
+    setInterval(updateLaunchCountdown, 86400000);
   </script>
 </body>
 </html> 
