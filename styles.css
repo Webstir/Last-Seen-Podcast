@@ -610,6 +610,12 @@ body, html {
   height: 30px;
   justify-content: center;
   align-items: center;
+  transition: top 0.3s ease;
+}
+
+/* Move menu to top for non-attic sections */
+#hamburger-menu.top-position {
+  top: 1.2rem;
 }
 
 .hamburger-line {
@@ -647,6 +653,11 @@ body, html {
   border: none;
   padding: 0;
   margin: 0;
+}
+
+/* Move navigation menu to top for non-attic sections */
+.navigation-menu.top-position {
+  top: 4.2rem;
 }
 
 .navigation-menu.active {

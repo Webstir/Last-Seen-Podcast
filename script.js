@@ -178,6 +178,22 @@ window.addEventListener('DOMContentLoaded', () => {
     if (currentSectionIndex !== maxIdx) {
       currentSectionIndex = maxIdx;
       playCurrentRoomAudio();
+      
+      // Update hamburger menu position based on current section
+      const hamburgerMenu = document.getElementById('hamburger-menu');
+      const navigationMenu = document.querySelector('.navigation-menu');
+      
+      if (hamburgerMenu) {
+        if (maxIdx === 0) {
+          // Attic section - keep menu in current position
+          hamburgerMenu.classList.remove('top-position');
+          if (navigationMenu) navigationMenu.classList.remove('top-position');
+        } else {
+          // Other sections - move menu to top
+          hamburgerMenu.classList.add('top-position');
+          if (navigationMenu) navigationMenu.classList.add('top-position');
+        }
+      }
     }
   }, observerOptions);
 
