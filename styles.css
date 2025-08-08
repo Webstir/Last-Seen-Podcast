@@ -179,6 +179,93 @@ body, html {
   transition: opacity 0.4s cubic-bezier(.4,0,.2,1);
 }
 
+.basement-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.social-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: center;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.social-link {
+  color: #ffffff;
+  text-decoration: none;
+  font-family: 'Fira Mono', 'Courier New', monospace, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  padding: 1rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  text-shadow: 2px 2px 12px rgba(0,0,0,0.7), 0 1px 0 #222;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.social-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.social-link.patreon {
+  color: #ff6b6b;
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+.social-link.patreon:hover {
+  background: rgba(255, 107, 107, 0.1);
+  border-color: rgba(255, 107, 107, 0.6);
+}
+
+.social-link.facebook {
+  color: #4a90e2;
+  border-color: rgba(74, 144, 226, 0.3);
+}
+
+.social-link.facebook:hover {
+  background: rgba(74, 144, 226, 0.1);
+  border-color: rgba(74, 144, 226, 0.6);
+}
+
+.social-link.instagram {
+  color: #e1306c;
+  border-color: rgba(225, 48, 108, 0.3);
+}
+
+.social-link.instagram:hover {
+  background: rgba(225, 48, 108, 0.1);
+  border-color: rgba(225, 48, 108, 0.6);
+}
+
+@media (max-width: 768px) {
+  .social-links {
+    padding: 1.5rem;
+    margin: 0 1rem;
+  }
+  
+  .social-link {
+    font-size: 1rem;
+    padding: 0.8rem 1.5rem;
+  }
+}
+
 #mute-toggle {
   position: fixed;
   top: 1.2rem;
@@ -353,8 +440,6 @@ body, html {
   overflow-y: auto;
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
   text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-  backdrop-filter: blur(2px);
-  background: rgba(0,0,0,0.3);
   position: absolute;
   padding: 20px;
   bottom: 20vh;
