@@ -68,8 +68,8 @@ window.addEventListener('DOMContentLoaded', () => {
       if (isFlickering) return;
       isFlickering = true;
       
-      // Play buzzing sound when light comes on (only if in basement)
-      if (flickerAudio && currentSectionIndex === 4) {
+      // Play buzzing sound when light comes on (only if in basement and not muted)
+      if (flickerAudio && currentSectionIndex === 4 && !isMuted) {
         flickerAudio.volume = 1.0;
         flickerAudio.currentTime = 0;
         flickerAudio.play().catch(()=>{});
@@ -146,6 +146,16 @@ window.addEventListener('DOMContentLoaded', () => {
   function setMute(state) {
     isMuted = state;
     audios.forEach(a => { if (a) a.muted = isMuted; });
+    
+    // Handle flicker audio mute state
+    const flickerAudio = document.querySelector('.flicker-audio');
+    if (flickerAudio) {
+      if (isMuted) {
+        flickerAudio.pause();
+        flickerAudio.currentTime = 0;
+      }
+    }
+    
     muteBtn.textContent = isMuted ? '🔇' : '🔊';
     muteBtn.classList.toggle('unmuted', !isMuted);
     playCurrentRoomAudio(); // Always update playback on mute toggle
