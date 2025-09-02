@@ -236,11 +236,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // Randomized labels for demo
   const labelOptions = {
     'living-room': [
-      "Launch Countdown: The podcast goes live in <span id='living-room-countdown-2'>Loading...</span> days",
-      "Coming Soon: 'The Disappearance of Sarah Mitchell' - Our first episode",
-      "Coming Soon: 'Voices in the Attic' - Investigation begins October 1st",
-      "Coming Soon: 'The Basement Tapes' - Exclusive Patreon content",
-      "Coming Soon: 'Shadows in the Living Room' - The investigation continues"
+      "Launch Countdown: The podcast goes live in <span id='living-room-countdown-2'>Loading...</span> days"
     ]
   };
 
