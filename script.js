@@ -503,6 +503,8 @@ window.addEventListener('DOMContentLoaded', () => {
   function loadVideoWithThumbnail(video, thumbnail, duration = 2000) {
     if (!video || !thumbnail) return;
     
+    console.log('Starting video loading for:', video.src);
+    
     // Start with thumbnail invisible and video hidden
     thumbnail.style.opacity = '0';
     video.style.opacity = '0';
@@ -514,9 +516,9 @@ window.addEventListener('DOMContentLoaded', () => {
       console.log('Thumbnail fade-in started');
     }, 100);
     
-    // Wait for video to be ready, then transition from thumbnail to video
-    video.addEventListener('canplay', () => {
-      console.log('Video ready, transitioning from thumbnail');
+    // Add multiple event listeners for better reliability
+    const videoReady = () => {
+      console.log('Video ready, transitioning from thumbnail:', video.src);
       
       // Fade out thumbnail
       thumbnail.classList.add('fade-out');
@@ -531,12 +533,28 @@ window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         thumbnail.style.display = 'none';
       }, duration + 500); // Wait for video fade-in to complete
-    }, { once: true });
+    };
     
-    // Fallback: if video doesn't load, keep thumbnail visible
+    // Try multiple events to ensure one fires
+    video.addEventListener('canplay', videoReady, { once: true });
+    video.addEventListener('loadeddata', videoReady, { once: true });
+    video.addEventListener('canplaythrough', videoReady, { once: true });
+    
+    // Force video loading
+    video.load();
+    
+    // Fallback: if video doesn't load, keep thumbnail visible and retry
     setTimeout(() => {
       if (video.readyState < 2) { // HAVE_CURRENT_DATA
-        console.log('Video not ready, keeping thumbnail visible');
+        console.log('Video not ready after 5s, retrying:', video.src);
+        video.load(); // Try loading again
+        
+        // Second fallback: keep thumbnail visible indefinitely
+        setTimeout(() => {
+          if (video.readyState < 2) {
+            console.log('Video still not ready, keeping thumbnail visible:', video.src);
+          }
+        }, 10000);
       }
     }, 5000);
   }
@@ -678,6 +696,16 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     startVideoLoading(); // Both videos start loading in parallel
   }, 2000); // Wait for thumbnails to finish fading in
+  
+  // Add network status monitoring
+  window.addEventListener('online', () => {
+    console.log('Network connection restored, retrying video loading');
+    // Retry loading videos when network comes back
+    setTimeout(() => {
+      if (atticVideo) atticVideo.load();
+      if (livingRoomVideo) livingRoomVideo.load();
+    }, 1000);
+  });
   
   loadAboveTheFold().then(() => {
     // Small delay to ensure smooth transition
