@@ -491,8 +491,60 @@ window.addEventListener('DOMContentLoaded', () => {
     setMute(!isMuted);
   });
 
-  // Initial call
+    // Initial call
   setTimeout(playCurrentRoomAudio, 200);
+  
+  // Lazy loading for videos below the fold
+  const lazyVideos = document.querySelectorAll('video[data-src]');
+  const videoObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const video = entry.target;
+        video.src = video.dataset.src;
+        video.removeAttribute('data-src');
+        videoObserver.unobserve(video);
+      }
+    });
+  }, { rootMargin: '50px' }); // Start loading 50px before video comes into view
+  
+  lazyVideos.forEach(video => videoObserver.observe(video));
+  
+  // Background loading after attic is ready
+  function startBackgroundLoading() {
+    // Load all remaining videos in background
+    const backgroundVideos = document.querySelectorAll('video[data-src]');
+    backgroundVideos.forEach(video => {
+      video.src = video.dataset.src;
+      video.removeAttribute('data-src');
+    });
+    
+    // Preload audio files for smooth playback
+    const audioElements = document.querySelectorAll('audio');
+    audioElements.forEach(audio => {
+      if (audio.src) {
+        audio.preload = 'metadata';
+        // Trigger a small load to start buffering
+        audio.load();
+      }
+    });
+    
+    // Preload images
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+      if (img.dataset.src) {
+        img.src = img.dataset.src;
+        img.removeAttribute('data-src');
+      }
+    });
+    
+    console.log('Background loading started - rest of site loading in background');
+  }
+  
+  // Start background loading after attic is fully loaded
+  window.addEventListener('load', () => {
+    // Small delay to ensure attic is fully rendered
+    setTimeout(startBackgroundLoading, 1000);
+  });
 
   // Parallax effect for backgrounds has been fully removed.
 
