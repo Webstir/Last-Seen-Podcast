@@ -563,18 +563,42 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  // Start loading below-the-fold content immediately (don't wait for attic)
-  function startBelowTheFoldLoading() {
+  // Load both thumbnails immediately for instant visual feedback
+  function loadAllThumbnails() {
+    if (atticThumbnail) {
+      // Start attic thumbnail fade-in
+      setTimeout(() => {
+        atticThumbnail.style.transition = 'opacity 1.5s ease-in';
+        atticThumbnail.style.opacity = '1';
+        console.log('Attic thumbnail fade-in started');
+      }, 100);
+    }
+    
+    if (livingRoomThumbnail) {
+      // Start living room thumbnail fade-in
+      setTimeout(() => {
+        livingRoomThumbnail.style.transition = 'opacity 1.5s ease-in';
+        livingRoomThumbnail.style.opacity = '1';
+        console.log('Living room thumbnail fade-in started');
+      }, 100);
+    }
+  }
+  
+  // Start loading both videos in parallel after thumbnails are visible
+  function startVideoLoading() {
+    if (atticVideo && atticThumbnail) {
+      loadVideoWithThumbnail(atticVideo, atticThumbnail, 2500);
+      console.log('Attic video loading started');
+    }
+    
     if (livingRoomVideo && livingRoomThumbnail) {
-      // Start living room video loading with thumbnail immediately
       loadVideoWithThumbnail(livingRoomVideo, livingRoomThumbnail, 2000);
-      console.log('Below-the-fold content loading started (living room with thumbnail)');
+      console.log('Living room video loading started');
     }
   }
   
   // Load below-the-fold content after above-the-fold is ready
   function loadBelowTheFold() {
-    // Living room video should already be loading by now
     console.log('Below-the-fold assets loading completed');
     
       // Initialize basement lighting immediately (don't wait for flicker sequence)
@@ -648,7 +672,12 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   
   // Start progressive loading
-  startBelowTheFoldLoading(); // Start living room loading immediately
+  loadAllThumbnails(); // Both thumbnails fade in immediately
+  
+  // Start loading both videos after thumbnails are visible
+  setTimeout(() => {
+    startVideoLoading(); // Both videos start loading in parallel
+  }, 2000); // Wait for thumbnails to finish fading in
   
   loadAboveTheFold().then(() => {
     // Small delay to ensure smooth transition
