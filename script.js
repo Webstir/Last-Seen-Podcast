@@ -493,18 +493,32 @@ window.addEventListener('DOMContentLoaded', () => {
     // Initial call
   setTimeout(playCurrentRoomAudio, 200);
   
-  // Make attic video visible immediately
+  // Gradual fade-in effect for videos
   const atticVideo = document.querySelector('.panel.attic .bg-video');
-  if (atticVideo) {
-    atticVideo.style.opacity = '1';
-    console.log('Attic video made visible');
+  const livingRoomVideo = document.querySelector('.panel.living-room .bg-video');
+  
+  // Function to gradually fade in a video
+  function fadeInVideo(video, duration = 2000) {
+    if (!video) return;
+    
+    video.style.opacity = '0';
+    video.style.transition = `opacity ${duration}ms ease-in`;
+    
+    // Start fade-in after a tiny delay to ensure transition works
+    setTimeout(() => {
+      video.style.opacity = '1';
+    }, 50);
   }
   
-  // Make living room video visible immediately
-  const livingRoomVideo = document.querySelector('.panel.living-room .bg-video');
+  // Apply fade-in to both videos
+  if (atticVideo) {
+    fadeInVideo(atticVideo, 2500); // 2.5 seconds for attic
+    console.log('Attic video fade-in started');
+  }
+  
   if (livingRoomVideo) {
-    livingRoomVideo.style.opacity = '1';
-    console.log('Living room video made visible');
+    fadeInVideo(livingRoomVideo, 2000); // 2 seconds for living room
+    console.log('Living room video fade-in started');
   }
   
 
