@@ -382,7 +382,7 @@ body, html {
 }
 
 .basement {
-  background-image: url('./basement.png');
+  background-image: url('./basement.jpg');
 }
 
 .bg-video {
@@ -1294,4 +1294,5 @@ body, html {
 .modal-overlay.active .modal-content p {
   opacity: 0.9;
   transform: translateY(0);
-} 
+}
+

@@ -63,6 +63,9 @@ window.addEventListener('DOMContentLoaded', () => {
   if (flickerGlow && basementDarken) {
     let flickerTimeout;
     let isFlickering = false;
+    
+    // Initialize light as off
+    flickerGlow.style.opacity = '0';
 
     function startFlickerSequence() {
       if (isFlickering) return;
@@ -70,7 +73,7 @@ window.addEventListener('DOMContentLoaded', () => {
       
       // Play buzzing sound when light comes on (only if in basement and not muted)
       if (flickerAudio && currentSectionIndex === 4 && !isMuted) {
-        flickerAudio.volume = 1.0;
+        flickerAudio.volume = 0.5; // Reduced volume for flicker sound (was 1.0)
         flickerAudio.currentTime = 0;
         flickerAudio.play().catch(()=>{});
       }
@@ -95,6 +98,7 @@ window.addEventListener('DOMContentLoaded', () => {
           if (currentStep >= sequence.length) {
             // End sequence - turn off light
             flickerGlow.style.animation = 'none';
+            flickerGlow.style.opacity = '0';
             basementDarken.style.opacity = '0.92';
             isFlickering = false;
             
@@ -140,7 +144,7 @@ window.addEventListener('DOMContentLoaded', () => {
   let isMuted = false;
   let currentSectionIndex = 0; // Track current section globally
 
-  audios.forEach(a => { if (a) { a.muted = true; a.volume = 0.7; } });
+  audios.forEach(a => { if (a) { a.muted = true; a.volume = 0.35; } });
   muteBtn.textContent = '🔇';
 
   function setMute(state) {
@@ -232,30 +236,77 @@ window.addEventListener('DOMContentLoaded', () => {
   // Randomized labels for demo
   const labelOptions = {
     'living-room': [
-      "The TV is on, but only static fills the screen.",
-      "The couch is empty, but you sense someone was just here.",
-      "A faint glow flickers from the television.",
-      "The remote is missing, and the static never ends."
-    ],
-    bathroom: [
-      "The mirror is fogged, but you see no reflection.",
-      "A single drip echoes in the silence.",
-      "The tiles are cold, and the air is damp.",
-      "You sense someone was just here."
-    ],
-    basement: [
-      "Something moves in the shadows below.",
-      "The air is thick with dust and secrets.",
-      "A chill runs down your spine.",
-      "You hear a faint whisper, but see no one."
-    ],
-    contact: [
-      "Leave a message after the static…",
-      "Sometimes, the only way out is to call for help.",
-      "The clock ticks, but no one answers.",
-      "Your words may echo in the void."
+      "Launch Countdown: The podcast goes live in <span id='living-room-countdown-2'>Loading...</span> days",
+      "Coming Soon: 'The Disappearance of Sarah Mitchell' - Our first episode",
+      "Coming Soon: 'Voices in the Attic' - Investigation begins October 1st",
+      "Coming Soon: 'The Basement Tapes' - Exclusive Patreon content",
+      "Coming Soon: 'Shadows in the Living Room' - The investigation continues"
     ]
   };
+
+  // Living room message cycling
+  let livingRoomMessageIndex = 0;
+  let livingRoomMessageTimer = null;
+  let isInLivingRoom = false;
+  let isTransitioning = false; // Prevent overlapping transitions
+
+  // Function to get current countdown days
+  function getCurrentCountdownDays() {
+    const launchDate = new Date('October 1, 2025 00:00:00').getTime();
+    const now = new Date().getTime();
+    const distance = launchDate - now;
+    
+    if (distance > 0) {
+      return Math.floor(distance / (1000 * 60 * 60 * 24));
+    } else {
+      return 0;
+    }
+  }
+
+  // Typewriter effect for living room messages
+  function typewriterEffect(label, text, onComplete) {
+    if (!label || !text) return;
+    
+    let currentText = label.textContent;
+    let currentIndex = currentText.length;
+    
+    // First, delete current text letter by letter (only if there's text to delete)
+    function deleteText() {
+      if (currentIndex > 0) {
+        label.textContent = currentText.substring(0, currentIndex);
+        currentIndex--;
+        setTimeout(deleteText, 25); // Delete speed (doubled from 50ms)
+      } else {
+        // Start typing new text
+        typeText();
+      }
+    }
+    
+    // Then type new text letter by letter
+    function typeText() {
+      let typeIndex = 0;
+      function type() {
+        if (typeIndex < text.length) {
+          label.textContent = text.substring(0, typeIndex + 1);
+          typeIndex++;
+          setTimeout(type, 40); // Type speed (doubled from 80ms)
+        } else {
+          // Transition complete
+          isTransitioning = false;
+          if (onComplete) onComplete();
+        }
+      }
+      type();
+    }
+    
+    // If there's no current text, skip deletion and go straight to typing
+    if (currentText.trim() === '') {
+      typeText();
+    } else {
+      // Start the delete process
+      deleteText();
+    }
+  }
 
   function getRandomLabel(section) {
     const opts = labelOptions[section];
@@ -277,23 +328,67 @@ window.addEventListener('DOMContentLoaded', () => {
         const label = p.querySelector('.section-label');
         const contactPhrases = p.querySelector('.contact-phrases');
         if (i === idx && label) {
-          // Randomize label for living-room, bathroom, basement, contact
-          if (i !== 0) { // skip attic
-            const section = p.classList.contains('living-room') ? 'living-room' :
-                            p.classList.contains('bathroom') ? 'bathroom' :
-                            p.classList.contains('basement') ? 'basement' :
-                            p.classList.contains('contact') ? 'contact' : null;
-            if (section) {
-              let randomLabel = getRandomLabel(section);
-              // Avoid repeating the same label consecutively
-              while (lastRandomLabel[section] === randomLabel && labelOptions[section].length > 1) {
-                randomLabel = getRandomLabel(section);
+          // Handle living-room section label cycling
+          if (i !== 0 && p.classList.contains('living-room')) { // skip attic, only process living-room
+            if (i === idx) { // Only when living room is active
+              if (!isInLivingRoom) {
+                // First time entering living room - show countdown with typewriter effect
+                isInLivingRoom = true;
+                livingRoomMessageIndex = 0;
+                const currentDays = getCurrentCountdownDays();
+                const countdownMessage = `Launch Countdown: The podcast goes live in ${currentDays} days`;
+                
+                // Clear the section-label first, then type out the countdown message
+                label.textContent = '';
+                isTransitioning = true;
+                typewriterEffect(label, countdownMessage, () => {
+                  label.setAttribute('data-fulltext', countdownMessage);
+                  isTransitioning = false; // Allow next transition to start
+                });
+                
+                // Start cycling after 6 seconds
+                livingRoomMessageTimer = setTimeout(() => {
+                  if (isInLivingRoom) {
+                    livingRoomMessageIndex = 1; // Start with first "Coming Soon" message
+                    const nextMessage = labelOptions['living-room'][livingRoomMessageIndex];
+                    
+                    // Use typewriter effect to transition to next message
+                    isTransitioning = true;
+                    typewriterEffect(label, nextMessage, () => {
+                      label.setAttribute('data-fulltext', nextMessage);
+                    });
+                    
+                    // Continue cycling every 4 seconds
+                    const cycleInterval = setInterval(() => {
+                      if (!isInLivingRoom) {
+                        clearInterval(cycleInterval);
+                        return;
+                      }
+                      
+                      // Only start new transition if not currently transitioning
+                      if (!isTransitioning) {
+                        livingRoomMessageIndex = (livingRoomMessageIndex + 1) % labelOptions['living-room'].length;
+                        if (livingRoomMessageIndex === 0) livingRoomMessageIndex = 1; // Skip countdown in cycle
+                        const cycleMessage = labelOptions['living-room'][livingRoomMessageIndex];
+                        
+                        // Use typewriter effect for each transition
+                        isTransitioning = true;
+                        typewriterEffect(label, cycleMessage, () => {
+                          label.setAttribute('data-fulltext', cycleMessage);
+                        });
+                      }
+                    }, 4000);
+                  }
+                }, 6000);
               }
-              lastRandomLabel[section] = randomLabel;
-              if (section === 'contact' && contactPhrases) {
-                contactPhrases.setAttribute('data-fulltext', randomLabel);
-              } else {
-                label.setAttribute('data-fulltext', randomLabel);
+            } else {
+              // Not in living room - reset state
+              if (isInLivingRoom) {
+                isInLivingRoom = false;
+                if (livingRoomMessageTimer) {
+                  clearTimeout(livingRoomMessageTimer);
+                  livingRoomMessageTimer = null;
+                }
               }
             }
           }
@@ -343,11 +438,17 @@ window.addEventListener('DOMContentLoaded', () => {
       const audio = audios[i];
       if (!audio) return;
       if (panel.classList.contains('contact')) {
-        audio.volume = 1.0;
+        audio.volume = 0.01; // Very subtle clock ambience at 1% volume
       } else if (panel.classList.contains('living-room')) {
-        audio.volume = 0.2; // 20% volume for cassette tape sound
+        audio.volume = 0.1; // 10% volume for cassette tape sound (was 0.2)
+      } else if (panel.classList.contains('attic')) {
+        audio.volume = 0.25; // 25% volume for attic rain (was 0.5)
+      } else if (panel.classList.contains('bathroom')) {
+        audio.volume = 0.05; // 5% volume for bathroom dripping water
+      } else if (panel.classList.contains('basement')) {
+        audio.volume = 0.075; // 7.5% volume for basement wind/water (30% of 0.25)
       } else {
-        audio.volume = 1.0; // Default volume for other sections
+        audio.volume = 0.5; // Default volume for other sections (was 1.0)
       }
     });
 
@@ -357,10 +458,10 @@ window.addEventListener('DOMContentLoaded', () => {
       const staticAudio = livingRoomPanel.querySelector('.static-audio');
       if (staticAudio) {
         if (currentSectionIndex === 1 && !isMuted) { // Living room is index 1
-          if (staticAudio.paused) {
-            staticAudio.volume = 0.05; // 5% volume for static noise
-            staticAudio.play().catch(()=>{});
-          }
+                  if (staticAudio.paused) {
+          staticAudio.volume = 0.025; // 2.5% volume for static noise (was 0.05)
+          staticAudio.play().catch(()=>{});
+        }
         } else {
           staticAudio.pause();
         }
@@ -415,11 +516,35 @@ window.addEventListener('DOMContentLoaded', () => {
       if (atticDaysElement) {
         atticDaysElement.textContent = days.toString().padStart(2, '0');
       }
+      
+      // Update living room countdown
+      const livingRoomCountdown = document.getElementById('living-room-countdown');
+      if (livingRoomCountdown) {
+        livingRoomCountdown.textContent = days.toString();
+      }
+      
+      // Update living room countdown in section label
+      const livingRoomCountdown2 = document.getElementById('living-room-countdown-2');
+      if (livingRoomCountdown2) {
+        livingRoomCountdown2.textContent = days.toString();
+      }
     } else {
       // Launch day has arrived
       const atticDaysElement = document.getElementById('attic-days');
       if (atticDaysElement) {
         atticDaysElement.textContent = '00';
+      }
+      
+      // Update living room countdown to show launch day
+      const livingRoomCountdown = document.getElementById('living-room-countdown');
+      if (livingRoomCountdown) {
+        livingRoomCountdown.textContent = '0';
+      }
+      
+      // Update living room countdown in section label
+      const livingRoomCountdown2 = document.getElementById('living-room-countdown-2');
+      if (livingRoomCountdown2) {
+        livingRoomCountdown2.textContent = '0';
       }
       
       const countdownDisplay = document.querySelector('.countdown-display');
@@ -618,4 +743,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Testing modal...');
     openModal('quinn');
   };
-}); 
+});
+
+ 
