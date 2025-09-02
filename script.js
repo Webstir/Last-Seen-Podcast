@@ -496,27 +496,58 @@ window.addEventListener('DOMContentLoaded', () => {
   // Progressive loading system - above the fold first, then below
   const atticVideo = document.querySelector('.panel.attic .bg-video');
   const livingRoomVideo = document.querySelector('.panel.living-room .bg-video');
+  const atticThumbnail = document.querySelector('.panel.attic .video-thumbnail');
+  const livingRoomThumbnail = document.querySelector('.panel.living-room .video-thumbnail');
   
-  // Function to gradually fade in a video
-  function fadeInVideo(video, duration = 2000) {
-    if (!video) return;
+  // Function to handle thumbnail-first video loading with fade-in effect
+  function loadVideoWithThumbnail(video, thumbnail, duration = 2000) {
+    if (!video || !thumbnail) return;
     
+    // Start with thumbnail invisible and video hidden
+    thumbnail.style.opacity = '0';
     video.style.opacity = '0';
-    video.style.transition = `opacity ${duration}ms ease-in`;
     
-    // Start fade-in after a tiny delay to ensure transition works
+    // Fade in thumbnail from black
     setTimeout(() => {
-      video.style.opacity = '1';
-    }, 50);
+      thumbnail.style.transition = 'opacity 1.5s ease-in';
+      thumbnail.style.opacity = '1';
+      console.log('Thumbnail fade-in started');
+    }, 100);
+    
+    // Wait for video to be ready, then transition from thumbnail to video
+    video.addEventListener('canplay', () => {
+      console.log('Video ready, transitioning from thumbnail');
+      
+      // Fade out thumbnail
+      thumbnail.classList.add('fade-out');
+      
+      // Fade in video with the specified duration
+      setTimeout(() => {
+        video.style.transition = `opacity ${duration}ms ease-in`;
+        video.style.opacity = '1';
+      }, 100);
+      
+      // Remove thumbnail after transition
+      setTimeout(() => {
+        thumbnail.style.display = 'none';
+      }, duration + 500); // Wait for video fade-in to complete
+    }, { once: true });
+    
+    // Fallback: if video doesn't load, keep thumbnail visible
+    setTimeout(() => {
+      if (video.readyState < 2) { // HAVE_CURRENT_DATA
+        console.log('Video not ready, keeping thumbnail visible');
+      }
+    }, 5000);
   }
   
   // Load above-the-fold content first (attic)
   function loadAboveTheFold() {
     return new Promise((resolve) => {
-      if (atticVideo) {
-        // Start attic video fade-in
-        fadeInVideo(atticVideo, 2500);
-        console.log('Above-the-fold content loaded (attic)');
+      if (atticVideo && atticThumbnail) {
+        // Start attic video loading with thumbnail
+        loadVideoWithThumbnail(atticVideo, atticThumbnail, 2500);
+        console.log('Above-the-fold content loaded (attic with thumbnail)');
         
         // Wait for attic video to be ready, then resolve
         atticVideo.addEventListener('canplay', () => {
@@ -532,13 +563,19 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
   
+  // Start loading below-the-fold content immediately (don't wait for attic)
+  function startBelowTheFoldLoading() {
+    if (livingRoomVideo && livingRoomThumbnail) {
+      // Start living room video loading with thumbnail immediately
+      loadVideoWithThumbnail(livingRoomVideo, livingRoomThumbnail, 2000);
+      console.log('Below-the-fold content loading started (living room with thumbnail)');
+    }
+  }
+  
   // Load below-the-fold content after above-the-fold is ready
   function loadBelowTheFold() {
-    if (livingRoomVideo) {
-      // Start living room video fade-in
-      fadeInVideo(livingRoomVideo, 2000);
-      console.log('Below-the-fold content loaded (living room)');
-    }
+    // Living room video should already be loading by now
+    console.log('Below-the-fold assets loading completed');
     
       // Initialize basement lighting immediately (don't wait for flicker sequence)
   const basement = document.querySelector('.panel.basement');
@@ -611,6 +648,8 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   
   // Start progressive loading
+  startBelowTheFoldLoading(); // Start living room loading immediately
+  
   loadAboveTheFold().then(() => {
     // Small delay to ensure smooth transition
     setTimeout(loadBelowTheFold, 500);
