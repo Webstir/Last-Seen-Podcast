@@ -493,7 +493,7 @@ window.addEventListener('DOMContentLoaded', () => {
     // Initial call
   setTimeout(playCurrentRoomAudio, 200);
   
-  // Gradual fade-in effect for videos
+  // Progressive loading system - above the fold first, then below
   const atticVideo = document.querySelector('.panel.attic .bg-video');
   const livingRoomVideo = document.querySelector('.panel.living-room .bg-video');
   
@@ -510,16 +510,111 @@ window.addEventListener('DOMContentLoaded', () => {
     }, 50);
   }
   
-  // Apply fade-in to both videos
-  if (atticVideo) {
-    fadeInVideo(atticVideo, 2500); // 2.5 seconds for attic
-    console.log('Attic video fade-in started');
+  // Load above-the-fold content first (attic)
+  function loadAboveTheFold() {
+    return new Promise((resolve) => {
+      if (atticVideo) {
+        // Start attic video fade-in
+        fadeInVideo(atticVideo, 2500);
+        console.log('Above-the-fold content loaded (attic)');
+        
+        // Wait for attic video to be ready, then resolve
+        atticVideo.addEventListener('canplay', () => {
+          console.log('Attic video ready, proceeding to below-the-fold');
+          resolve();
+        }, { once: true });
+        
+        // Fallback: resolve after 3 seconds if video doesn't load
+        setTimeout(resolve, 3000);
+      } else {
+        resolve();
+      }
+    });
   }
   
-  if (livingRoomVideo) {
-    fadeInVideo(livingRoomVideo, 2000); // 2 seconds for living room
-    console.log('Living room video fade-in started');
+  // Load below-the-fold content after above-the-fold is ready
+  function loadBelowTheFold() {
+    if (livingRoomVideo) {
+      // Start living room video fade-in
+      fadeInVideo(livingRoomVideo, 2000);
+      console.log('Below-the-fold content loaded (living room)');
+    }
+    
+      // Initialize basement lighting immediately (don't wait for flicker sequence)
+  const basement = document.querySelector('.panel.basement');
+  const flickerGlow = basement ? basement.querySelector('.flicker-glow') : null;
+  const basementDarken = basement ? basement.querySelector('.basement-darken') : null;
+  
+  if (flickerGlow && basementDarken) {
+    // Ensure basement starts with light on and minimal darkening
+    flickerGlow.style.opacity = '0.95';
+    basementDarken.style.opacity = '0.1'; // Very light darkening instead of full dark
+    console.log('Basement lighting initialized');
+    
+    // Make basement light responsive to scroll position
+    let isBasementVisible = false;
+    let lightTimeout;
+    
+    // Function to turn light on
+    function turnBasementLightOn() {
+      if (flickerGlow && basementDarken) {
+        flickerGlow.style.opacity = '0.95';
+        basementDarken.style.opacity = '0.1';
+        console.log('Basement light turned on');
+      }
+    }
+    
+    // Function to turn light off
+    function turnBasementLightOff() {
+      if (flickerGlow && basementDarken) {
+        flickerGlow.style.opacity = '0';
+        basementDarken.style.opacity = '0.92';
+        console.log('Basement light turned off');
+      }
+    }
+    
+    // Check if basement is visible and control lighting
+    const basementObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Basement is visible - turn light on
+          if (!isBasementVisible) {
+            isBasementVisible = true;
+            clearTimeout(lightTimeout);
+            turnBasementLightOn();
+          }
+        } else {
+          // Basement is not visible - turn light off after a short delay
+          if (isBasementVisible) {
+            isBasementVisible = false;
+            lightTimeout = setTimeout(() => {
+              turnBasementLightOff();
+            }, 1000); // 1 second delay before turning off
+          }
+        }
+      });
+    }, { threshold: 0.3 }); // Trigger when 30% of basement is visible
+    
+    basementObserver.observe(basement);
   }
+    
+    // Load other below-the-fold assets
+    const belowFoldAudios = document.querySelectorAll('.panel:not(.attic) .room-audio');
+    belowFoldAudios.forEach(audio => {
+      if (audio.src) {
+        audio.preload = 'metadata';
+        audio.load();
+      }
+    });
+    
+    console.log('Below-the-fold assets loaded');
+  }
+  
+  // Start progressive loading
+  loadAboveTheFold().then(() => {
+    // Small delay to ensure smooth transition
+    setTimeout(loadBelowTheFold, 500);
+  });
   
 
 
