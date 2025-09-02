@@ -64,8 +64,8 @@ window.addEventListener('DOMContentLoaded', () => {
     let flickerTimeout;
     let isFlickering = false;
     
-    // Initialize light as off
-    flickerGlow.style.opacity = '0';
+    // Initialize light as on
+    flickerGlow.style.opacity = '0.95';
 
     function startFlickerSequence() {
       if (isFlickering) return;
@@ -80,16 +80,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
       function flickerSequence() {
         const sequence = [
-          { opacity: 0.85, darken: 0, duration: 200 },
-          { opacity: 0.7, darken: 0, duration: 150 },
-          { opacity: 0.95, darken: 0, duration: 300 },
-          { opacity: 0.6, darken: 0, duration: 100 },
-          { opacity: 0.9, darken: 0, duration: 250 },
-          { opacity: 0.8, darken: 0, duration: 200 },
-          { opacity: 0.95, darken: 0, duration: 400 },
-          { opacity: 0.7, darken: 0, duration: 150 },
-          { opacity: 0.9, darken: 0, duration: 300 },
-          { opacity: 0.85, darken: 0, duration: 200 }
+          { opacity: 0.95, darken: 0, duration: 800 },      // Start bright and stay on
+          { opacity: 0.3, darken: 0.8, duration: 50 },      // Quick dark flicker
+          { opacity: 0.9, darken: 0, duration: 600 },        // Back to bright
+          { opacity: 0.2, darken: 0.9, duration: 40 },      // Very quick dark flicker
+          { opacity: 0.95, darken: 0, duration: 700 },       // Bright again
+          { opacity: 0.4, darken: 0.7, duration: 60 },      // Quick dark flicker
+          { opacity: 0.9, darken: 0, duration: 500 },        // Bright
+          { opacity: 0.1, darken: 0.95, duration: 30 },     // Very brief dark flicker
+          { opacity: 0.95, darken: 0, duration: 900 },       // Bright and stable
+          { opacity: 0.3, darken: 0.8, duration: 45 }        // Final quick dark flicker
         ];
 
         let currentStep = 0;
@@ -497,133 +497,21 @@ window.addEventListener('DOMContentLoaded', () => {
     // Initial call
   setTimeout(playCurrentRoomAudio, 200);
   
-  // Attic video fade-in effect
+  // Make attic video visible immediately
   const atticVideo = document.querySelector('.panel.attic .bg-video');
   if (atticVideo) {
-    // Start with black background (video opacity: 0)
-    atticVideo.style.opacity = '0';
-    
-    // Wait for video to be ready, then fade in
-    atticVideo.addEventListener('loadeddata', () => {
-      // Small delay to ensure smooth transition
-      setTimeout(() => {
-        atticVideo.classList.add('fade-in');
-        console.log('Attic video fade-in started');
-      }, 500);
-    });
-    
-    // Fallback: if video takes too long, fade in anyway
-    setTimeout(() => {
-      if (!atticVideo.classList.contains('fade-in')) {
-        atticVideo.classList.add('fade-in');
-        console.log('Attic video fade-in fallback triggered');
-      }
-    }, 3000);
+    atticVideo.style.opacity = '1';
+    console.log('Attic video made visible');
   }
   
-  // Lazy loading for videos below the fold (Safari compatible)
-  const lazyVideos = document.querySelectorAll('video[data-src]');
-  
-  // Safari-compatible lazy loading function
-  function loadVideo(video) {
-    if (video.dataset.src) {
-      console.log('Loading video:', video.dataset.src);
-      video.src = video.dataset.src;
-      video.removeAttribute('data-src');
-      // Force load for Safari
-      video.load();
-      
-      // Add error handling for Safari
-      video.addEventListener('error', (e) => {
-        console.error('Video loading error:', e);
-        // Fallback: try to load again
-        setTimeout(() => {
-          if (video.dataset.src) {
-            video.load();
-          }
-        }, 1000);
-      });
-    }
+  // Make living room video visible immediately
+  const livingRoomVideo = document.querySelector('.panel.living-room .bg-video');
+  if (livingRoomVideo) {
+    livingRoomVideo.style.opacity = '1';
+    console.log('Living room video made visible');
   }
   
-  // Use Intersection Observer if supported, otherwise fallback
-  if ('IntersectionObserver' in window) {
-    const videoObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          loadVideo(entry.target);
-          videoObserver.unobserve(entry.target);
-        }
-      });
-    }, { rootMargin: '100px' }); // Increased margin for Safari
-    
-    lazyVideos.forEach(video => videoObserver.observe(video));
-  } else {
-    // Fallback for older browsers - load all videos immediately
-    lazyVideos.forEach(loadVideo);
-  }
-  
-  // Safari-specific handling - detect Safari and load videos more aggressively
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  if (isSafari) {
-    console.log('Safari detected - using aggressive video loading');
-    // Load living room video after a short delay for Safari
-    setTimeout(() => {
-      const livingRoomVideo = document.querySelector('.panel.living-room video');
-      if (livingRoomVideo && livingRoomVideo.dataset.src) {
-        console.log('Safari aggressive loading: Loading living room video');
-        loadVideo(livingRoomVideo);
-      }
-    }, 1500);
-  }
-  
-  // Background loading after attic is ready
-  function startBackgroundLoading() {
-    // Load all remaining videos in background
-    const backgroundVideos = document.querySelectorAll('video[data-src]');
-    backgroundVideos.forEach(video => {
-      video.src = video.dataset.src;
-      video.removeAttribute('data-src');
-    });
-    
-    // Preload audio files for smooth playback
-    const audioElements = document.querySelectorAll('audio');
-    audioElements.forEach(audio => {
-      if (audio.src) {
-        audio.preload = 'metadata';
-        // Trigger a small load to start buffering
-        audio.load();
-      }
-    });
-    
-    // Preload images
-    const images = document.querySelectorAll('img');
-    images.forEach(img => {
-      if (img.dataset.src) {
-        img.src = img.dataset.src;
-        img.removeAttribute('data-src');
-      }
-    });
-    
-    console.log('Background loading started - rest of site loading in background');
-  }
-  
-  // Start background loading after attic is fully loaded
-  window.addEventListener('load', () => {
-    // Small delay to ensure attic is fully rendered
-    setTimeout(startBackgroundLoading, 1000);
-    
-    // Safari fallback - ensure living room video loads even if lazy loading fails
-    setTimeout(() => {
-      const livingRoomVideo = document.querySelector('.panel.living-room video');
-      if (livingRoomVideo && livingRoomVideo.dataset.src) {
-        console.log('Safari fallback: Loading living room video');
-        livingRoomVideo.src = livingRoomVideo.dataset.src;
-        livingRoomVideo.removeAttribute('data-src');
-        livingRoomVideo.load();
-      }
-    }, 2000); // 2 second fallback for Safari
-  });
+
 
   // Parallax effect for backgrounds has been fully removed.
 
