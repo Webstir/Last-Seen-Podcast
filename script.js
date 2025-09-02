@@ -268,22 +268,30 @@ window.addEventListener('DOMContentLoaded', () => {
     if (!label || !text) return;
     
     let currentText = label.textContent;
-    let currentIndex = currentText.length;
     
-    // First, delete current text letter by letter (only if there's text to delete)
-    function deleteText() {
-      if (currentIndex > 0) {
-        label.textContent = currentText.substring(0, currentIndex);
-        currentIndex--;
-        setTimeout(deleteText, 25); // Delete speed (doubled from 50ms)
-      } else {
-        // Start typing new text
+    // If there's no current text, go straight to typing
+    if (currentText.trim() === '') {
+      typeText();
+      return;
+    }
+    
+    // First, fade out current text
+    function fadeOut() {
+      label.style.transition = 'opacity 1.5s ease-out';
+      label.style.opacity = '0';
+      
+      setTimeout(() => {
+        // After fade out, start typing new text
         typeText();
-      }
+      }, 1500); // Wait for fade out to complete
     }
     
     // Then type new text letter by letter
     function typeText() {
+      // Reset opacity and start typing
+      label.style.transition = 'opacity 0.3s ease-in';
+      label.style.opacity = '1';
+      
       let typeIndex = 0;
       function type() {
         if (typeIndex < text.length) {
@@ -299,13 +307,8 @@ window.addEventListener('DOMContentLoaded', () => {
       type();
     }
     
-    // If there's no current text, skip deletion and go straight to typing
-    if (currentText.trim() === '') {
-      typeText();
-    } else {
-      // Start the delete process
-      deleteText();
-    }
+    // Start the fade out process
+    fadeOut();
   }
 
   function getRandomLabel(section) {
@@ -494,20 +497,85 @@ window.addEventListener('DOMContentLoaded', () => {
     // Initial call
   setTimeout(playCurrentRoomAudio, 200);
   
-  // Lazy loading for videos below the fold
-  const lazyVideos = document.querySelectorAll('video[data-src]');
-  const videoObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const video = entry.target;
-        video.src = video.dataset.src;
-        video.removeAttribute('data-src');
-        videoObserver.unobserve(video);
-      }
+  // Attic video fade-in effect
+  const atticVideo = document.querySelector('.panel.attic .bg-video');
+  if (atticVideo) {
+    // Start with black background (video opacity: 0)
+    atticVideo.style.opacity = '0';
+    
+    // Wait for video to be ready, then fade in
+    atticVideo.addEventListener('loadeddata', () => {
+      // Small delay to ensure smooth transition
+      setTimeout(() => {
+        atticVideo.classList.add('fade-in');
+        console.log('Attic video fade-in started');
+      }, 500);
     });
-  }, { rootMargin: '50px' }); // Start loading 50px before video comes into view
+    
+    // Fallback: if video takes too long, fade in anyway
+    setTimeout(() => {
+      if (!atticVideo.classList.contains('fade-in')) {
+        atticVideo.classList.add('fade-in');
+        console.log('Attic video fade-in fallback triggered');
+      }
+    }, 3000);
+  }
   
-  lazyVideos.forEach(video => videoObserver.observe(video));
+  // Lazy loading for videos below the fold (Safari compatible)
+  const lazyVideos = document.querySelectorAll('video[data-src]');
+  
+  // Safari-compatible lazy loading function
+  function loadVideo(video) {
+    if (video.dataset.src) {
+      console.log('Loading video:', video.dataset.src);
+      video.src = video.dataset.src;
+      video.removeAttribute('data-src');
+      // Force load for Safari
+      video.load();
+      
+      // Add error handling for Safari
+      video.addEventListener('error', (e) => {
+        console.error('Video loading error:', e);
+        // Fallback: try to load again
+        setTimeout(() => {
+          if (video.dataset.src) {
+            video.load();
+          }
+        }, 1000);
+      });
+    }
+  }
+  
+  // Use Intersection Observer if supported, otherwise fallback
+  if ('IntersectionObserver' in window) {
+    const videoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          loadVideo(entry.target);
+          videoObserver.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '100px' }); // Increased margin for Safari
+    
+    lazyVideos.forEach(video => videoObserver.observe(video));
+  } else {
+    // Fallback for older browsers - load all videos immediately
+    lazyVideos.forEach(loadVideo);
+  }
+  
+  // Safari-specific handling - detect Safari and load videos more aggressively
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  if (isSafari) {
+    console.log('Safari detected - using aggressive video loading');
+    // Load living room video after a short delay for Safari
+    setTimeout(() => {
+      const livingRoomVideo = document.querySelector('.panel.living-room video');
+      if (livingRoomVideo && livingRoomVideo.dataset.src) {
+        console.log('Safari aggressive loading: Loading living room video');
+        loadVideo(livingRoomVideo);
+      }
+    }, 1500);
+  }
   
   // Background loading after attic is ready
   function startBackgroundLoading() {
@@ -544,6 +612,17 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('load', () => {
     // Small delay to ensure attic is fully rendered
     setTimeout(startBackgroundLoading, 1000);
+    
+    // Safari fallback - ensure living room video loads even if lazy loading fails
+    setTimeout(() => {
+      const livingRoomVideo = document.querySelector('.panel.living-room video');
+      if (livingRoomVideo && livingRoomVideo.dataset.src) {
+        console.log('Safari fallback: Loading living room video');
+        livingRoomVideo.src = livingRoomVideo.dataset.src;
+        livingRoomVideo.removeAttribute('data-src');
+        livingRoomVideo.load();
+      }
+    }, 2000); // 2 second fallback for Safari
   });
 
   // Parallax effect for backgrounds has been fully removed.
