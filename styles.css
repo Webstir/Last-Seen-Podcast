@@ -7,66 +7,43 @@ body, html {
   background: black;
 }
 
-/* Disable scroll-snap on mobile devices to prevent layering issues */
+/* Restore scroll-snap functionality specifically for demo.html */
+#demo-page {
+  scroll-snap-type: y mandatory;
+}
+
+/* Mobile-specific fixes for demo.html to prevent layering issues */
 @media (max-width: 768px), (max-device-width: 768px) {
-  body, html {
-    scroll-snap-type: none;
-  }
-  
-  .panel {
-    scroll-snap-align: none;
-    /* Ensure proper positioning on mobile */
-    position: relative;
-    min-height: 100vh;
-  }
-  
-  .horizontal-scroll {
-    scroll-snap-type: none;
-  }
-  
-  .horizontal-scroll .panel {
-    scroll-snap-align: none;
-  }
-  
-  /* Fix for iOS Safari viewport issues */
-  .panel {
-    height: 100vh;
-    height: -webkit-fill-available;
-  }
-  
-  /* Additional iOS Safari fixes */
-  body {
+  #demo-page {
+    /* Ensure proper mobile viewport handling */
     -webkit-overflow-scrolling: touch;
   }
   
-  /* Ensure panels don't overlap on mobile */
-  .panel + .panel {
-    margin-top: 0;
-  }
-  
-  /* Force proper panel heights on mobile */
-  .panel {
-    min-height: 100vh !important;
-    height: 100vh !important;
+  #demo-page .panel {
+    /* Ensure proper positioning and prevent layering */
+    position: relative;
+    min-height: 100vh;
+    height: 100vh;
+    /* Fix for iOS Safari viewport issues */
+    height: -webkit-fill-available;
+    min-height: -webkit-fill-available;
+    /* Ensure proper stacking context */
+    transform: translateZ(0);
+    will-change: transform;
+    isolation: isolate;
   }
   
   /* Fix for mobile Safari 100vh issue */
   @supports (-webkit-touch-callout: none) {
-    .panel {
+    #demo-page .panel {
       height: -webkit-fill-available !important;
       min-height: -webkit-fill-available !important;
     }
   }
   
-  /* Ensure proper stacking context on mobile */
-  .panel {
-    transform: translateZ(0);
-    will-change: transform;
-  }
-  
-  /* Prevent any potential layering issues */
-  .panel {
-    isolation: isolate;
+  /* Ensure panels don't overlap on mobile */
+  #demo-page .panel + .panel {
+    margin-top: 0;
   }
 }
 
