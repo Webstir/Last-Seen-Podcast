@@ -2,15 +2,18 @@ body, html {
   margin: 0;
   padding: 0;
   height: 100%;
-  scroll-snap-type: y mandatory;
   overflow-y: scroll;
   background: black;
+}
+
+/* Scroll-snap behavior - only apply when explicitly enabled */
+.scroll-snap-enabled {
+  scroll-snap-type: y mandatory;
 }
 
 .panel {
   margin: 0;
   padding: 0;
-  scroll-snap-align: start;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,6 +22,11 @@ body, html {
   position: relative;
   color: white;
   font-family: 'Courier New', monospace;
+}
+
+/* Scroll-snap alignment only when scroll-snap is enabled */
+.scroll-snap-enabled .panel {
+  scroll-snap-align: start;
 }
 
 .section-label {
@@ -361,15 +369,22 @@ body, html {
   width: 200vw;
   height: 100vh;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
   position: relative;
 }
 
 .horizontal-scroll .panel {
   flex: 0 0 100vw;
   height: 100vh;
-  scroll-snap-align: start;
   position: relative;
+}
+
+/* Horizontal scroll-snap only when scroll-snap is enabled */
+.scroll-snap-enabled .horizontal-scroll {
+  scroll-snap-type: x mandatory;
+}
+
+.scroll-snap-enabled .horizontal-scroll .panel {
+  scroll-snap-align: start;
 }
 
 .kitchen {
@@ -1009,7 +1024,7 @@ body, html {
 }
 
 .contact-social-link.patreon {
-  color: #ffd700ø;
+  color: #ffd700;
   font-weight: 600;
 }
 
