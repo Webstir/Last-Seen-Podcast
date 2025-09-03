@@ -979,7 +979,7 @@ body, html {
 }
 .contact-details a {
   color: #ffd700;
-  text-decoration: underline dotted;
+  text-decoration: underline;
   opacity: 0.9;
   transition: color 0.2s;
 }
@@ -1000,11 +1000,9 @@ body, html {
 .contact-social-link {
   color: #ffffff;
   text-decoration: underline;
-  text-decoration-color: rgba(255, 255, 255, 0.5);
   text-underline-offset: 2px;
   font-family: 'Fira Mono', 'Courier New', monospace, sans-serif;
   font-size: 1rem;
-  font-weight: 400;
   letter-spacing: 0.08em;
   padding: 0.5rem 0;
   transition: all 0.3s ease;
@@ -1239,7 +1237,10 @@ body, html {
   opacity: 0;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  margin: 30px 10px;
+  /* Mobile-friendly spacing - use padding instead of margin */
+  padding: 2rem 1rem;
+  width: calc(100% - 20px);
+  max-width: calc(500px - 20px);
 }
 
 .modal-close {
@@ -1328,6 +1329,35 @@ body, html {
   transform: translateY(0);
 }
 
+/* Mobile-specific modal adjustments */
+@media (max-width: 768px) {
+  .modal-content {
+    margin: 20px;
+    width: calc(100% - 40px);
+    max-width: calc(100% - 40px);
+    padding: 1.5rem 1rem;
+    max-height: 85vh;
+  }
+  
+  .modal-overlay {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    margin: 15px;
+    width: calc(100% - 30px);
+    max-width: calc(100% - 30px);
+    padding: 1rem 0.75rem;
+    max-height: 90vh;
+  }
+  
+  .modal-overlay {
+    padding: 15px;
+  }
+}
+
 /* Footer Styles */
 .footer-section {
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
@@ -1366,51 +1396,6 @@ body, html {
   line-height: 1.4;
 }
 
-.footer-info a {
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
 .footer-info a:hover {
   color: #ffffff;
-}
-
-/* Nuanced Design link styling */
-.nuanced-design-link {
-  color: #ffd700 !important; /* Golden yellow */
-  text-decoration: underline !important;
-  text-underline-offset: 2px;
-  text-decoration-thickness: 1px;
-  text-decoration-color: #ffd700;
-}
-
-.nuanced-design-link:hover {
-  color: #ffed4e !important; /* Brighter yellow on hover */
-  text-decoration-color: #ffed4e;
-}
-
-/* Ensure underlines work on mobile devices */
-.footer-info a,
-.footer-links a,
-.social-link,
-.contact-social-link {
-  -webkit-text-decoration: underline;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  text-decoration-thickness: 1px;
-  text-decoration-color: currentColor;
-}
-
-/* Mobile-specific underline fixes */
-@media (max-width: 768px) {
-  .footer-info a,
-  .footer-links a,
-  .social-link,
-  .contact-social-link {
-    text-decoration: underline !important;
-    -webkit-text-decoration: underline !important;
-    text-underline-offset: 3px;
-    text-decoration-thickness: 1.5px;
-  }
 }
