@@ -1,15 +1,21 @@
 body, html {
   margin: 0;
   padding: 0;
-  height: 100%;
-  overflow-y: scroll;
   background: black;
 }
 
-/* Scroll-snap behavior - only apply when explicitly enabled */
+/* Only apply height and overflow constraints when scroll-snap is enabled */
 .scroll-snap-enabled {
   scroll-snap-type: y mandatory;
 }
+
+.scroll-snap-enabled body,
+.scroll-snap-enabled html {
+  height: 100%;
+  overflow-y: scroll;
+}
+
+
 
 .panel {
   margin: 0;
@@ -27,6 +33,27 @@ body, html {
 /* Scroll-snap alignment only when scroll-snap is enabled */
 .scroll-snap-enabled .panel {
   scroll-snap-align: start;
+}
+
+/* Index page content - same styling as panel but no scroll-snap */
+.index-content {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  color: white;
+  font-family: 'Courier New', monospace;
+  min-height: 100vh;
+}
+
+/* Override body properties for index page to prevent scroll issues */
+body:not(.scroll-snap-enabled) {
+  height: auto;
+  overflow-y: auto;
 }
 
 .section-label {
