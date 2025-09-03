@@ -11,8 +11,9 @@ body, html {
 
 .scroll-snap-enabled body,
 .scroll-snap-enabled html {
-  height: 100%;
+  height: 100vh;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 
@@ -28,6 +29,20 @@ body, html {
   position: relative;
   color: white;
   font-family: 'Courier New', monospace;
+}
+
+/* Panels need full height when scroll-snap is enabled */
+.scroll-snap-enabled .panel {
+  height: 100vh;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Ensure proper scroll behavior for scroll-snap pages */
+.scroll-snap-enabled {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100vh;
 }
 
 /* Scroll-snap alignment only when scroll-snap is enabled */
