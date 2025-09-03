@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Last Seen in the Twilight Zone</title>
   <link rel="stylesheet" href="styles.css" />
+  
+  <!-- Preload critical demo assets for instant loading -->
+  <link rel="preload" href="attic.mp4" as="video" type="video/mp4">
+  <link rel="preload" href="living-room.mp4" as="video" type="video/mp4">
+  <link rel="preload" href="attic-thumbnail.jpg" as="image">
+  <link rel="preload" href="living-room-thumbnail.jpg" as="image">
+  
+  <!-- Preload demo.html for faster navigation -->
+  <link rel="prerender" href="demo.html">
+  
+  <!-- Preload audio files -->
+  <link rel="preload" href="soft-rain-on-a-tile-roof.mp3" as="audio">
+  <link rel="preload" href="cassette-tape-handling.mp3" as="audio">
+  <link rel="preload" href="dripping-water-tap.mp3" as="audio">
+  <link rel="preload" href="wind-basement-dripping-water.mp3" as="audio">
+  <link rel="preload" href="clock-ambience.mp3" as="audio">
+  <link rel="preload" href="static-noise.mp3" as="audio">
+  <link rel="preload" href="flickeringlight.mp3" as="audio">
   <style>
     .placeholder-content {
       position: relative;
@@ -365,6 +383,51 @@
     document.addEventListener('click', function() {
       audio.play().catch(e => console.log('Audio autoplay prevented'));
     }, { once: true });
+    
+    // Preload demo assets in background for instant loading
+    function preloadDemoAssets() {
+      console.log('Starting background preload of demo assets...');
+      
+      // Preload videos
+      const videos = ['attic.mp4', 'living-room.mp4'];
+      videos.forEach(videoSrc => {
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        video.src = videoSrc;
+        video.load();
+        console.log('Preloading video:', videoSrc);
+      });
+      
+      // Preload thumbnails
+      const thumbnails = ['attic-thumbnail.jpg', 'living-room-thumbnail.jpg'];
+      thumbnails.forEach(imgSrc => {
+        const img = new Image();
+        img.src = imgSrc;
+        console.log('Preloading thumbnail:', imgSrc);
+      });
+      
+      // Preload audio files
+      const audioFiles = [
+        'cassette-tape-handling.mp3',
+        'dripping-water-tap.mp3', 
+        'wind-basement-dripping-water.mp3',
+        'clock-ambience.mp3',
+        'static-noise.mp3',
+        'flickeringlight.mp3'
+      ];
+      audioFiles.forEach(audioSrc => {
+        const audio = new Audio();
+        audio.preload = 'metadata';
+        audio.src = audioSrc;
+        audio.load();
+        console.log('Preloading audio:', audioSrc);
+      });
+      
+      console.log('Background preload complete!');
+    }
+    
+    // Start preloading after a short delay
+    setTimeout(preloadDemoAssets, 1000);
 
     // Countdown timer functionality
     function updateLaunchCountdown() {
