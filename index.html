@@ -15,8 +15,7 @@
   <!-- Preload demo.html for faster navigation -->
   <link rel="prerender" href="demo.html">
   
-  <!-- Preload audio files -->
-  <link rel="preload" href="soft-rain-on-a-tile-roof.mp3" as="audio">
+  <!-- Preload demo assets (no audio on index page) -->
   <link rel="preload" href="cassette-tape-handling.mp3" as="audio">
   <link rel="preload" href="dripping-water-tap.mp3" as="audio">
   <link rel="preload" href="wind-basement-dripping-water.mp3" as="audio">
@@ -374,15 +373,20 @@
       }
     });
     
-    // Add some ambient sound if available
-    const audio = new Audio('soft-rain-on-a-tile-roof.mp3');
-    audio.loop = true;
-    audio.volume = 0.15;
+    // Add some ambient sound if available (only after user interaction)
+    let ambientAudio = null;
     
-    // Auto-play with user interaction
-    document.addEventListener('click', function() {
-      audio.play().catch(e => console.log('Audio autoplay prevented'));
-    }, { once: true });
+    // Only create and play audio after user actually enters the demo
+    function startAmbientAudio() {
+      if (!ambientAudio) {
+        ambientAudio = new Audio('soft-rain-on-a-tile-roof.mp3');
+        ambientAudio.loop = true;
+        ambientAudio.volume = 0.15;
+        ambientAudio.play().catch(e => console.log('Ambient audio started'));
+      }
+    }
+    
+    // Remove the auto-play on click since we don't want it on the index page
     
     // Preload demo assets in background for instant loading
     function preloadDemoAssets() {

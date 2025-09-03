@@ -1239,6 +1239,7 @@ body, html {
   opacity: 0;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  margin: 30px 10px;
 }
 
 .modal-close {
@@ -1373,4 +1374,43 @@ body, html {
 
 .footer-info a:hover {
   color: #ffffff;
+}
+
+/* Nuanced Design link styling */
+.nuanced-design-link {
+  color: #ffd700 !important; /* Golden yellow */
+  text-decoration: underline !important;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: #ffd700;
+}
+
+.nuanced-design-link:hover {
+  color: #ffed4e !important; /* Brighter yellow on hover */
+  text-decoration-color: #ffed4e;
+}
+
+/* Ensure underlines work on mobile devices */
+.footer-info a,
+.footer-links a,
+.social-link,
+.contact-social-link {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: currentColor;
+}
+
+/* Mobile-specific underline fixes */
+@media (max-width: 768px) {
+  .footer-info a,
+  .footer-links a,
+  .social-link,
+  .contact-social-link {
+    text-decoration: underline !important;
+    -webkit-text-decoration: underline !important;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1.5px;
+  }
 }
