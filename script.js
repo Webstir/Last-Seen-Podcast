@@ -59,6 +59,13 @@ window.addEventListener('DOMContentLoaded', () => {
   const flickerGlow = basement ? basement.querySelector('.flicker-glow') : null;
   const basementDarken = basement ? basement.querySelector('.basement-darken') : null;
   const flickerAudio = basement ? basement.querySelector('.flicker-audio') : null;
+  
+  console.log('Basement elements found:', {
+    basement: !!basement,
+    flickerGlow: !!flickerGlow,
+    basementDarken: !!basementDarken,
+    flickerAudio: !!flickerAudio
+  });
 
   if (flickerGlow && basementDarken) {
     let flickerTimeout;
@@ -71,11 +78,43 @@ window.addEventListener('DOMContentLoaded', () => {
       if (isFlickering) return;
       isFlickering = true;
       
+      // Debug: log flicker conditions
+      console.log('Flicker sequence started:', {
+        flickerAudio: !!flickerAudio,
+        currentSectionIndex,
+        isMuted,
+        shouldPlayAudio: flickerAudio && currentSectionIndex === 4 && !isMuted
+      });
+      
       // Play buzzing sound when light comes on (only if in basement and not muted)
       if (flickerAudio && currentSectionIndex === 4 && !isMuted) {
+        console.log('Playing flicker audio');
+        console.log('Flicker audio state before play:', {
+          muted: flickerAudio.muted,
+          volume: flickerAudio.volume,
+          paused: flickerAudio.paused,
+          currentTime: flickerAudio.currentTime
+        });
+        
         flickerAudio.volume = 0.5; // Reduced volume for flicker sound (was 1.0)
         flickerAudio.currentTime = 0;
-        flickerAudio.play().catch(()=>{});
+        flickerAudio.muted = false; // Ensure it's not muted
+        
+        flickerAudio.play().catch((e) => {
+          console.log('Flicker audio play failed:', e);
+        });
+        
+        console.log('Flicker audio state after play attempt:', {
+          muted: flickerAudio.muted,
+          volume: flickerAudio.volume,
+          paused: flickerAudio.paused
+        });
+      } else {
+        console.log('Flicker audio not playing because:', {
+          noFlickerAudio: !flickerAudio,
+          wrongSection: currentSectionIndex !== 4,
+          isMuted
+        });
       }
 
       function flickerSequence() {
@@ -127,13 +166,21 @@ window.addEventListener('DOMContentLoaded', () => {
     // Start flicker sequence every 8-15 seconds
     function scheduleNextFlicker() {
       const delay = 8000 + Math.random() * 7000; // 8-15 seconds
+      console.log('Scheduling next flicker in', Math.round(delay/1000), 'seconds');
       flickerTimeout = setTimeout(() => {
+        console.log('Flicker timeout triggered, starting sequence');
         startFlickerSequence();
         scheduleNextFlicker();
       }, delay);
     }
 
+    console.log('Starting flicker system');
     scheduleNextFlicker();
+  } else {
+    console.log('Flicker system not started - missing elements:', {
+      flickerGlow: !!flickerGlow,
+      basementDarken: !!basementDarken
+    });
   }
 
   // Ambient sound design (robust per-section logic)
@@ -144,25 +191,88 @@ window.addEventListener('DOMContentLoaded', () => {
   let isMuted = false;
   let currentSectionIndex = 0; // Track current section globally
 
-  audios.forEach(a => { if (a) { a.muted = true; a.volume = 0.35; } });
+  audios.forEach(a => { 
+    if (a) { 
+      a.muted = true; 
+      a.volume = 0.35;
+      a.pause(); // Ensure all audio is paused on initialization
+      a.currentTime = 0;
+    } 
+  });
+  
+  // Ensure flicker audio is not muted and ready to play
+  if (flickerAudio) {
+    flickerAudio.muted = false;
+    flickerAudio.volume = 0.5;
+    console.log('Flicker audio initialized:', {
+      muted: flickerAudio.muted,
+      volume: flickerAudio.volume,
+      paused: flickerAudio.paused
+    });
+  }
+  
   muteBtn.textContent = '🔇';
 
   function setMute(state) {
     isMuted = state;
-    audios.forEach(a => { if (a) a.muted = isMuted; });
+    console.log('Mute state changed to:', isMuted);
     
-    // Handle flicker audio mute state
-    const flickerAudio = document.querySelector('.flicker-audio');
-    if (flickerAudio) {
-      if (isMuted) {
+    if (isMuted) {
+      // When muting, pause all audio and ensure they stay paused
+      audios.forEach(a => { 
+        if (a) {
+          a.muted = true;
+          a.pause();
+          a.currentTime = 0;
+        }
+      });
+      
+      // Handle flicker audio mute state
+      if (flickerAudio) {
+        console.log('Muting flicker audio');
         flickerAudio.pause();
         flickerAudio.currentTime = 0;
+      }
+      
+      // Clear current audio reference
+      currentAudio = null;
+    } else {
+      // When unmuting, just set muted property and let playCurrentRoomAudio handle playback
+      audios.forEach(a => { if (a) a.muted = false; });
+      
+      // Ensure flicker audio is ready to play when unmuting
+      if (flickerAudio) {
+        console.log('Unmuting flicker audio');
+        flickerAudio.muted = false;
       }
     }
     
     muteBtn.textContent = isMuted ? '🔇' : '🔊';
     muteBtn.classList.toggle('unmuted', !isMuted);
-    playCurrentRoomAudio(); // Always update playback on mute toggle
+    
+    // Only call playCurrentRoomAudio if we're unmuting
+    if (!isMuted) {
+      playCurrentRoomAudio();
+    }
+  }
+
+  // Helper function to force stop all audio
+  function forceStopAllAudio() {
+    audios.forEach(a => { 
+      if (a) {
+        a.pause();
+        a.currentTime = 0;
+        a.muted = true;
+      }
+    });
+    
+    // Don't stop flicker audio - let it work independently
+    // if (flickerAudio) {
+    //   flickerAudio.pause();
+    //   flickerAudio.currentTime = 0;
+    // }
+    
+    currentAudio = null;
   }
 
   // Intersection Observer for section detection
@@ -191,7 +301,12 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     if (currentSectionIndex !== maxIdx) {
       currentSectionIndex = maxIdx;
-      playCurrentRoomAudio();
+      console.log('Section changed to index:', maxIdx, 'Panel class:', panels[maxIdx]?.className);
+      
+      // Only play audio if not muted
+      if (!isMuted) {
+        playCurrentRoomAudio();
+      }
       
       // Update hamburger menu position based on current section
       const hamburgerMenu = document.getElementById('hamburger-menu');
@@ -317,6 +432,11 @@ window.addEventListener('DOMContentLoaded', () => {
   let lastRandomLabel = {};
 
   function playCurrentRoomAudio() {
+    // Safety check: if muted, don't do anything
+    if (isMuted) {
+      return;
+    }
+    
     const idx = currentSectionIndex;
     // Debug: log current section index and class
     if (idx !== -1) {
@@ -418,7 +538,15 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     audios.forEach((audio, i) => {
       if (!audio) return;
-      if (i === idx && !isMuted) {
+      
+      // Always pause audio that's not for the current section
+      if (i !== idx) {
+        audio.pause();
+        return;
+      }
+      
+      // Only play audio if we're not muted and this is the current section
+      if (!isMuted && i === idx) {
         if (audio !== currentAudio) {
           if (currentAudio) currentAudio.pause();
           audio.currentTime = 0;
@@ -428,6 +556,7 @@ window.addEventListener('DOMContentLoaded', () => {
           audio.play().catch(()=>{});
         }
       } else {
+        // If muted or not current section, ensure audio is paused
         audio.pause();
       }
     });
@@ -457,10 +586,10 @@ window.addEventListener('DOMContentLoaded', () => {
       const staticAudio = livingRoomPanel.querySelector('.static-audio');
       if (staticAudio) {
         if (currentSectionIndex === 1 && !isMuted) { // Living room is index 1
-                  if (staticAudio.paused) {
-          staticAudio.volume = 0.025; // 2.5% volume for static noise (was 0.05)
-          staticAudio.play().catch(()=>{});
-        }
+          if (staticAudio.paused) {
+            staticAudio.volume = 0.025; // 2.5% volume for static noise (was 0.05)
+            staticAudio.play().catch(()=>{});
+          }
         } else {
           staticAudio.pause();
         }
@@ -469,17 +598,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Handle flicker audio separately
     const basementPanel = document.querySelector('.panel.basement');
-    if (basementPanel) {
-      const flickerAudio = basementPanel.querySelector('.flicker-audio');
-      if (flickerAudio) {
-        // Only manage flicker audio, don't let main audio system control it
-        if (currentSectionIndex !== 4) { // Not in basement (index 4)
-          flickerAudio.pause();
-          flickerAudio.currentTime = 0;
-        } else {
-          // In basement - let the flicker sequence control the audio
-          // Don't pause it here, let it play during flicker sequences
-        }
+    if (basementPanel && flickerAudio) {
+      // Only manage flicker audio, don't let main audio system control it
+      if (currentSectionIndex !== 4) { // Not in basement (index 4)
+        // Don't pause flicker audio when leaving basement - let it continue if flickering
+        // flickerAudio.pause();
+        // flickerAudio.currentTime = 0;
+      } else {
+        // In basement - let the flicker sequence control the audio
+        // Don't pause it here, let it play during flicker sequences
+        console.log('In basement section, flicker audio should be available');
       }
     }
 
@@ -490,8 +618,12 @@ window.addEventListener('DOMContentLoaded', () => {
     setMute(!isMuted);
   });
 
-    // Initial call
-  setTimeout(playCurrentRoomAudio, 200);
+    // Initial call - only if not muted
+  setTimeout(() => {
+    if (!isMuted) {
+      playCurrentRoomAudio();
+    }
+  }, 200);
   
   // Progressive loading system - above the fold first, then below
   const atticVideo = document.querySelector('.panel.attic .bg-video');
@@ -963,6 +1095,9 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Testing modal...');
     openModal('quinn');
   };
+  
+  // Final safety check - ensure all audio is stopped on page load
+  forceStopAllAudio();
 });
 
  
