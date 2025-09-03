@@ -1336,7 +1336,7 @@ body, html {
     width: calc(100% - 40px);
     max-width: calc(100% - 40px);
     padding: 1.5rem 1rem;
-    max-height: 75vh;
+    max-height: calc(100vh - 40px);
   }
   
   .modal-overlay {
@@ -1350,7 +1350,7 @@ body, html {
     width: calc(100% - 30px);
     max-width: calc(100% - 30px);
     padding: 1rem 0.75rem;
-    max-height: 90vh;
+    max-height: calc(100vh - 30px);
   }
   
   .modal-overlay {
