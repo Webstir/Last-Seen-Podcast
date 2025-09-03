@@ -7,6 +7,69 @@ body, html {
   background: black;
 }
 
+/* Disable scroll-snap on mobile devices to prevent layering issues */
+@media (max-width: 768px), (max-device-width: 768px) {
+  body, html {
+    scroll-snap-type: none;
+  }
+  
+  .panel {
+    scroll-snap-align: none;
+    /* Ensure proper positioning on mobile */
+    position: relative;
+    min-height: 100vh;
+  }
+  
+  .horizontal-scroll {
+    scroll-snap-type: none;
+  }
+  
+  .horizontal-scroll .panel {
+    scroll-snap-align: none;
+  }
+  
+  /* Fix for iOS Safari viewport issues */
+  .panel {
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+  
+  /* Additional iOS Safari fixes */
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Ensure panels don't overlap on mobile */
+  .panel + .panel {
+    margin-top: 0;
+  }
+  
+  /* Force proper panel heights on mobile */
+  .panel {
+    min-height: 100vh !important;
+    height: 100vh !important;
+  }
+  
+  /* Fix for mobile Safari 100vh issue */
+  @supports (-webkit-touch-callout: none) {
+    .panel {
+      height: -webkit-fill-available !important;
+      min-height: -webkit-fill-available !important;
+    }
+  }
+  
+  /* Ensure proper stacking context on mobile */
+  .panel {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  
+  /* Prevent any potential layering issues */
+  .panel {
+    isolation: isolate;
+  }
+}
+
 .panel {
   height: calc(var(--vh, 1vh) * 100);
   margin: 0;
