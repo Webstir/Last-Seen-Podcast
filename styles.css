@@ -1,17 +1,26 @@
 body, html {
   margin: 0;
   padding: 0;
-  height: 100%;
-  scroll-snap-type: y mandatory;
-  overflow-y: scroll;
   background: black;
 }
 
+/* Only apply height and overflow constraints when scroll-snap is enabled */
+.scroll-snap-enabled {
+  scroll-snap-type: y mandatory;
+}
+
+.scroll-snap-enabled body,
+.scroll-snap-enabled html {
+  height: 100vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+
+
 .panel {
-  height: calc(var(--vh, 1vh) * 100);
   margin: 0;
   padding: 0;
-  scroll-snap-align: start;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,6 +29,56 @@ body, html {
   position: relative;
   color: white;
   font-family: 'Courier New', monospace;
+}
+
+/* Panels need full height when scroll-snap is enabled */
+.scroll-snap-enabled .panel {
+  height: 100vh;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Ensure proper scroll behavior for scroll-snap pages */
+.scroll-snap-enabled {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100vh;
+}
+
+/* Scroll-snap alignment only when scroll-snap is enabled */
+.scroll-snap-enabled .panel {
+  scroll-snap-align: start;
+}
+
+/* Index page content - same styling as panel but no scroll-snap */
+.index-content {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  color: white;
+  font-family: 'Courier New', monospace;
+  min-height: 100vh;
+}
+
+/* Ensure main text elements in index-content have white color */
+.index-content h1,
+.index-content h2,
+.index-content h3,
+.index-content p,
+.index-content div,
+.index-content span {
+  color: white;
+}
+
+/* Override body properties for index page to prevent scroll issues */
+body:not(.scroll-snap-enabled) {
+  height: auto;
+  overflow-y: auto;
 }
 
 .section-label {
@@ -362,15 +421,22 @@ body, html {
   width: 200vw;
   height: 100vh;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
   position: relative;
 }
 
 .horizontal-scroll .panel {
   flex: 0 0 100vw;
   height: 100vh;
-  scroll-snap-align: start;
   position: relative;
+}
+
+/* Horizontal scroll-snap only when scroll-snap is enabled */
+.scroll-snap-enabled .horizontal-scroll {
+  scroll-snap-type: x mandatory;
+}
+
+.scroll-snap-enabled .horizontal-scroll .panel {
+  scroll-snap-align: start;
 }
 
 .kitchen {
@@ -1010,7 +1076,7 @@ body, html {
 }
 
 .contact-social-link.patreon {
-  color: #ffd700ø;
+  color: #ffd700;
   font-weight: 600;
 }
 
