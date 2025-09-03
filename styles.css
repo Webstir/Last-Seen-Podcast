@@ -50,6 +50,16 @@ body, html {
   min-height: 100vh;
 }
 
+/* Ensure main text elements in index-content have white color */
+.index-content h1,
+.index-content h2,
+.index-content h3,
+.index-content p,
+.index-content div,
+.index-content span {
+  color: white;
+}
+
 /* Override body properties for index page to prevent scroll issues */
 body:not(.scroll-snap-enabled) {
   height: auto;
