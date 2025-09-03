@@ -241,6 +241,9 @@
         0 10px 30px rgba(0,0,0,0.6);
       padding: 30px;
       margin-top:40px;
+      padding: 20px;
+        padding-bottom:50px;
+        margin-bottom: 39px;
     }
     
     .tv-screen {
@@ -411,14 +414,18 @@
       border-radius: 1px;
       position: relative;
       transform-origin: bottom center;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
     
     .antenna.left {
       transform: rotate(-25deg);
+      --antenna-rotation: -25deg;
     }
     
     .antenna.right {
       transform: rotate(25deg);
+      --antenna-rotation: 25deg;
     }
     
     .antenna::after {
@@ -431,6 +438,128 @@
       height: 8px;
       background: #888;
       border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    
+    /* Antenna wiggle animation */
+    .antenna.wiggling {
+      animation: antenna-wiggle 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    @keyframes antenna-wiggle {
+      0% { transform: rotate(var(--antenna-rotation, -25deg)) scale(1); }
+      15% { transform: rotate(calc(var(--antenna-rotation, -25deg) + 20deg)) scale(1.1); }
+      30% { transform: rotate(calc(var(--antenna-rotation, -25deg) - 15deg)) scale(0.95); }
+      45% { transform: rotate(calc(var(--antenna-rotation, -25deg) + 12deg)) scale(1.05); }
+      60% { transform: rotate(calc(var(--antenna-rotation, -25deg) - 8deg)) scale(0.98); }
+      75% { transform: rotate(calc(var(--antenna-rotation, -25deg) + 5deg)) scale(1.02); }
+      90% { transform: rotate(calc(var(--antenna-rotation, -25deg) - 3deg)) scale(0.99); }
+      100% { transform: rotate(var(--antenna-rotation, -25deg)) scale(1); }
+    }
+    
+    /* Antenna electrical effect */
+    .antenna::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 8px;
+      background: #888;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    
+    .antenna.electrical::before {
+      background: #00ffff;
+      box-shadow: 0 0 15px #00ffff;
+      animation: electrical-pulse 0.4s ease-out;
+    }
+    
+    /* Additional antenna tip */
+    .antenna::after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 6px;
+      background: #666;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    
+    .antenna.electrical::after {
+      background: #00ffff;
+      box-shadow: 0 0 10px #00ffff;
+    }
+    
+    /* Electrical pulse animation for antenna tip */
+    @keyframes electrical-pulse {
+      0% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+      }
+      50% {
+        opacity: 0.8;
+        transform: translateX(-50%) scale(1.3);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+      }
+    }
+    
+    /* Lightning bolt animation */
+    @keyframes lightning-bolt {
+      0% {
+        opacity: 0;
+        transform: scaleY(0);
+        filter: brightness(1);
+      }
+      20% {
+        opacity: 1;
+        transform: scaleY(1);
+        filter: brightness(2);
+      }
+      40% {
+        opacity: 0.8;
+        filter: brightness(1.5);
+      }
+      60% {
+        opacity: 1;
+        filter: brightness(2);
+      }
+      80% {
+        opacity: 0.6;
+        filter: brightness(1.2);
+      }
+      100% {
+        opacity: 0;
+        transform: scaleY(0.8);
+        filter: brightness(1);
+      }
+    }
+    
+    /* Antenna hover effects */
+    .antenna:hover {
+      background: linear-gradient(to top, #999, #777);
+      box-shadow: 0 0 15px rgba(128, 128, 128, 0.6);
+      transform: rotate(var(--antenna-rotation)) scale(1.05);
+    }
+    
+    .antenna:hover::after {
+      background: #aaa;
+      box-shadow: 0 0 12px rgba(128, 128, 128, 0.8);
+      transform: translateX(-50%) scale(1.2);
+    }
+    
+    /* Active state for antennae */
+    .antenna:active {
+      transform: rotate(var(--antenna-rotation)) scale(0.95);
+      transition: transform 0.1s ease;
     }
     
     @keyframes static-flicker {
@@ -1260,12 +1389,6 @@
         margin: 1rem auto;
       }
       
-      .tv-frame {
-        padding: 20px;
-        padding-bottom:50px;
-        margin-bottom: 39px;
-      }
-      
       .tv-screen {
         min-height: 400px;
         padding: 1.5rem;
@@ -1352,7 +1475,7 @@
               <p>The investigation continues. Our podcast is currently being prepared in a dimension just beyond your reach.</p>
             </div>
             
-            <button id="demo-button" class="demo-link">Enter the Demo →</button>
+            <button id="demo-button" class="demo-link">Enter the Preview →</button>
             
             <div class="index-social-links">
               <a href="https://www.patreon.com/c/LastSeenintheTwilightZone" class="index-social-link patreon" target="_blank" rel="noopener">Support us on Patreon →</a>
@@ -1564,6 +1687,87 @@
       const tvScreen = document.querySelector('.tv-screen');
       const tvFrame = document.querySelector('.tv-frame');
       const body = document.body;
+      
+      // Add antenna functionality
+      const leftAntenna = document.querySelector('.antenna.left');
+      const rightAntenna = document.querySelector('.antenna.right');
+      
+      // Function to make antenna wiggle and create electrical effect
+      function activateAntenna(antenna) {
+        // Remove any existing animation classes
+        antenna.classList.remove('wiggling', 'electrical');
+        
+        // Add wiggle animation
+        antenna.classList.add('wiggling');
+        
+        // Add electrical effect after a short delay
+        setTimeout(() => {
+          antenna.classList.add('electrical');
+        }, 100);
+        
+        // Create electrical lightning effect
+        createElectricalEffect(antenna);
+        
+        // Remove animation classes after animation completes
+        setTimeout(() => {
+          antenna.classList.remove('wiggling', 'electrical');
+        }, 800);
+      }
+      
+      // Function to create electrical lightning effect
+      function createElectricalEffect(antenna) {
+        const rect = antenna.getBoundingClientRect();
+        const antennaTop = rect.top;
+        const antennaLeft = rect.left + rect.width / 2;
+        
+        // Create lightning bolt effect
+        const lightning = document.createElement('div');
+        lightning.style.cssText = `
+          position: fixed;
+          top: ${antennaTop - 20}px;
+          left: ${antennaLeft}px;
+          width: 2px;
+          height: 60px;
+          background: linear-gradient(to bottom, #00ffff, #0080ff, #0040ff);
+          pointer-events: none;
+          z-index: 1000;
+          opacity: 0;
+          animation: lightning-bolt 0.4s ease-out forwards;
+          filter: drop-shadow(0 0 8px #00ffff);
+        `;
+        
+        // Create zigzag lightning path
+        lightning.style.clipPath = 'polygon(0% 0%, 20% 20%, 40% 0%, 60% 30%, 80% 10%, 100% 40%, 80% 60%, 60% 40%, 40% 70%, 20% 50%, 0% 100%)';
+        
+        document.body.appendChild(lightning);
+        
+        // Create glitch effect on the antenna itself
+        antenna.style.filter = 'brightness(1.5) contrast(1.2)';
+        antenna.style.boxShadow = '0 0 20px #00ffff';
+        
+        // Remove lightning after animation
+        setTimeout(() => {
+          if (lightning.parentNode) {
+            lightning.parentNode.removeChild(lightning);
+          }
+          // Reset antenna appearance
+          antenna.style.filter = '';
+          antenna.style.boxShadow = '';
+        }, 400);
+      }
+      
+      // Add click event listeners to antennae
+      if (leftAntenna) {
+        leftAntenna.addEventListener('click', function() {
+          activateAntenna(this);
+        });
+      }
+      
+      if (rightAntenna) {
+        rightAntenna.addEventListener('click', function() {
+          activateAntenna(this);
+        });
+      }
       
       let activeButton = null;
       
