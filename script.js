@@ -186,7 +186,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // Ambient sound design (robust per-section logic)
   const muteBtn = document.getElementById('mute-toggle');
   const panels = Array.from(document.querySelectorAll('.panel'));
-  const audios = panels.map(panel => panel.querySelector('.room-audio'));
+  const audios = panels.flatMap(panel => Array.from(panel.querySelectorAll('.room-audio')));
   let currentAudio = null;
   let isMuted = false;
   let currentSectionIndex = 0; // Track current section globally
@@ -234,6 +234,7 @@ window.addEventListener('DOMContentLoaded', () => {
         flickerAudio.currentTime = 0;
       }
       
+      
       // Clear current audio reference
       currentAudio = null;
     } else {
@@ -245,6 +246,7 @@ window.addEventListener('DOMContentLoaded', () => {
         console.log('Unmuting flicker audio');
         flickerAudio.muted = false;
       }
+      
     }
     
     muteBtn.textContent = isMuted ? '🔇' : '🔊';
@@ -271,6 +273,7 @@ window.addEventListener('DOMContentLoaded', () => {
     //   flickerAudio.pause();
     //   flickerAudio.currentTime = 0;
     // }
+    
     
     currentAudio = null;
   }
@@ -539,14 +542,18 @@ window.addEventListener('DOMContentLoaded', () => {
     audios.forEach((audio, i) => {
       if (!audio) return;
       
+      // Find which panel this audio belongs to
+      const audioPanel = audio.closest('.panel');
+      const audioPanelIndex = panels.indexOf(audioPanel);
+      
       // Always pause audio that's not for the current section
-      if (i !== idx) {
+      if (audioPanelIndex !== idx) {
         audio.pause();
         return;
       }
       
       // Only play audio if we're not muted and this is the current section
-      if (!isMuted && i === idx) {
+      if (!isMuted && audioPanelIndex === idx) {
         if (audio !== currentAudio) {
           if (currentAudio) currentAudio.pause();
           audio.currentTime = 0;
@@ -562,39 +569,31 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     // Set specific audio volumes
-    panels.forEach((panel, i) => {
-      const audio = audios[i];
+    audios.forEach((audio) => {
       if (!audio) return;
-      if (panel.classList.contains('contact')) {
+      const audioPanel = audio.closest('.panel');
+      if (!audioPanel) return;
+      
+      if (audioPanel.classList.contains('contact')) {
         audio.volume = 0.01; // Very subtle clock ambience at 1% volume
-      } else if (panel.classList.contains('living-room')) {
-        audio.volume = 0.1; // 10% volume for cassette tape sound (was 0.2)
-      } else if (panel.classList.contains('attic')) {
+      } else if (audioPanel.classList.contains('living-room')) {
+        // Different volumes for different audio files in living room
+        if (audio.classList.contains('static-audio')) {
+          audio.volume = 0.025; // 2.5% volume for static noise
+        } else {
+          audio.volume = 0.1; // 10% volume for cassette tape sound (was 0.2)
+        }
+      } else if (audioPanel.classList.contains('attic')) {
         audio.volume = 0.25; // 25% volume for attic rain (was 0.5)
-      } else if (panel.classList.contains('bathroom')) {
+      } else if (audioPanel.classList.contains('bathroom')) {
         audio.volume = 0.05; // 5% volume for bathroom dripping water
-      } else if (panel.classList.contains('basement')) {
+      } else if (audioPanel.classList.contains('basement')) {
         audio.volume = 0.075; // 7.5% volume for basement wind/water (30% of 0.25)
       } else {
         audio.volume = 0.5; // Default volume for other sections (was 1.0)
       }
     });
 
-    // Handle static audio separately
-    const livingRoomPanel = document.querySelector('.panel.living-room');
-    if (livingRoomPanel) {
-      const staticAudio = livingRoomPanel.querySelector('.static-audio');
-      if (staticAudio) {
-        if (currentSectionIndex === 1 && !isMuted) { // Living room is index 1
-          if (staticAudio.paused) {
-            staticAudio.volume = 0.025; // 2.5% volume for static noise (was 0.05)
-            staticAudio.play().catch(()=>{});
-          }
-        } else {
-          staticAudio.pause();
-        }
-      }
-    }
 
     // Handle flicker audio separately
     const basementPanel = document.querySelector('.panel.basement');
