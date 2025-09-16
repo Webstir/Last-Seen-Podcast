@@ -1410,6 +1410,8 @@ body, html {
   position: fixed;
   top: 50%;
   left: 50%;
+  width: 22%;
+  height: 20%;
   transform: translate(-40%, -80%);
   text-decoration: none;
   z-index: 10001;
