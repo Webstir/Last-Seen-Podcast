@@ -1493,6 +1493,8 @@ body, html {
   .easter-egg-tv {
     width: 30%;
     height: 10%;
+    top: 5%;
+    left: 15%;
   }
 }
 
