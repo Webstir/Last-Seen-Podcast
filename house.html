@@ -1,0 +1,2086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Last Seen in the Twilight Zone</title>
+  <link rel="stylesheet" href="styles.css" />
+  
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon/android-chrome-192x192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon/android-chrome-512x512.png" />
+  <link rel="icon" type="image/x-icon" href="favicon/favicon.ico" />
+  <link rel="manifest" href="favicon/site.webmanifest" />
+  
+  <!-- Preload critical demo assets for instant loading -->
+  <link rel="preload" href="attic.mp4" as="video" type="video/mp4">
+  <link rel="preload" href="living-room.mp4" as="video" type="video/mp4">
+  <link rel="preload" href="attic-thumbnail.jpg" as="image">
+  <link rel="preload" href="living-room-thumbnail.jpg" as="image">
+  
+  <!-- Preload demo.html for faster navigation -->
+  <link rel="prerender" href="demo.html">
+  
+  <!-- Preload demo assets (no audio on index page) -->
+  <link rel="preload" href="cassette-tape-handling.mp3" as="audio">
+  <link rel="preload" href="dripping-water-tap.mp3" as="audio">
+  <link rel="preload" href="wind-basement-dripping-water.mp3" as="audio">
+  <link rel="preload" href="clock-ambience.mp3" as="audio">
+  <link rel="preload" href="static-noise.mp3" as="audio">
+  <link rel="preload" href="flickeringlight.mp3" as="audio">
+  <style>
+
+    body {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+    }
+    
+    /* Prevent horizontal scrolling on mobile */
+    @media (max-width: 768px) {
+      body, html {
+        overflow-x: hidden;
+        max-width: 100vw;
+        width: 100vw;
+      }
+      
+      .index-panel {
+        max-width: 100vw;
+        width: 100vw;
+      }
+    }
+    /* Placeholder content styles - now handled by TV content */
+    
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+      75% { opacity: 0.9; }
+    }
+    
+    .index-social-links {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .index-social-link {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      padding: 0.5rem 0;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      position: relative;
+    }
+    
+    .index-social-link {
+      text-decoration: underline;
+      text-decoration-color: rgba(255, 255, 255, 0.5);
+      text-underline-offset: 2px;
+    }
+    
+    .index-social-link:hover {
+      color: #ffffff;
+      transform: translateY(-1px);
+      text-decoration-color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .index-social-link.patreon:hover {
+      color: #ff6b6b;
+      text-decoration-color: rgba(255, 107, 107, 0.8);
+    }
+    
+    .index-social-link.facebook:hover {
+      color: #4a90e2;
+      text-decoration-color: rgba(74, 144, 226, 0.8);
+    }
+    
+    .index-social-link.instagram:hover {
+      color: #e1306c;
+      text-decoration-color: rgba(225, 48, 108, 0.8);
+    }
+    
+    .demo-link {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.8rem 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      color: #fff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      background: rgba(0, 0, 0, 0.7);
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .demo-link:hover {
+      background: rgba(0, 0, 0, 0.9);
+      border-color: rgba(255, 255, 255, 0.6);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    
+    /* Twilight Zone TV Styles */
+    .twilight-zone-tv {
+      position: relative;
+      width: 90%;
+      max-width: 800px;
+      height: auto;
+      margin: 2rem auto;
+      z-index: 5;
+    }
+    
+    .tv-frame {
+      position: relative;
+      background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+      border: 3px solid #333;
+      border-radius: 15px;
+      box-shadow: 
+        0 0 20px rgba(0,0,0,0.8),
+        inset 0 0 20px rgba(0,0,0,0.5),
+        0 10px 30px rgba(0,0,0,0.6);
+      padding: 30px;
+      margin-top:40px;
+      padding: 20px;
+        padding-bottom:50px;
+        margin-bottom: 39px;
+    }
+    
+    .tv-screen {
+      position: relative;
+      width: 100%;
+      min-height: 500px;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid #444;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+    
+    .tv-static {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.1) 2px,
+        rgba(255, 255, 255, 0.1) 4px
+      );
+      animation: static-flicker 0.1s infinite;
+      opacity: 0.8;
+    }
+    
+    .tv-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(
+        circle at center,
+        transparent 30%,
+        rgba(0, 0, 0, 0.2) 70%,
+        rgba(0, 0, 0, 0.4) 100%
+      );
+      pointer-events: none;
+    }
+    
+    .tv-content {
+      position: relative;
+      z-index: 10;
+      color: white;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    /* Adjust content styles for TV screen */
+    .tv-content .placeholder-title {
+      font-size: 2.5rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      margin-bottom: 1rem;
+      color: white;
+      text-shadow: 2px 2px 12px rgba(0,0,0,0.8), 0 1px 0 #222;
+      animation: flicker 3s infinite alternate;
+    }
+    
+    .tv-content .placeholder-subtitle {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+      font-style: italic;
+      color: white;
+    }
+    
+    .tv-content .placeholder-message {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+      color: white;
+    }
+    
+    .tv-content .placeholder-status {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      font-family: 'Courier New', monospace;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      padding-top: 1rem;
+      color: white;
+    }
+    
+    .tv-controls {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+    }
+    
+    .tv-knob {
+      width: 12px;
+      height: 12px;
+      background: #555;
+      border-radius: 50%;
+      border: 2px solid #333;
+      box-shadow: 
+        inset 0 0 4px rgba(0,0,0,0.5),
+        0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .tv-knob.power {
+      background: #4A4A4A; /* Start grey by default */
+      border-color: #333;
+      transition: all 0.3s ease;
+    }
+    
+    .tv-knob.power.active {
+      background: #ff0000 !important;
+      border-color: #cc0000 !important;
+      box-shadow: 
+        inset 0 0 8px rgba(255,0,0,0.8),
+        0 0 20px rgba(255,0,0,0.6),
+        0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .tv-knob.volume {
+      background: #4A4A4A;
+      transition: all 0.3s ease;
+    }
+    
+    .tv-knob.volume.active {
+      background: #00bfff !important;
+      border-color: #0099cc !important;
+      box-shadow: 
+        inset 0 0 8px rgba(0,191,255,0.8),
+        0 0 20px rgba(0,191,255,0.6),
+        0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .tv-knob.channel {
+      background: #4A4A4A;
+      transition: all 0.3s ease;
+    }
+    
+    .tv-knob.channel.active {
+      background: #32cd32 !important;
+      border-color: #228b22 !important;
+      box-shadow: 
+        inset 0 0 8px rgba(50,205,50,0.8),
+        0 0 20px rgba(50,205,50,0.6),
+        0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .tv-antennae {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 40px;
+    }
+    
+    .antenna {
+      width: 2px;
+      height: 30px;
+      background: linear-gradient(to top, #666, #444);
+      border-radius: 1px;
+      position: relative;
+      transform-origin: bottom center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .antenna.left {
+      transform: rotate(-25deg);
+      --antenna-rotation: -25deg;
+    }
+    
+    .antenna.right {
+      transform: rotate(25deg);
+      --antenna-rotation: 25deg;
+    }
+    
+    .antenna::after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 8px;
+      background: #888;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    
+    /* Antenna wiggle animation */
+    .antenna.wiggling {
+      animation: antenna-wiggle 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    @keyframes antenna-wiggle {
+      0% { transform: rotate(var(--antenna-rotation, -25deg)) scale(1); }
+      15% { transform: rotate(calc(var(--antenna-rotation, -25deg) + 20deg)) scale(1.1); }
+      30% { transform: rotate(calc(var(--antenna-rotation, -25deg) - 15deg)) scale(0.95); }
+      45% { transform: rotate(calc(var(--antenna-rotation, -25deg) + 12deg)) scale(1.05); }
+      60% { transform: rotate(calc(var(--antenna-rotation, -25deg) - 8deg)) scale(0.98); }
+      75% { transform: rotate(calc(var(--antenna-rotation, -25deg) + 5deg)) scale(1.02); }
+      90% { transform: rotate(calc(var(--antenna-rotation, -25deg) - 3deg)) scale(0.99); }
+      100% { transform: rotate(var(--antenna-rotation, -25deg)) scale(1); }
+    }
+    
+    /* Antenna electrical effect */
+    .antenna::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 8px;
+      background: #888;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    
+    .antenna.electrical::before {
+      background: #00ffff;
+      box-shadow: 0 0 15px #00ffff;
+      animation: electrical-pulse 0.4s ease-out;
+    }
+    
+    /* Additional antenna tip */
+    .antenna::after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 6px;
+      background: #666;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    
+    .antenna.electrical::after {
+      background: #00ffff;
+      box-shadow: 0 0 10px #00ffff;
+    }
+    
+    /* Electrical pulse animation for antenna tip */
+    @keyframes electrical-pulse {
+      0% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+      }
+      50% {
+        opacity: 0.8;
+        transform: translateX(-50%) scale(1.3);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+      }
+    }
+    
+    /* Lightning bolt animation */
+    @keyframes lightning-bolt {
+      0% {
+        opacity: 0;
+        transform: scaleY(0);
+        filter: brightness(1);
+      }
+      20% {
+        opacity: 1;
+        transform: scaleY(1);
+        filter: brightness(2);
+      }
+      40% {
+        opacity: 0.8;
+        filter: brightness(1.5);
+      }
+      60% {
+        opacity: 1;
+        filter: brightness(2);
+      }
+      80% {
+        opacity: 0.6;
+        filter: brightness(1.2);
+      }
+      100% {
+        opacity: 0;
+        transform: scaleY(0.8);
+        filter: brightness(1);
+      }
+    }
+    
+    /* Antenna hover effects */
+    .antenna:hover {
+      background: linear-gradient(to top, #999, #777);
+      box-shadow: 0 0 15px rgba(128, 128, 128, 0.6);
+      transform: rotate(var(--antenna-rotation)) scale(1.05);
+    }
+    
+    .antenna:hover::after {
+      background: #aaa;
+      box-shadow: 0 0 12px rgba(128, 128, 128, 0.8);
+      transform: translateX(-50%) scale(1.2);
+    }
+    
+    /* Active state for antennae */
+    .antenna:active {
+      transform: rotate(var(--antenna-rotation)) scale(0.95);
+      transition: transform 0.1s ease;
+    }
+    
+    @keyframes static-flicker {
+      0%, 100% { 
+        opacity: 0.8;
+        transform: translateX(0) translateY(0);
+      }
+      25% { 
+        opacity: 0.9;
+        transform: translateX(1px) translateY(-1px);
+      }
+      50% { 
+        opacity: 0.7;
+        transform: translateX(-1px) translateY(1px);
+      }
+      75% { 
+        opacity: 0.8;
+        transform: translateX(1px) translateY(1px);
+      }
+    }
+    
+    /* TV glow effect */
+    .tv-frame::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #ffd700, #ff6b6b, #4a90e2);
+      border-radius: 17px;
+      z-index: -1;
+      opacity: 0.3;
+      animation: tv-glow 4s ease-in-out infinite alternate;
+    }
+    
+    @keyframes tv-glow {
+      0% { opacity: 0.2; }
+      100% { opacity: 0.4; }
+    }
+    
+    /* Index panel specific styles - disable scroll-snap and center content */
+    .index-panel {
+      scroll-snap-align: none;
+      display: flex;
+      align-items: start;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100vw;
+      transition: all 2s ease-in-out;
+    }
+    
+    /* World theme transitions */
+    body.power-world {
+      background: linear-gradient(135deg, #1a0000 0%, #330000 50%, #1a0000 100%) !important;
+    }
+    
+    body.volume-world {
+      background: linear-gradient(135deg, #001a1a 0%, #003333 50%, #001a1a 100%) !important;
+    }
+    
+    body.channel-world {
+      background: linear-gradient(135deg, #001a00 0%, #003300 50%, #001a00 100%) !important;
+    }
+    
+    /* TV frame theme changes */
+    .tv-frame.power-world::before {
+      background: linear-gradient(45deg, #ff0000, #ff6b6b, #8b0000) !important;
+      animation: power-glow 3s ease-in-out infinite alternate;
+    }
+    
+    .tv-frame.volume-world::before {
+      background: linear-gradient(45deg, #00bfff, #87ceeb, #4169e1) !important;
+      animation: volume-glow 3s ease-in-out infinite alternate;
+    }
+    
+    .tv-frame.channel-world::before {
+      background: linear-gradient(45deg, #32cd32, #90ee90, #228b22) !important;
+      animation: channel-glow 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes power-glow {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.7; }
+    }
+    
+    @keyframes volume-glow {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.7; }
+    }
+    
+    @keyframes channel-glow {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.7; }
+    }
+    
+    /* Special Effects */
+    
+    /* Power World - Fire and Cracked Screen */
+    .tv-screen.power-effects {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .tv-screen.power-effects::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 30% 70%, rgba(255, 69, 0, 0.8) 0%, transparent 50%),
+        radial-gradient(circle at 70% 30%, rgba(255, 140, 0, 0.6) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(255, 0, 0, 0.4) 0%, transparent 60%);
+      animation: fire-flicker 0.5s infinite alternate;
+      z-index: 15;
+      pointer-events: none;
+    }
+    
+    .tv-screen.power-effects::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.1) 40%, rgba(255, 255, 255, 0.1) 45%, transparent 45%),
+        linear-gradient(-45deg, transparent 60%, rgba(255, 255, 255, 0.1) 60%, rgba(255, 255, 255, 0.1) 65%, transparent 65%),
+        linear-gradient(90deg, transparent 30%, rgba(255, 255, 255, 0.1) 30%, rgba(255, 255, 255, 0.1) 35%, transparent 35%);
+      animation: crack-appear 0.3s ease-in-out forwards;
+      z-index: 16;
+      pointer-events: none;
+    }
+    
+    @keyframes fire-flicker {
+      0% { opacity: 0.6; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1.1); }
+    }
+    
+    @keyframes crack-appear {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    
+    /* Volume World - Tidal Wave, Bubbles, and Fish */
+    .tv-screen.volume-effects {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .tv-screen.volume-effects::before {
+      content: '';
+      position: absolute;
+      bottom: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(to top, rgba(0, 191, 255, 0.8) 0%, rgba(135, 206, 235, 0.6) 50%, transparent 100%);
+      animation: tidal-wave 3s ease-in-out forwards;
+      z-index: 15;
+      pointer-events: none;
+    }
+    
+
+    
+    /* Fish swimming in the background - now on body */
+    .fish {
+      position: fixed;
+      width: 20px;
+      height: 12px;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      z-index: 17;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    
+    .fish::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: -3px;
+      width: 8px;
+      height: 6px;
+      background: var(--fish-main-color, #ff6b35);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      transform: rotate(-45deg);
+    }
+    
+    .fish::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      right: -2px;
+      width: 6px;
+      height: 4px;
+      background: var(--fish-main-color, #ff6b35);
+      border-radius: 50%;
+      transform: rotate(45deg);
+    }
+    
+    /* Fish positions and animations */
+    .fish-1 {
+      top: 20%;
+      left: -30px;
+      animation: fish-swim-1 12s linear infinite;
+    }
+    
+    .fish-2 {
+      top: 45%;
+      left: -30px;
+      animation: fish-swim-2 10s linear infinite 2s;
+    }
+    
+    .fish-3 {
+      top: 70%;
+      left: -30px;
+      animation: fish-swim-3 14s linear infinite 4s;
+    }
+    
+    .fish-4 {
+      top: 35%;
+      left: -30px;
+      animation: fish-swim-4 11s linear infinite 6s;
+    }
+    
+    .fish-5 {
+      top: 80%;
+      left: -30px;
+      animation: fish-swim-5 13s linear infinite 8s;
+    }
+    
+    /* Show fish when volume world is active */
+    body.volume-world .fish {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* Bubbles floating up from bottom */
+    .bubble {
+      position: fixed;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 70%, transparent 100%);
+      border-radius: 50%;
+      z-index: 15;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    
+    /* Bubble sizes and positions */
+    .bubble-1 {
+      width: 8px;
+      height: 8px;
+      left: 15%;
+      bottom: -20px;
+      animation: bubble-float-1 8s linear infinite;
+    }
+    
+    .bubble-2 {
+      width: 12px;
+      height: 12px;
+      left: 25%;
+      bottom: -20px;
+      animation: bubble-float-2 10s linear infinite 1s;
+    }
+    
+    .bubble-3 {
+      width: 6px;
+      height: 6px;
+      left: 35%;
+      bottom: -20px;
+      animation: bubble-float-3 12s linear infinite 2s;
+    }
+    
+    .bubble-4 {
+      width: 10px;
+      height: 10px;
+      left: 45%;
+      bottom: -20px;
+      animation: bubble-float-4 9s linear infinite 0.5s;
+    }
+    
+    .bubble-5 {
+      width: 14px;
+      height: 14px;
+      left: 55%;
+      bottom: -20px;
+      animation: bubble-float-5 11s linear infinite 1.5s;
+    }
+    
+    .bubble-6 {
+      width: 7px;
+      height: 7px;
+      left: 65%;
+      bottom: -20px;
+      animation: bubble-float-6 13s linear infinite 2.5s;
+    }
+    
+    .bubble-7 {
+      width: 11px;
+      height: 11px;
+      left: 75%;
+      bottom: -20px;
+      animation: bubble-float-7 10.5s linear infinite 0.8s;
+    }
+    
+    .bubble-8 {
+      width: 9px;
+      height: 9px;
+      left: 85%;
+      bottom: -20px;
+      animation: bubble-float-8 12.5s linear infinite 1.2s;
+    }
+    
+    .bubble-9 {
+      width: 13px;
+      height: 13px;
+      left: 20%;
+      bottom: -20px;
+      animation: bubble-float-9 9.5s linear infinite 3s;
+    }
+    
+    .bubble-10 {
+      width: 5px;
+      height: 5px;
+      left: 30%;
+      bottom: -20px;
+      animation: bubble-float-10 14s linear infinite 0.3s;
+    }
+    
+    .bubble-11 {
+      width: 15px;
+      height: 15px;
+      left: 40%;
+      bottom: -20px;
+      animation: bubble-float-11 8.5s linear infinite 1.8s;
+    }
+    
+    .bubble-12 {
+      width: 8px;
+      height: 8px;
+      left: 50%;
+      bottom: -20px;
+      animation: bubble-float-12 11.5s linear infinite 2.2s;
+    }
+    
+    .bubble-13 {
+      width: 12px;
+      height: 12px;
+      left: 60%;
+      bottom: -20px;
+      animation: bubble-float-13 10.8s linear infinite 0.7s;
+    }
+    
+    .bubble-14 {
+      width: 6px;
+      height: 6px;
+      left: 70%;
+      bottom: -20px;
+      animation: bubble-float-14 13.2s linear infinite 1.5s;
+    }
+    
+    .bubble-15 {
+      width: 10px;
+      height: 10px;
+      left: 80%;
+      bottom: -20px;
+      animation: bubble-float-15 9.8s linear infinite 2.8s;
+    }
+    
+    /* Show bubbles when volume world is active */
+    body.volume-world .bubble {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* Fire effect for power world */
+    .fire-container {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 400px;
+      z-index: 20;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    
+    .fire-particle {
+      position: absolute;
+      bottom: 0;
+      border-radius: 50%;
+      mix-blend-mode: screen;
+      opacity: 0;
+      animation: fire-rise 1s ease-in infinite;
+    }
+    
+    @keyframes fire-rise {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(1);
+      }
+      25% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-400px) scale(0);
+      }
+    }
+    
+    /* Show fire when power world is active */
+    body.power-world .fire-container {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    @keyframes tidal-wave {
+      0% { bottom: -100%; }
+      50% { bottom: 0%; }
+      100% { bottom: 0%; }
+    }
+    
+    @keyframes bubble-float-1 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      10% { opacity: 0.8; }
+      50% { transform: translateY(-50vh) translateX(-10px); opacity: 0.6; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(-100vh) translateX(15px); opacity: 0; }
+    }
+    
+    @keyframes bubble-float-2 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      15% { opacity: 0.7; }
+      40% { transform: translateY(-40vh) translateX(12px); opacity: 0.5; }
+      85% { opacity: 0.7; }
+      100% { transform: translateY(-100vh) translateX(-8px); opacity: 0; }
+    }
+    
+    @keyframes bubble-float-3 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      20% { opacity: 0.8; }
+      60% { transform: translateY(-60vh) translateX(-15px); opacity: 0.6; }
+      80% { opacity: 0.8; }
+      100% { transform: translateY(-100vh) translateX(10px); opacity: 0; }
+    }
+    
+    @keyframes bubble-float-4 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      12% { opacity: 0.6; }
+      45% { transform: translateY(-45vh) translateX(8px); opacity: 0.4; }
+      88% { opacity: 0.6; }
+      100% { transform: translateY(-100vh) translateX(-12px); opacity: 0; }
+    }
+    
+    @keyframes bubble-float-5 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      18% { opacity: 0.8; }
+      55% { transform: translateY(-55vh) translateX(-18px); opacity: 0.6; }
+      80% { opacity: 0.8; }
+      100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+    }
+    
+    @keyframes bubble-float-6 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      25% { opacity: 0.7; }
+      50% { transform: translateY(-50vh) translateX(14px); opacity: 0.5; }
+      75% { opacity: 0.7; }
+      100% { transform: translateY(-100vh) translateX(-16px); opacity: 0; }
+    }
+    
+    @keyframes bubble-float-7 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      22% { opacity: 0.9; }
+      48% { transform: translateY(-48vh) translateX(-11px); opacity: 0.7; }
+      78% { opacity: 0.9; }
+      100% { transform: translateY(-100vh) translateX(13px); opacity: 0; }
+    }
+    
+    @keyframes bubble-float-8 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      16% { opacity: 0.6; }
+      42% { transform: translateY(-42vh) translateX(9px); opacity: 0.4; }
+      80% { opacity: 0.6; }
+      100% { transform: translateY(-100vh) translateX(-9px); opacity: 0; }
+    }
+    
+    @keyframes bubble-float-9 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      14% { opacity: 0.8; }
+      38% { transform: translateY(-38vh) translateX(-13px); opacity: 0.6; }
+      86% { opacity: 0.8; }
+      100% { transform: translateY(-100vh) translateX(17px); opacity: 0; }
+    }
+    
+    @keyframes bubble-float-10 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      30% { opacity: 0.7; }
+      65% { transform: translateY(-65vh) translateX(16px); opacity: 0.5; }
+      70% { opacity: 0.7; }
+      100% { transform: translateY(-100vh) translateX(-14px); opacity: 0; }
+    }
+    
+    @keyframes bubble-float-11 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      11% { opacity: 0.9; }
+      35% { transform: translateY(-35vh) translateX(-7px); opacity: 0.7; }
+      89% { opacity: 0.9; }
+      100% { transform: translateY(-100vh) translateX(11px); opacity: 0; }
+    }
+    
+    @keyframes bubble-float-12 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      19% { opacity: 0.6; }
+      55% { transform: translateY(-55vh) translateX(18px); opacity: 0.4; }
+      75% { opacity: 0.6; }
+      100% { transform: translateY(-100vh) translateX(-19px); opacity: 0; }
+    }
+    
+    @keyframes bubble-float-13 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      13% { opacity: 0.8; }
+      44% { transform: translateY(-44vh) translateX(-6px); opacity: 0.6; }
+      87% { opacity: 0.8; }
+      100% { transform: translateY(-100vh) translateX(12px); opacity: 0; }
+    }
+    
+    @keyframes bubble-float-14 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      17% { opacity: 0.7; }
+      58% { transform: translateY(-58vh) translateX(19px); opacity: 0.5; }
+      83% { opacity: 0.7; }
+      100% { transform: translateY(-100vh) translateX(-21px); opacity: 0; }
+    }
+    
+    @keyframes bubble-float-15 {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      21% { opacity: 0.8; }
+      46% { transform: translateY(-46vh) translateX(-17px); opacity: 0.6; }
+      78% { opacity: 0.8; }
+      100% { transform: translateY(-100vh) translateX(18px); opacity: 0; }
+    }
+    
+    @keyframes fish-swim-1 {
+      0% {
+        transform: translateX(0) translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      25% {
+        transform: translateX(25vw) translateY(-15px) rotate(-10deg);
+      }
+      50% {
+        transform: translateX(50vw) translateY(10px) rotate(5deg);
+      }
+      75% {
+        transform: translateX(75vw) translateY(-8px) rotate(-5deg);
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(calc(100vw + 50px)) translateY(-20px) rotate(10deg);
+        opacity: 0;
+      }
+    }
+    
+    @keyframes fish-swim-2 {
+      0% {
+        transform: translateX(0) translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      30% {
+        transform: translateX(30vw) translateY(12px) rotate(8deg);
+      }
+      60% {
+        transform: translateX(60vw) translateY(-18px) rotate(-12deg);
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(calc(100vw + 50px)) translateY(15px) rotate(-8deg);
+        opacity: 0;
+      }
+    }
+    
+    @keyframes fish-swim-3 {
+      0% {
+        transform: translateX(0) translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      20% {
+        transform: translateX(20vw) translateY(-25px) rotate(-15deg);
+      }
+      40% {
+        transform: translateX(40vw) translateY(20px) rotate(12deg);
+      }
+      70% {
+        transform: translateX(70vw) translateY(-12px) rotate(-8deg);
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(calc(100vw + 50px)) translateY(-30px) rotate(15deg);
+        opacity: 0;
+      }
+    }
+    
+    @keyframes fish-swim-4 {
+      0% {
+        transform: translateX(0) translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      35% {
+        transform: translateX(35vw) translateY(18px) rotate(10deg);
+      }
+      65% {
+        transform: translateX(65vw) translateY(-22px) rotate(-10deg);
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(calc(100vw + 50px)) translateY(25px) rotate(-12deg);
+        opacity: 0;
+      }
+    }
+    
+    @keyframes fish-swim-5 {
+      0% {
+        transform: translateX(0) translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      15% {
+        transform: translateX(15vw) translateY(-20px) rotate(-8deg);
+      }
+      45% {
+        transform: translateX(45vw) translateY(15px) rotate(12deg);
+      }
+      80% {
+        transform: translateX(80vw) translateY(-18px) rotate(-5deg);
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(calc(100vw + 50px)) translateY(-15px) rotate(8deg);
+        opacity: 0;
+      }
+    }
+    
+    /* Channel World - Plants Growing */
+    /* Old CSS effects removed - now using SVG vine system */
+    
+    /* Continuous Growing Vine System */
+    .vine-grid {
+      display: grid;
+      height: 100vh;
+      grid-template-columns: 1fr 2fr 1fr;
+      grid-template-rows: 12em 1fr 12em;
+      grid-template-areas: 
+        "vineLeft vineTop vineRight"
+        "vineLeft vineCenter vineRight"
+        "vineLeft vineBottom vineRight";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 30;
+      pointer-events: none;
+    }
+    
+    .vineCenter {
+      grid-area: vineCenter;
+      width: 100%;
+      height: 100%;
+      align-self: center;
+    }
+    
+    .vineLeftContainer {
+      grid-area: vineLeft;
+      width: 100%;
+      height: 100%;
+      align-self: center;
+      position: relative;
+    }
+    
+    .vineLeft {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      align-self: center;
+    }
+    
+    .vineTopContainer {
+      grid-area: vineTop;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      align-self: center;
+      justify-self: center;
+      width: 100%;
+    }
+    
+    .vineTop {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    }
+    
+    .vineBottomContainer {
+      grid-area: vineBottom;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      align-self: center;
+      justify-self: center;
+    }
+    
+    .vineBottom {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      bottom: 0;
+    }
+    
+    .vineRightContainer {
+      grid-area: vineRight;
+      width: 100%;
+      height: 100%;
+      align-self: center;
+      justify-self: center;
+      position: relative;
+    }
+    
+    .vineRight {
+      width: 100%;
+      height: 100%;
+      right: 0;
+      position: absolute;
+    }
+    
+    .vine, .branch, .leaf {
+      position: absolute;
+      opacity: 0.5;
+    }
+    
+    .fadeIn {
+      animation: fadeIn 3s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 0.5;
+      }
+    }
+    
+    @media only screen and (min-width: 500px) {
+      .vineBottom, .vineTop {
+        width: 10em; 
+      } 
+    }
+    
+    @media only screen and (min-width: 800px) {
+      .vineBottom, .vineTop {
+        width: 12em; 
+      } 
+    }
+    
+    @media only screen and (min-width: 1100px) {
+      .vineLeft, .vineRight, .vineBottom, .vineTop {
+        width: 14em; 
+      } 
+    }
+    
+    @media only screen and (min-width: 1000px) {
+      .vineLeft, .vineRight, .vineBottom, .vineTop {
+        width: 18em; 
+      } 
+    }
+    
+    @media only screen and (min-width: 1500px) {
+      .vineLeft, .vineRight, .vineBottom, .vineTop {
+        width: 25em; 
+      } 
+    }
+    
+    @media only screen and (max-width: 500px) {
+      .vineBottom, .vineTop {
+        width: 8em; 
+      } 
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .twilight-zone-tv {
+        width: 95%;
+        margin: 1rem auto;
+      }
+      
+      .tv-screen {
+        min-height: 400px;
+        padding: 1.5rem;
+      }
+      
+      /* Prevent horizontal scrolling from vines on mobile */
+      .vine-grid {
+        overflow: hidden;
+        width: 100vw;
+        max-width: 100vw;
+      }
+      
+      .vineLeft, .vineRight, .vineTop, .vineBottom {
+        overflow: hidden;
+        max-width: 100%;
+      }
+      
+      /* Ensure vines don't extend beyond viewport */
+      .vine, .branch, .leaf {
+        max-width: 100%;
+        overflow: hidden;
+      }
+      
+      .tv-content .placeholder-title {
+        font-size: 2rem;
+      }
+      
+      .tv-content .placeholder-subtitle {
+        font-size: 1rem;
+      }
+      
+      .tv-content .placeholder-message {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Fish for water effects - now in body background -->
+  <div class="fish fish-1"></div>
+  <div class="fish fish-2"></div>
+  <div class="fish fish-3"></div>
+  <div class="fish fish-4"></div>
+  <div class="fish fish-5"></div>
+  
+  <!-- Bubbles for water effects - now in body background -->
+  <div class="bubble bubble-1"></div>
+  <div class="bubble bubble-2"></div>
+  <div class="bubble bubble-3"></div>
+  <div class="bubble bubble-4"></div>
+  <div class="bubble bubble-5"></div>
+  <div class="bubble bubble-6"></div>
+  <div class="bubble bubble-7"></div>
+  <div class="bubble bubble-8"></div>
+  <div class="bubble bubble-9"></div>
+  <div class="bubble bubble-10"></div>
+  <div class="bubble bubble-11"></div>
+  <div class="bubble bubble-12"></div>
+  <div class="bubble bubble-13"></div>
+  <div class="bubble bubble-14"></div>
+  <div class="bubble bubble-15"></div>
+  
+  <!-- Fire effect for power world -->
+  <div class="fire-container" id="fire-container"></div>
+  
+  <section class="panel index-panel">
+    <!-- Twilight Zone TV Frame -->
+    <div class="twilight-zone-tv">
+      <div class="tv-frame">
+        <!-- TV Screen with Content Inside -->
+        <div class="tv-screen">
+          <div class="tv-static"></div>
+          <div class="tv-overlay"></div>
+          
+
+          
+          <!-- Main Content Inside TV Screen -->
+          <div class="tv-content">
+            <h1 class="placeholder-title">Last Seen<br/>in the Twilight Zone</h1>
+            <p class="placeholder-subtitle">Investigating disappearances in forgotten places</p>
+            
+            <div class="placeholder-message">
+              <p>The investigation continues. Our podcast is currently being prepared in a dimension just beyond your reach.</p>
+            </div>
+            
+            <button id="demo-button" class="demo-link">Back to the House →</button>
+            
+            <div class="index-social-links">
+              <a href="https://www.patreon.com/c/LastSeenintheTwilightZone" class="index-social-link patreon" target="_blank" rel="noopener">Support us on Patreon →</a>
+              <a href="https://www.facebook.com/share/g/16gqYRs5e3/" class="index-social-link facebook" target="_blank" rel="noopener">Join the conversation on Facebook →</a>
+              <a href="https://www.instagram.com/lastseeninthetwilightzone/" class="index-social-link instagram" target="_blank" rel="noopener">Follow our Instagram →</a>
+            </div>
+            
+            <div class="placeholder-status">
+              STATUS: UNDER CONSTRUCTION<br>
+              DIMENSION: IN PROGRESS<br>
+              ETA: <span id="launch-countdown">Loading...</span> DAYS
+            </div>
+          </div>
+        </div>
+        
+        <!-- TV Controls -->
+        <div class="tv-controls">
+          <div class="tv-knob power" id="power-knob" data-knob="power"></div>
+          <div class="tv-knob volume" id="volume-knob" data-knob="volume"></div>
+          <div class="tv-knob channel" id="channel-knob" data-knob="channel"></div>
+        </div>
+        
+        <!-- TV Antennae -->
+        <div class="tv-antennae">
+          <div class="antenna left"></div>
+          <div class="antenna right"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Continuous Growing Vine System -->
+    <div class="vine-grid">
+      <div class="vineLeftContainer">
+        <div class="vineLeft"></div>
+      </div>
+      <div class="vineTopContainer">
+        <div class="vineTop"></div>
+      </div>
+      <div class="vineRightContainer">
+        <div class="vineRight"></div>
+      </div>
+      <div class="vineBottomContainer">
+        <div class="vineBottom"></div>
+      </div>
+    </div>
+  </section>
+
+
+  <script>
+    // Simple demo button functionality
+    const demoButton = document.getElementById('demo-button');
+    
+    // Direct link to main site when button is clicked
+    demoButton.addEventListener('click', function() {
+      window.location.href = 'index.html';
+    });
+    
+    // Add some ambient sound if available (only after user interaction)
+    let ambientAudio = null;
+    
+    // Only create and play audio after user actually enters the demo
+    function startAmbientAudio() {
+      if (!ambientAudio) {
+        ambientAudio = new Audio('soft-rain-on-a-tile-roof.mp3');
+        ambientAudio.loop = true;
+        ambientAudio.volume = 0.15;
+        ambientAudio.play().catch(e => console.log('Ambient audio started'));
+      }
+    }
+    
+    // Remove the auto-play on click since we don't want it on the index page
+    
+    // Preload demo assets in background for instant loading
+    function preloadDemoAssets() {
+      console.log('Starting background preload of demo assets...');
+      
+      // Preload videos
+      const videos = ['attic.mp4', 'living-room.mp4'];
+      videos.forEach(videoSrc => {
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        video.src = videoSrc;
+        video.load();
+        console.log('Preloading video:', videoSrc);
+      });
+      
+      // Preload thumbnails
+      const thumbnails = ['attic-thumbnail.jpg', 'living-room-thumbnail.jpg'];
+      thumbnails.forEach(imgSrc => {
+        const img = new Image();
+        img.src = imgSrc;
+        console.log('Preloading thumbnail:', imgSrc);
+      });
+      
+      // Preload audio files
+      const audioFiles = [
+        'cassette-tape-handling.mp3',
+        'dripping-water-tap.mp3', 
+        'wind-basement-dripping-water.mp3',
+        'clock-ambience.mp3',
+        'static-noise.mp3',
+        'flickeringlight.mp3'
+      ];
+      audioFiles.forEach(audioSrc => {
+        const audio = new Audio();
+        audio.preload = 'metadata';
+        audio.src = audioSrc;
+        audio.load();
+        console.log('Preloading audio:', audioSrc);
+      });
+      
+      console.log('Background preload complete!');
+    }
+    
+    // Start preloading after a short delay
+    setTimeout(preloadDemoAssets, 1000);
+
+    // Countdown timer functionality
+    function updateLaunchCountdown() {
+      const launchDate = new Date('October 1, 2025 00:00:00').getTime();
+      const now = new Date().getTime();
+      const distance = launchDate - now;
+
+      if (distance > 0) {
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        document.getElementById('launch-countdown').textContent = days.toString();
+      } else {
+        // Launch day has arrived
+        document.getElementById('launch-countdown').textContent = '0';
+      }
+    }
+
+    // Update countdown every day
+    updateLaunchCountdown();
+    setInterval(updateLaunchCountdown, 86400000);
+    
+    // TV Button Interactive Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const powerKnob = document.getElementById('power-knob');
+      const volumeKnob = document.getElementById('volume-knob');
+      const channelKnob = document.getElementById('channel-knob');
+      const tvScreen = document.querySelector('.tv-screen');
+      const tvFrame = document.querySelector('.tv-frame');
+      const body = document.body;
+      
+      // Add antenna functionality
+      const leftAntenna = document.querySelector('.antenna.left');
+      const rightAntenna = document.querySelector('.antenna.right');
+      
+      // Function to make antenna wiggle and create electrical effect
+      function activateAntenna(antenna) {
+        // Remove any existing animation classes
+        antenna.classList.remove('wiggling', 'electrical');
+        
+        // Add wiggle animation
+        antenna.classList.add('wiggling');
+        
+        // Add electrical effect after a short delay
+        setTimeout(() => {
+          antenna.classList.add('electrical');
+        }, 100);
+        
+        // Create electrical lightning effect
+        createElectricalEffect(antenna);
+        
+        // Remove animation classes after animation completes
+        setTimeout(() => {
+          antenna.classList.remove('wiggling', 'electrical');
+        }, 800);
+      }
+      
+      // Function to create electrical lightning effect
+      function createElectricalEffect(antenna) {
+        const rect = antenna.getBoundingClientRect();
+        const antennaTop = rect.top;
+        const antennaLeft = rect.left + rect.width / 2;
+        
+        // Create lightning bolt effect
+        const lightning = document.createElement('div');
+        lightning.style.cssText = `
+          position: fixed;
+          top: ${antennaTop - 20}px;
+          left: ${antennaLeft}px;
+          width: 2px;
+          height: 60px;
+          background: linear-gradient(to bottom, #00ffff, #0080ff, #0040ff);
+          pointer-events: none;
+          z-index: 1000;
+          opacity: 0;
+          animation: lightning-bolt 0.4s ease-out forwards;
+          filter: drop-shadow(0 0 8px #00ffff);
+        `;
+        
+        // Create zigzag lightning path
+        lightning.style.clipPath = 'polygon(0% 0%, 20% 20%, 40% 0%, 60% 30%, 80% 10%, 100% 40%, 80% 60%, 60% 40%, 40% 70%, 20% 50%, 0% 100%)';
+        
+        document.body.appendChild(lightning);
+        
+        // Create glitch effect on the antenna itself
+        antenna.style.filter = 'brightness(1.5) contrast(1.2)';
+        antenna.style.boxShadow = '0 0 20px #00ffff';
+        
+        // Remove lightning after animation
+        setTimeout(() => {
+          if (lightning.parentNode) {
+            lightning.parentNode.removeChild(lightning);
+          }
+          // Reset antenna appearance
+          antenna.style.filter = '';
+          antenna.style.boxShadow = '';
+        }, 400);
+      }
+      
+      // Add click event listeners to antennae
+      if (leftAntenna) {
+        leftAntenna.addEventListener('click', function() {
+          activateAntenna(this);
+        });
+      }
+      
+      if (rightAntenna) {
+        rightAntenna.addEventListener('click', function() {
+          activateAntenna(this);
+        });
+      }
+      
+      let activeButton = null;
+      
+      // Fish color randomization
+      const fishColors = [
+        ['#ff6b35', '#f7931e'], // Orange
+        ['#4ecdc4', '#44a08d'], // Teal
+        ['#45b7d1', '#96ceb4'], // Blue-Green
+        ['#f7b731', '#f39c12'], // Yellow
+        ['#e74c3c', '#c0392b'], // Red
+        ['#9b59b6', '#8e44ad'], // Purple
+        ['#3498db', '#2980b9'], // Blue
+        ['#2ecc71', '#27ae60'], // Green
+        ['#e67e22', '#d35400'], // Dark Orange
+        ['#1abc9c', '#16a085']  // Emerald
+      ];
+      
+      function randomizeFishColors() {
+        const fish = document.querySelectorAll('.fish');
+        fish.forEach((fishElement, index) => {
+          const randomColorPair = fishColors[Math.floor(Math.random() * fishColors.length)];
+          const mainColor = randomColorPair[0];
+          const accentColor = randomColorPair[1];
+          
+          fishElement.style.background = `linear-gradient(45deg, ${mainColor}, ${accentColor})`;
+          fishElement.querySelector('::before')?.style.setProperty('background', mainColor);
+          fishElement.querySelector('::after')?.style.setProperty('background', mainColor);
+          
+          // Apply colors to pseudo-elements using CSS custom properties
+          fishElement.style.setProperty('--fish-main-color', mainColor);
+        });
+      }
+      
+      // Fire effect system
+      const fireContainer = document.getElementById('fire-container');
+      const fireParts = 50;
+      const fireColor = 'rgb(255,80,0)';
+      const fireColorT = 'rgba(255,80,0,0)';
+      const fireDur = 1;
+      
+      function createFireEffect() {
+        // Clear existing particles
+        fireContainer.innerHTML = '';
+        
+        // Create fire particles
+        for (let i = 0; i < fireParts; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'fire-particle';
+          
+          // Randomize particle properties
+          const size = Math.random() * 20 + 10; // 10-30px
+          const left = Math.random() * 280; // 0-280px (within 300px container)
+          const delay = Math.random() * fireDur;
+          const duration = (Math.random() * 0.5 + 0.8) * fireDur; // 0.8-1.3s
+          
+          // Apply styles
+          particle.style.width = size + 'px';
+          particle.style.height = size + 'px';
+          particle.style.left = left + 'px';
+          particle.style.animationDelay = delay + 's';
+          particle.style.animationDuration = duration + 's';
+          particle.style.backgroundImage = `radial-gradient(${fireColor} 20%, ${fireColorT} 70%)`;
+          
+          fireContainer.appendChild(particle);
+        }
+      }
+      
+      function clearFireEffect() {
+        fireContainer.innerHTML = '';
+      }
+      
+      // Function to deactivate all buttons
+      function deactivateAllButtons() {
+        [powerKnob, volumeKnob, channelKnob].forEach(knob => {
+          knob.classList.remove('active');
+        });
+        
+        // Remove all world themes and effects
+        body.classList.remove('power-world', 'volume-world', 'channel-world');
+        tvFrame.classList.remove('power-world', 'volume-world', 'channel-world');
+        tvScreen.classList.remove('power-effects', 'volume-effects');
+        
+        // Clear fire effect when deactivating
+        clearFireEffect();
+        
+        // Stop continuous vine growth when deactivating
+        if (typeof stopContinuousVineGrowth === 'function') {
+          stopContinuousVineGrowth();
+        }
+      }
+      
+      // Function to activate a specific button
+      function activateButton(button, worldClass, effectClass) {
+        deactivateAllButtons();
+        button.classList.add('active');
+        
+        // Add world theme
+        body.classList.add(worldClass);
+        tvFrame.classList.add(worldClass);
+        
+        // Apply effects to screen (channel effects now handled by SVG system)
+        if (effectClass !== 'channel-effects') {
+          tvScreen.classList.add(effectClass);
+        }
+        
+        activeButton = button;
+      }
+      
+      // Power button functionality - Fire and Cracked Screen
+      powerKnob.addEventListener('click', function() {
+        console.log('Power button clicked!');
+        activateButton(this, 'power-world', 'power-effects');
+        
+        // Create fire effect when power world is activated
+        createFireEffect();
+        
+        // Add some audio feedback if available
+        try {
+          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+          oscillator.type = 'sawtooth';
+          
+          gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.8);
+        } catch (e) {
+          // Audio not supported or blocked
+        }
+      });
+      
+      // Volume button functionality - Tidal Wave and Bubbles
+      volumeKnob.addEventListener('click', function() {
+        console.log('Volume button clicked!');
+        activateButton(this, 'volume-world', 'volume-effects');
+        
+        // Randomize fish colors when volume world is activated
+        randomizeFishColors();
+        
+        // Add some audio feedback if available
+        try {
+          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+          oscillator.type = 'triangle';
+          
+          gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.2);
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 1.2);
+        } catch (e) {
+          // Audio not supported or blocked
+        }
+      });
+      
+      // Channel button functionality - Plants Growing
+      channelKnob.addEventListener('click', function() {
+        console.log('Channel button clicked!');
+        activateButton(this, 'channel-world', 'channel-effects');
+        
+        // Start the continuous vine growth system
+        startContinuousVineGrowth();
+        
+        // Add some audio feedback if available
+        try {
+          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+          oscillator.type = 'sine';
+          
+          gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 1.5);
+        } catch (e) {
+          // Audio not supported or blocked
+        }
+      });
+      
+      // Add hover effects for better interactivity
+      [powerKnob, volumeKnob, channelKnob].forEach(knob => {
+        knob.addEventListener('mouseenter', function() {
+          this.style.cursor = 'pointer';
+          this.style.transform = 'scale(1.1)';
+        });
+        
+        knob.addEventListener('mouseleave', function() {
+          this.style.transform = 'scale(1)';
+        });
+      });
+      
+      console.log('TV buttons are now interactive with world themes!');
+      
+      // Continuous Growing Vine System
+      var vineLeftContainer = document.querySelector('.vineLeft');
+      var vineRightContainer = document.querySelector('.vineRight');
+      var vineTopContainer = document.querySelector('.vineTop');
+      var vineBottomContainer = document.querySelector('.vineBottom');
+
+      var longestVine = {
+        path: "M73.91 252.44c4.26.79 5.38 5 2.75 8.08-3.14 3.74-8.77 2.56-11.84.16-7.64-6-.79-16.54 8.06-19.15 9.48-2.82 19.44 3.37 22.86 10.41 4 8.23.58 17.93-6 25.24-7 7.79-17.86 12-28.5 13.22a37.66 37.66 0 0 1-41-47.36c2.62-10 9.27-19.89 16.41-28.25s15.69-15.42 24.34-22.41c18.44-14.89 36.75-30.35 47.75-50.26 16.37-29.63 11.12-63-6.61-88.64C82.7 25.26 48.38 6.27 10.07 2.07 7.05 1.74 4 1.51 1 1.36.41 1.35-.31 0 .14 0c38.09 1.88 72.49 17.94 95.05 43.37 20.37 23 30.56 54.09 21.37 84.44-5.68 18.75-19.16 35.26-34.67 49.36C65 192.5 45 205.18 32 223.47c-6.27 8.85-11.34 18.76-11.81 28.93a36 36 0 0 0 8.22 24.34 35.22 35.22 0 0 0 23.29 12.38c10.46 1.16 22.29-2 31-8a32.38 32.38 0 0 0 13-17.92c2.18-7.86-1.51-15.5-9.23-19.12-7.43-3.48-17.17-1.76-21.91 5.33-2.68 4-2.55 9 2.06 11.36a8.09 8.09 0 0 0 7 0c2.77-1.31 5.49-6.14.88-7-.49-.09-1.28-1.45-.58-1.33z",
+        viewbox: "0 0 119.96 290.66"
+      };
+
+      var innerSquigglyVine = {
+        path: "M155.38 264.82a12 12 0 0 1-2.19 11.67c-3 3.83-8.23 5.56-13.16 5.88a18.11 18.11 0 0 1-19.28-14c-2-8.2 1.77-17.61 9.36-23.52 8.24-6.4 19.78-8.4 29.85-6.93a35 35 0 0 1 23.26 13.57c5.19 7.12 6.93 16.33 6.15 25-1.65 18.35-16.1 35.19-35.86 42.48-20 7.37-42.54 6.75-60.8-.95s-30.21-22.31-34.56-39.73c-3.82-15.32-1.32-30.9 5.25-46.1 7.08-16.34 17.09-31.75 24.82-47.85 15.6-32.4 22.8-67.92 14.87-101.08a97.82 97.82 0 0 0-21.44-41.78c-12-13.69-28.25-23.93-46.4-30.85A184.47 184.47 0 0 0 .69 1.52C.14 1.42-.27-.07.21 0 22 3.72 43 10.59 60.48 22a101.7 101.7 0 0 1 33.35 35.35c14.32 25.58 16.38 56.12 10.3 85.19-4.26 20.34-12.81 39.78-23.06 58.75-8.18 15.13-17.54 30.19-21.76 46.39-4.55 17.5-1.79 36.61 9.08 50.84 11.5515.1 31.8 23.62 53.08 24.15 21.79.55 44.89-7.36 57.81-24.37 12.61-16.62 13.52-41.47-4.2-53.36-15.58-10.48-44.2-7.26-52.22 11.77-4 9.56-.57 20.68 10.64 23.59a20.87 20.87 0 0 0 15.2-2.06c5.17-3 7.47-8.76 5.82-13.55-.37-1.05.64-.54.86.13z",
+        viewbox: "0 0 189.55 324.18"
+      };
+
+      var smallSquiggle = {
+        path: "M10.17 0l-.74.9a42.09 42.09 0 0 0-4.56 46.21A41.66 41.66 0 0 0 15.44 60a28.15 28.15 0 0 0 20.8 6.31 28.44 28.44 0 0 0 19.13-10.26 19.4 19.4 0 0 0-2.77-27.28 13.28 13.28 0 0 0-18.76 1.87 9.2 9.2 0 0 0-2.05 6.84 9.35 9.35 0 0 0 3.37 6.29A6.58 6.58 0 0 0 40 45.25a6.66 6.66 0 0 0 4.48-2.41 4.79 4.79 0 0 0 1.08-3.58A5 5 0 0 0 43.84 36a3.17 3.17 0 0 0-.54-.35 3.9 3.9 0 0 0-2.83-.59 2.74 2.74 0 0 0-2.14 2.71 1.78 1.78 0 0 0 1.34 1.53 1.86 1.86 0 0 0 2.2-1.3.37.37 0 0 1 0-.09 2 2 0 0 1 .58.39 2.24 2.24 0 0 1 .55 1.22 2.3 2.3 0 0 1-.5 1.67 4 4 0 0 1-2.73 1.48 4 4 0 0 1-3-.9 6.81 6.81 0 0 1-2.44-4.57 6.62 6.62 0 0 1 1.49-4.93A10.71 10.71 0 0 1 51 30.78a16.82 16.82 0 0 1 2.4 23.64A25.75 25.75 0 0 1 17.07 58 39.42 39.42 0 0 1 2.8 31.42a39.28 39.28 0 0 1 8.65-28.87l.75-.92z",
+        viewbox: "0 0 59.73 66.47"
+      };
+
+      var branch = {
+        path1: "M84.38 43.48c-4-2.41-3-7.39.59-9.64 3.79-2.39 8.19.11 10.58 3.21 5 6.47 1 14.91-5.16 18.78-6.86 4.28-14.92 2.26-20.83-2.57a26.34 26.34 0 0 1-9.27-17.67C58.82 21 70.56 8.15 83.36 3.12a38.48 38.48 0 0 1 21.11-1.83c7.07 1.34 13.47 4.88 19.13 9.24a58.95 58.95 0 0 1 15.85 74.15c-13.14 24.95-38.57 42.13-66.45 45.64a88.42 88.42 0 0 1-53.12-10.25c-.32-.18-1.3.33-1.06.46a90.24 90.24 0 0 0 77.39 4.1 89.54 89.54 0 0 0 32.22-22.79c9.29-10.32 16.47-22.84 18.48-36.76a59.58 59.58 0 0 0-7.67-38.44c-6.75-11.52-18.05-21.58-31.06-25.23a40.8 40.8 0 0 0-36.24 7.76 36.52 36.52 0 0 0-11.66 16.28 26.52 26.52 0 0 0 1.29 19.3 25.26 25.26 0 0 0 14.3 13.19 18.75 18.75 0 0 0 17.31-3.36c5.23-4.19 7.65-11.29 3.93-17.27-3.28-5.29-10.48-6.76-14.87-2a5.52 5.52 0 0 0 1.08 8.61c.31.19 1.3-.31 1.06-.44z",
+        path2: "M187.35 65.87a3.68 3.68 0 0 0 6.11-1c1.42-2.88-1.13-5.57-3.68-6.48-6.32-2.27-11 4.76-9.85 10.37 1.21 6 8.42 9.52 14.08 9.15 6.6-.41 11.81-5.3 14.45-11.14 2.83-6.23 2.1-13.45-.54-19.61a22.87 22.87 0 0 0-11.6-11.76c-10.42-4.83-23.39-2.79-32.22 4.35-5.66 4.54-9.94 11.25-13.1 17.73s-5 13.35-6.76 20.23c-3.75 14.68-7.92 29.46-17.31 41.67-14 18.16-37.3 25.75-59.61 24.16a88.07 88.07 0 0 1-62.79-33.92c-1.18-1.52-2.29-3.1-3.36-4.71-.21-.3-1.31-.26-1.15 0a89.55 89.55 0 0 0 58.52 38c21.41 3.87 44.87-.35 61.61-14.86 10.33-8.94 16.74-21.43 20.92-34.26 4.56-14 6.37-28.82 14.09-41.57 3.73-6.18 8.53-12 15-15.47a30.37 30.37 0 0 1 18.41-3.16A23.85 23.85 0 0 1 204 42.34a25.69 25.69 0 0 1 4.74 19.31 20.87 20.87 0 0 1-7.45 12.67 13 13 0 0 1-15.35 1c-4.64-2.94-6.64-8.76-3.55-13.56 1.75-2.72 5.05-4.22 8-2.43a4.49 4.49 0 0 1 2.21 3.8c0 1.91-2.23 4.9-4.26 2.65-.21-.22-1.35-.22-1 .11z",
+        path3: "M165 85.53c2.49-1.69 1.8-5-1-5.92-2.32-.74-4.59 1.23-5 3.38-.61 2.81 2.32 5.33 5 5a5.57 5.57 0 0 0 4.9-5c.35-3.11-2.34-5.61-5.21-6.08a7 7 0 0 0-6.38 2.81c-4.14 5.19 1.23 12.38 7.26 11.75a9.42 9.42 0 0 0 7.68-12.79c-2.2-5.67-9.44-8-14.72-5.32a12.51 12.51 0 0 0-6.18 15.39c2.15 6 8.69 9.42 14.86 8.77s11-5.32 13-10.92a16.37 16.37 0 0 0-4.75-17.28 18.08 18.08 0 0 0-16.31-4.08c-6.35 1.62-10.22 7.51-13 13a24.46 24.46 0 0 0-2 5.48c0 .15.53 0 .56-.16a32 32 0 0 1 4.78-10.2c2.1-3.2 4.63-6 8.27-7.43 6.42-2.55 14 .07 18.57 5A16.24 16.24 0 0 1 177 90.28a14.21 14.21 0 0 1-20.07 4.52 12.56 12.56 0 0 1-2.58-18.69c5.57-6.27 16.33-3.6 18 4.72a9.07 9.07 0 0 1-5.35 9.85c-3.84 1.62-8.22-.57-9.92-4.16-1.89-4 1-9.23 5.51-9.36a5.66 5.66 0 0 1 5.16 8.14c-2.13 4.13-8.27 2.33-8.19-2.08a3.39 3.39 0 0 1 5.11-2.85 3 3 0 0 1 .06 5.09c-.32.21.2.17.35.07zM144.08 41c.12.32.25.63.39 1l.24.53 1.11-.45-.11-.62A25.35 25.35 0 0 1 158.92 8a16.7 16.7 0 0 1 22 8.7l.15.36a10.92 10.92 0 0 1-5.83 14 7 7 0 0 1-9.24-3.64l-.06-.16a4.49 4.49 0 0 1 2.39-5.73 2.83 2.83 0 0 1 2.12 0A2.78 2.78 0 0 1 171.9 23a1.71 1.71 0 0 1 0 1.24 1.69 1.69 0 0 1-.67.76 1.15 1.15 0 0 1-.64.13 1.07 1.07 0 0 0 0-.25 1.08 1.08 0 0 0-.07-.36 1 1 0 0 0-1.88 0 1.63 1.63 0 0 0 .79 1.8 2.59 2.59 0 0 0 1.86.09l.24-.08a3 3 0 0 0 1.6-1.64 3 3 0 0 0 0-2.15 4.05 4.05 0 0 0-2.31-2.3 4 4 0 0 0-3.13 0 5.82 5.82 0 0 0-3.13 7.46l.09.21a8.4 8.4 0 0 0 11.06 4.37 12.26 12.26 0 0 0 6.38-16.13 18.07 18.07 0 0 0-23.76-9.41 26.74 26.74 0 0 0-16.07 24.86 26.14 26.14 0 0 0 1.82 9.4z",
+        viewbox: "0 0 210.27 144.26"
+      };
+
+      var leaf = {
+        path1: "M187.35 33.1a3.68 3.68 0 0 0 6.11-1c1.42-2.88-1.14-5.58-3.68-6.48-6.33-2.28-11 4.75-9.85 10.37 1.21 6 8.41 9.51 14.07 9.15 6.61-.42 11.81-5.31 14.45-11.14 2.84-6.23 2.1-13.46-.53-19.61a22.78 22.78 0 0 0-11.61-11.76C185.9-2.2 172.93-.16 164.1 7c-5.66 4.58-9.94 11.28-13.07 17.77S146 38.08 144.27 45c-3.75 14.67-7.92 29.46-17.31 41.66-14 18.16-37.3 25.75-59.62 24.17A88.16 88.16 0 0 1 4.52 76.88a83.34 83.34 0 0 1-3.35-4.71c-.21-.3-1.31-.26-1.16 0a89.56 89.56 0 0 0 58.53 38c21.4 3.87 44.86-.35 61.6-14.86 10.34-9 16.75-21.43 20.93-34.26 4.55-14 6.37-28.83 14.09-41.57 3.73-6.18 8.53-12 15-15.47A30.22 30.22 0 0 1 188.57.85 23.76 23.76 0 0 1 204 9.6a25.67 25.67 0 0 1 4.7 19.28 20.89 20.89 0 0 1-7.46 12.66 13 13 0 0 1-15.34 1c-4.64-2.93-6.64-8.76-3.55-13.55 1.75-2.73 5-4.22 8-2.44a4.52 4.52 0 0 1 2.22 3.8c0 1.92-2.23 4.9-4.26 2.66-.21-.22-1.35-.22-1 .11z",
+        path2: "M197.17 76.42c.38 0 1.08 1.71.94 2.59 4.64-.68 6.58-2.29 6.84-5.87 4.18 3.74 1.54 6.34 6.62 8.17 0-1.81 1.38-3.84 2.41-3.06 1.85 1.38 1.85 4.31 3.73 5.47 4.28 2.63 9.18.66 10.25 2.71-.58-5-2.22-7.65-.89-10.71 1-2.36.75-4.29-.29-8.5s4.37-2.19 5.41-.91.45-6-4.47-6.55-4.12-4.14 1.06-1.77a3.14 3.14 0 0 0-.57-3.65 6.91 6.91 0 0 0 5.43-1.91c1.38-1.47.43-7 5.66-3.75-.78-3.52-4.8-7.83-11-4.64s-4.84-3.37-1.49-3.2c-.31-1.5-4.05-3.06-6.54-1-1.8 1.47-3 4-3.93 3.13s-.64-2.82.49-3.85c-6.53-1.15-6.61 7.05-13.62 1.05 3.86 5.44 4.06 8.79 1 9.57 4.86.9 2.66 5.62.87 4.44-3-2-7.76-8.53-8.06-9.55s-2.22.15-1.64.71C197 47 204.44 54.56 204 55.52c-.62 1.37-3.07 1.09-4.57-2.41-3.57 3.91-6.68-1.23-8.93-.79.88.93 1.32 1.55-.41 2.23-3 1.16-9.42 3.1-8.82 10.75 1.79-2.92 5.36-4.89 7-3.66 1.94 1.44 1.19 4.65-.84 7.15 1.55.48 2.6 0 3.49 2.06s-3.36 7 1.13 12.26c.45-2.21 1.6-4.57 5.12-6.69z",
+        viewbox: "0 0 239.3 111.53"
+      };
+
+      function createVineSVG(svgType, className) {
+        let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.classList.add(className);
+        svg.setAttribute("viewBox", svgType.viewbox);
+
+        if (svgType !== branch) {
+          let path = createSVGChild("path", "d", svgType.path);
+          svg.appendChild(path);
+        } else if (svgType === branch) {
+          let path1 = createSVGChild("path", "d", svgType.path1),
+              path2 = createSVGChild("path", "d", svgType.path2),
+              path3 = createSVGChild("path", "d", svgType.path3);
+          svg.appendChild(path1);
+          svg.appendChild(path2);
+          svg.appendChild(path3);
+        } else {
+          console.log("Could not find svg type");
+        }
+
+        return svg;
+      }
+
+      function createSVGChild(type, attribute, value) {
+        let child = document.createElementNS("http://www.w3.org/2000/svg", type);
+        child.setAttribute(attribute, value);
+        return child;
+      }
+
+      function setRotation_Width_Stroke(vine, rotation, width, stroke) {
+        vine.style.width = width;
+        vine.style.transform = `rotate(${rotation}deg)`;
+        let paths = vine.children;
+        if (vine.classList.contains('vine')) {
+          paths[0].setAttribute("fill", "none");
+          paths[0].setAttribute("stroke", "#2e7f43");
+          paths[0].setAttribute("stroke-width", stroke);
+        } else {
+          for (let x = 0; x < paths.length; x++) {
+            paths[x].setAttribute("fill", "none");
+            paths[x].setAttribute("stroke", "#2e7f43");
+            paths[x].setAttribute("stroke-width", stroke);
+          }
+        }
+      }
+
+      function setPosition(svg, top, left) {
+        svg.style.top = `${top}%`;
+        svg.style.left = `${left}%`;
+      }
+
+      function drawLine(svg, duration, delay) {
+        let paths = svg.children;
+        let length;
+        if (svg.classList.contains('vine')) {
+          length = paths[0].getTotalLength();
+          setDash(paths[0], length, length);
+          animatePath(paths[0], duration, '600', delay);
+        } else {
+          svg.classList.add("fadeIn");
+          for (let x = 0; x < paths.length; x++) {
+            length = paths[x].getTotalLength();
+            setDash(paths[x], length, '-400');
+            animatePath(paths[x], duration, '0', delay);
+          }
+        }
+
+        function animatePath(path, duration, offset, delay) {
+          path.getBoundingClientRect();
+          path.style.transition = `stroke-dashoffset ${duration} ease-in-out`;
+          path.style.strokeDashoffset = `${offset}`;
+          path.style.animationDelay = delay;
+        }
+
+        function setDash(path, dashArray, dashOffset) {
+          path.style.strokeDasharray = `${dashArray}  ${dashArray}`;
+          path.style.strokeDashoffset = `${dashOffset}`;
+        }
+      }
+
+      function buildVineBlock() {
+        let vine1 = createVineSVG(longestVine, "vine");
+        setRotation_Width_Stroke(vine1, 270, '35%', '2');
+        setPosition(vine1, 5, 2);
+
+        let vine2 = createVineSVG(longestVine, "vine");
+        setRotation_Width_Stroke(vine2, 170, '30%', '1');
+        setPosition(vine2, 0, 0);
+
+        let vine3 = createVineSVG(smallSquiggle, "vine");
+        setRotation_Width_Stroke(vine3, 0, '27%', '1');
+        setPosition(vine3, 27, 0);
+
+        let vine4 = createVineSVG(innerSquigglyVine, "vine");
+        setRotation_Width_Stroke(vine4, 30, '55%', '0.6');
+        setPosition(vine4, 25, 0);
+
+        let vine5 = createVineSVG(innerSquigglyVine, "vine");
+        setRotation_Width_Stroke(vine5, -20, '55%', '0.6');
+        setPosition(vine5, 15, 35);
+
+        let vine6 = createVineSVG(branch, "branch");
+        setRotation_Width_Stroke(vine6, 0, '70%', '1');
+        setPosition(vine6, 11, 33);
+
+        let vine7 = createVineSVG(branch, "branch");
+        setRotation_Width_Stroke(vine7, 0, '55%', '2');
+        setPosition(vine7, 50, 0);
+
+        let vine8 = createVineSVG(smallSquiggle, "vine");
+        setRotation_Width_Stroke(vine8, 350, '27%', '0.8');
+        setPosition(vine8, 62, 8);
+
+        let vine9 = createVineSVG(longestVine, "vine");
+        setRotation_Width_Stroke(vine9, 0, '55%', '0.8');
+        setPosition(vine9, 60, 0);
+
+        let vine10 = createVineSVG(branch, "branch");
+        setRotation_Width_Stroke(vine10, 18, '6em', '2');
+        setPosition(vine10, 79, 28);
+
+        let vine11 = createVineSVG(smallSquiggle, "vine");
+        setRotation_Width_Stroke(vine11, 270, '28%', '1.5');
+        setPosition(vine11, 48, 52);
+
+        let vinesInBlock = [vine1, vine2, vine3, vine4, vine5, vine6, vine7, vine8, vine9, vine10, vine11];
+
+        return vinesInBlock;
+      }
+
+      function buildVineRow() {
+        let vine1 = createVineSVG(longestVine, "vine");
+        setRotation_Width_Stroke(vine1, 90, '35%', '2');
+        setPosition(vine1, -10, 10);
+
+        let vine2 = createVineSVG(longestVine, "vine");
+        setRotation_Width_Stroke(vine2, 130, '25%', '1');
+        setPosition(vine2, 0, -20);
+
+        let vine3 = createVineSVG(smallSquiggle, "vine");
+        setRotation_Width_Stroke(vine3, 0, '27%', '1');
+        setPosition(vine3, -10, 50);
+
+        let vine4 = createVineSVG(innerSquigglyVine, "vine");
+        setRotation_Width_Stroke(vine4, -20, '40%', '0.6');
+        setPosition(vine4, -10, 80);
+
+        let vine5 = createVineSVG(innerSquigglyVine, "vine");
+        setRotation_Width_Stroke(vine5, -80, '55%', '0.6');
+        setPosition(vine5, 15, 120);
+
+        let vine6 = createVineSVG(branch, "branch");
+        setRotation_Width_Stroke(vine6, 0, '60%', '1');
+        setPosition(vine6, 11, 180);
+
+        let vine7 = createVineSVG(smallSquiggle, "vine");
+        setRotation_Width_Stroke(vine7, 0, '27%', '1');
+        setPosition(vine7, -10, 150);
+
+        let vine8 = createVineSVG(smallSquiggle, "vine");
+        setRotation_Width_Stroke(vine8, 300, '50%', '0.8');
+        setPosition(vine8, -10, 240);
+
+        let vine9 = createVineSVG(longestVine, "vine");
+        setRotation_Width_Stroke(vine9, 20, '35%', '0.8');
+        setPosition(vine9, -20, 300);
+
+        let vinesInBlock = [vine1, vine2, vine3, vine4, vine5, vine6, vine7, vine8, vine9];
+
+        return vinesInBlock;
+      }
+
+      function appendVine(vine, container) {
+        container.appendChild(vine);
+      }
+
+      function animateAll() {
+        loopAndDraw(buildVineBlock(), vineLeftContainer);
+        loopAndDraw(buildVineBlock(), vineRightContainer);
+        loopAndDraw(buildVineRow(), vineTopContainer);
+        loopAndDraw(buildVineRow(), vineBottomContainer);
+
+        vineRightContainer.style.transform = "rotate(-180deg)";
+
+        function loopAndDraw(vineBlock, container) {
+          for (let x = 0; x < vineBlock.length; x++) {
+            appendVine(vineBlock[x], container);
+            drawLine(vineBlock[x], "5s", "1s");
+          }
+        }
+      }
+
+      // Don't start vines automatically - only when channel button is clicked
+      // animateAll();
+      
+      // Function to add more vines without clearing existing ones
+      function addMoreVines() {
+        loopAndDraw(buildVineBlock(), vineLeftContainer);
+        loopAndDraw(buildVineBlock(), vineRightContainer);
+        loopAndDraw(buildVineRow(), vineTopContainer);
+        loopAndDraw(buildVineRow(), vineBottomContainer);
+      }
+      
+      // Store the interval ID so we can clear it later
+      let vineGrowthInterval = null;
+      
+      // Function to start continuous vine growth
+      function startContinuousVineGrowth() {
+        // Initial vine growth
+        animateAll();
+        
+        // Continue adding vines every 10 seconds without clearing
+        vineGrowthInterval = setInterval(addMoreVines, 10000);
+      }
+      
+      // Function to stop continuous vine growth
+      function stopContinuousVineGrowth() {
+        if (vineGrowthInterval) {
+          clearInterval(vineGrowthInterval);
+          vineGrowthInterval = null;
+        }
+        // Clear all vines
+        vineLeftContainer.innerHTML = '';
+        vineRightContainer.innerHTML = '';
+        vineTopContainer.innerHTML = '';
+        vineBottomContainer.innerHTML = '';
+      }
+    });
+  </script>
+</body>
+</html> 
