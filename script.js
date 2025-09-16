@@ -554,12 +554,9 @@ window.addEventListener('DOMContentLoaded', () => {
       
       // Only play audio if we're not muted and this is the current section
       if (!isMuted && audioPanelIndex === idx) {
-        if (audio !== currentAudio) {
-          if (currentAudio) currentAudio.pause();
+        // Allow multiple audio files to play simultaneously in the same panel
+        if (audio.paused) {
           audio.currentTime = 0;
-          audio.play().catch(()=>{});
-          currentAudio = audio;
-        } else if (audio.paused) {
           audio.play().catch(()=>{});
         }
       } else {
