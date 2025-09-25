@@ -1142,23 +1142,23 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const EPISODE_TAPES = [
-    { title: 'THE DISAPPEARANCE OF MICHELE HARRIS PART 1: SNEAK PEEK', img: 'images/tapes/Tape1.JPG', available: true, releaseDate: '9/17' },
-    { title: 'INTRODUCTION TO LAST SEEN', img: 'images/tapes/Tape2.JPG', releaseDate: '10/1' },
-    { title: 'NIGHTMARE ON OAK ST.', img: 'images/tapes/Tape3.JPG', releaseDate: '10/3' },
-    { title: 'JULY 4TH: SHOTS  ON RANO BOULEVARD', img: 'images/tapes/Tape4.JPG', releaseDate: '10/6' },
-    { title: 'CLOSE TO HOME', img: 'images/tapes/Tape5.JPG', releaseDate: '10/13' },
-    { title: 'DOMESTIC VIOLENCE', img: 'images/tapes/Tape6.JPG', releaseDate: '10/27' },
-    { title: 'DO YOU RECOGNIZE THIS SUSPECT?', img: 'images/tapes/Tape7.JPG', releaseDate: '11/3' },
-    { title: 'VANISHED ON 9/11 - THE STORY PART 1', img: 'images/tapes/Tape8.JPG', releaseDate: '11/10' },
-    { title: 'VANISHED ON 9/11- WHO DID IT? PART 2', img: 'images/tapes/Tape9.JPG', releaseDate: '11/17' },
-    { title: 'VANISHED ON 9/11', img: 'images/tapes/Tape10.JPG', releaseDate: '11/24' },
-    { title: 'THE GIRL NEXT DOOR', img: 'images/tapes/Tape11.JPG', releaseDate: '12/1' },
-    { title: 'SECRETS OF THE CASTLE ON THE HILL', img: 'images/tapes/Tape12.JPG', releaseDate: '12/8' },
-    { title: 'SILENCE AFTER THE SHOT', img: 'images/tapes/Tape13.JPG', releaseDate: '12/15' },
-    { title: '13 BIRDS IN THE SKY', img: 'images/tapes/Tape14.JPG', releaseDate: '12/22' },
-    { title: 'HATE AT THE GROCERY STORE', img: 'images/tapes/Tape15.JPG', releaseDate: '12/29' },
-    { title: 'WHERE IS BAMBI MADDEN?', img: 'images/tapes/Tape16.JPG', releaseDate: '1/5' },
-    { title: 'LOST TO THE JUNGLE', img: 'images/tapes/Tape16.JPG', releaseDate: '1/12' }
+    { title: 'THE DISAPPEARANCE OF MICHELE HARRIS PART 1: SNEAK PEEK', img: 'images/tapes/Tape1.jpg', available: true, releaseDate: '9/17' },
+    { title: 'INTRODUCTION TO LAST SEEN', img: 'images/tapes/Tape2.jpg', releaseDate: '10/1' },
+    { title: 'NIGHTMARE ON OAK ST.', img: 'images/tapes/Tape3.jpg', releaseDate: '10/3' },
+    { title: 'JULY 4TH: SHOTS  ON RANO BOULEVARD', img: 'images/tapes/Tape4.jpg', releaseDate: '10/6' },
+    { title: 'CLOSE TO HOME', img: 'images/tapes/Tape5.jpg', releaseDate: '10/13' },
+    { title: 'DOMESTIC VIOLENCE', img: 'images/tapes/Tape6.jpg', releaseDate: '10/27' },
+    { title: 'DO YOU RECOGNIZE THIS SUSPECT?', img: 'images/tapes/Tape7.jpg', releaseDate: '11/3' },
+    { title: 'VANISHED ON 9/11 - THE STORY PART 1', img: 'images/tapes/Tape8.jpg', releaseDate: '11/10' },
+    { title: 'VANISHED ON 9/11- WHO DID IT? PART 2', img: 'images/tapes/Tape9.jpg', releaseDate: '11/17' },
+    { title: 'VANISHED ON 9/11', img: 'images/tapes/Tape10.jpg', releaseDate: '11/24' },
+    { title: 'THE GIRL NEXT DOOR', img: 'images/tapes/Tape11.jpg', releaseDate: '12/1' },
+    { title: 'SECRETS OF THE CASTLE ON THE HILL', img: 'images/tapes/Tape12.jpg', releaseDate: '12/8' },
+    { title: 'SILENCE AFTER THE SHOT', img: 'images/tapes/Tape13.jpg', releaseDate: '12/15' },
+    { title: '13 BIRDS IN THE SKY', img: 'images/tapes/Tape14.jpg', releaseDate: '12/22' },
+    { title: 'HATE AT THE GROCERY STORE', img: 'images/tapes/Tape15.jpg', releaseDate: '12/29' },
+    { title: 'WHERE IS BAMBI MADDEN?', img: 'images/tapes/Tape16.jpg', releaseDate: '1/5' },
+    { title: 'LOST TO THE JUNGLE', img: 'images/tapes/Tape16.jpg', releaseDate: '1/12' }
   ];
 
   // No episode index in minimal mode
