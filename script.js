@@ -572,12 +572,12 @@ window.addEventListener('DOMContentLoaded', () => {
       if (!audioPanel) return;
       
       if (audioPanel.classList.contains('contact')) {
-        audio.volume = 0.01; // Very subtle clock ambience at 1% volume
+        audio.volume = 0.7; // Clock ambience at 70% volume
       } else if (audioPanel.classList.contains('living-room')) {
         // Cassette tape handling sound in living room
         audio.volume = 0.1; // 10% volume for cassette tape sound
       } else if (audioPanel.classList.contains('attic')) {
-        audio.volume = 0.25; // 25% volume for attic rain (was 0.5)
+        audio.volume = 0.15; // 15% volume for attic rain
       } else if (audioPanel.classList.contains('bathroom')) {
         audio.volume = 0.05; // 5% volume for bathroom dripping water
       } else if (audioPanel.classList.contains('basement')) {
