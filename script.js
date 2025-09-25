@@ -574,12 +574,8 @@ window.addEventListener('DOMContentLoaded', () => {
       if (audioPanel.classList.contains('contact')) {
         audio.volume = 0.01; // Very subtle clock ambience at 1% volume
       } else if (audioPanel.classList.contains('living-room')) {
-        // Different volumes for different audio files in living room
-        if (audio.classList.contains('static-audio')) {
-          audio.volume = 0.025; // 2.5% volume for static noise
-        } else {
-          audio.volume = 0.1; // 10% volume for cassette tape sound (was 0.2)
-        }
+        // Cassette tape handling sound in living room
+        audio.volume = 0.1; // 10% volume for cassette tape sound
       } else if (audioPanel.classList.contains('attic')) {
         audio.volume = 0.25; // 25% volume for attic rain (was 0.5)
       } else if (audioPanel.classList.contains('bathroom')) {
