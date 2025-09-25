@@ -18,6 +18,13 @@
 .tape-sheet-header {
   padding: 12px 16px 8px;
   text-align: center;
+  /* Make entire header draggable on mobile */
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.tape-sheet-header:active {
+  cursor: grabbing;
 }
 
 .tape-sheet-handle {
@@ -36,17 +43,36 @@
   background: rgba(255,255,255,0.4);
 }
 
+/* Handle wrapper for larger touch target */
+.tape-sheet-handle-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Large invisible touch target */
+  width: 250px;
+  height: 100px;
+  margin: 0 auto;
+  /* Ensure it's clickable */
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.tape-sheet-handle-wrapper:active {
+  cursor: grabbing;
+}
+
 /* Mobile touch improvements */
 @media (max-width: 768px) {
   .tape-sheet-handle {
-    width: 60px;
-    height: 6px;
-    background: rgba(255,255,255,0.3);
-    margin: 12px auto 16px;
+    width: 80px;
+    height: 8px;
+    background: rgba(255,255,255,0.4);
+    /* Remove margin since wrapper handles positioning */
+    margin: 0;
   }
   
   .tape-sheet-handle:active {
-    background: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.6);
   }
 }
 

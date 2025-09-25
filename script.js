@@ -1164,13 +1164,14 @@ const EPISODE_TAPES = [
   // No episode index in minimal mode
 
   // DOM elements
-  let tapeStackBtn, playerOverlay, playerClose, tapeSheetHandle;
+  let tapeStackBtn, playerOverlay, playerClose, tapeSheetHandle, tapeSheetHandleWrapper;
 
   function initializeTapePlayer() {
     tapeStackBtn = document.getElementById('tapeStackBtn');
     playerOverlay = document.getElementById('playerOverlay');
     playerClose = document.querySelector('.player-close');
     tapeSheetHandle = document.querySelector('.tape-sheet-handle');
+    tapeSheetHandleWrapper = document.querySelector('.tape-sheet-handle-wrapper');
     // bottom sheet elements created in HTML
 
     if (!tapeStackBtn || !playerOverlay) {
@@ -1371,62 +1372,140 @@ const EPISODE_TAPES = [
   }
 
   function setupSwipeGesture() {
-    if (!tapeSheetHandle) return;
+    if (!tapeSheetHandleWrapper) return;
+    
+    // Also make the entire header draggable
+    const tapeSheetHeader = document.querySelector('.tape-sheet-header');
     
     let startY = 0;
     let currentY = 0;
     let isDragging = false;
     let startTime = 0;
+    let hasMoved = false;
     
-    // Touch events
-    tapeSheetHandle.addEventListener('touchstart', (e) => {
+    // Touch events - improved for iOS (using wrapper for larger touch target)
+    tapeSheetHandleWrapper.addEventListener('touchstart', (e) => {
+      e.preventDefault(); // Prevent scrolling
       startY = e.touches[0].clientY;
+      currentY = startY;
       startTime = Date.now();
       isDragging = false;
-    }, { passive: true });
+      hasMoved = false;
+      console.log('Touch start on handle:', startY);
+    }, { passive: false });
     
-    tapeSheetHandle.addEventListener('touchmove', (e) => {
+    tapeSheetHandleWrapper.addEventListener('touchmove', (e) => {
       if (!startY) return;
       
+      e.preventDefault(); // Prevent scrolling
       currentY = e.touches[0].clientY;
       const deltaY = currentY - startY;
       
-      // Only consider it dragging if moved more than 10px
-      if (Math.abs(deltaY) > 10) {
+      if (!hasMoved && Math.abs(deltaY) > 5) {
+        hasMoved = true;
+      }
+      
+      // Only consider it dragging if moved more than 5px (reduced threshold)
+      if (Math.abs(deltaY) > 5) {
         isDragging = true;
       }
       
       // If dragging down, show visual feedback
       if (isDragging && deltaY > 0) {
-        const opacity = Math.max(0.1, 1 - (deltaY / 200));
+        const opacity = Math.max(0.1, 1 - (deltaY / 150));
         playerOverlay.style.opacity = opacity;
       }
-    }, { passive: true });
+    }, { passive: false });
     
-    tapeSheetHandle.addEventListener('touchend', (e) => {
-      if (!startY || !isDragging) {
+    tapeSheetHandleWrapper.addEventListener('touchend', (e) => {
+      if (!startY) {
         startY = 0;
         return;
       }
       
       const deltaY = currentY - startY;
       const deltaTime = Date.now() - startTime;
-      const velocity = deltaY / deltaTime;
+      const velocity = deltaTime > 0 ? deltaY / deltaTime : 0;
+      
+      console.log('Touch end:', { deltaY, velocity, isDragging, hasMoved });
       
       // Reset opacity
       playerOverlay.style.opacity = '';
       
-      // Close if dragged down more than 100px OR fast swipe down
-      if (deltaY > 100 || (deltaY > 50 && velocity > 0.3)) {
+      // Close if dragged down more than 80px OR fast swipe down OR just moved down significantly
+      if (deltaY > 80 || (deltaY > 30 && velocity > 0.2) || (hasMoved && deltaY > 50)) {
+        console.log('Closing via swipe gesture');
         closeTapePlayer();
       }
       
       startY = 0;
       isDragging = false;
+      hasMoved = false;
     }, { passive: true });
     
+    // Also add swipe gesture to the entire header area
+    if (tapeSheetHeader) {
+      tapeSheetHeader.addEventListener('touchstart', (e) => {
+        // Only start if touching the header area, not the handle wrapper
+        if (e.target === tapeSheetHandle || e.target === tapeSheetHandleWrapper) return;
+        
+        e.preventDefault();
+        startY = e.touches[0].clientY;
+        currentY = startY;
+        startTime = Date.now();
+        isDragging = false;
+        hasMoved = false;
+        console.log('Touch start on header:', startY);
+      }, { passive: false });
+      
+      tapeSheetHeader.addEventListener('touchmove', (e) => {
+        if (!startY || e.target === tapeSheetHandle || e.target === tapeSheetHandleWrapper) return;
+        
+        e.preventDefault();
+        currentY = e.touches[0].clientY;
+        const deltaY = currentY - startY;
+        
+        if (!hasMoved && Math.abs(deltaY) > 5) {
+          hasMoved = true;
+        }
+        
+        if (Math.abs(deltaY) > 5) {
+          isDragging = true;
+        }
+        
+        if (isDragging && deltaY > 0) {
+          const opacity = Math.max(0.1, 1 - (deltaY / 150));
+          playerOverlay.style.opacity = opacity;
+        }
+      }, { passive: false });
+      
+      tapeSheetHeader.addEventListener('touchend', (e) => {
+        if (!startY || e.target === tapeSheetHandle || e.target === tapeSheetHandleWrapper) {
+          startY = 0;
+          return;
+        }
+        
+        const deltaY = currentY - startY;
+        const deltaTime = Date.now() - startTime;
+        const velocity = deltaTime > 0 ? deltaY / deltaTime : 0;
+        
+        console.log('Touch end on header:', { deltaY, velocity, isDragging, hasMoved });
+        
+        playerOverlay.style.opacity = '';
+        
+        if (deltaY > 80 || (deltaY > 30 && velocity > 0.2) || (hasMoved && deltaY > 50)) {
+          console.log('Closing via header swipe gesture');
+          closeTapePlayer();
+        }
+        
+        startY = 0;
+        isDragging = false;
+        hasMoved = false;
+      }, { passive: true });
+    }
+    
     // Mouse events for desktop testing
-    tapeSheetHandle.addEventListener('mousedown', (e) => {
+    tapeSheetHandleWrapper.addEventListener('mousedown', (e) => {
       startY = e.clientY;
       startTime = Date.now();
       isDragging = false;
