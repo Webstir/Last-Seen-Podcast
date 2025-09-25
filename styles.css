@@ -1,3 +1,175 @@
+/* Tape bottom sheet */
+.tape-sheet {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  transform: translateY(100%);
+  transition: transform 0.3s ease-out;
+  z-index: 1500;
+  overflow: hidden;
+}
+
+.tape-sheet.open {
+  transform: translateY(0);
+}
+
+.tape-sheet-header {
+  padding: 12px 16px 8px;
+  text-align: center;
+}
+
+.tape-sheet-handle {
+  width: 48px;
+  height: 4px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 9999px;
+  margin: 8px auto 10px;
+}
+
+.tape-sheet-title {
+  margin: 0;
+  font-size: 1rem;
+  font-family: 'Fira Mono', 'Courier New', monospace, sans-serif;
+  letter-spacing: 0.08em;
+  color: #fff;
+}
+
+.tape-list {
+  padding: 8px 0 16px;
+  overflow-y: auto;
+  max-height: calc(100% - 60px);
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Two-column layout on large viewports */
+@media (min-width: 1024px) {
+  .tape-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(320px, 1fr));
+    gap: 28px 28px;
+    padding: 16px 24px 24px;
+    max-height: calc(100% - 60px);
+  }
+  .tape-card {
+    margin: 0;
+    max-width: none;
+    width: 100%;
+  }
+}
+
+.tape-card {
+  position: relative;
+  background: none;
+  border: none;
+  border-radius: 12px;
+  margin: 0 20px 24px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 210px;
+  max-width: 380px;
+
+}
+
+.tape-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #222;
+  position: relative;
+}
+
+.tape-meta {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px;
+  pointer-events: none;
+}
+
+.tape-title {
+  font-size: 1.1rem;
+  color: #ffd700;
+  line-height: 1.3;
+  margin: 0;
+  font-family: 'Fira Mono', 'Courier New', monospace, sans-serif;
+  text-align: center;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 1px 0 #000;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  padding: 8px 12px;
+  border-radius: 0;
+}
+
+.tape-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+  padding: 8px 12px;
+  border-radius: 0 0 8px 8px;
+  pointer-events: auto;
+}
+
+.listen-on-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: #fff;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: #1f1f1f;
+  border: 1px solid #333;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.icon-btn:hover { background: #2a2a2a; transform: translateY(-1px); }
+.icon-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+.coming-soon {
+  font-size: 0.75rem;
+  color: #fff;
+  letter-spacing: 0.06em;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 480px) {
+  .tape-card { margin: 20px 12px 50px; padding: 0; height: 180px;width:unset; max-width: unset; }
+  .tape-thumb { height: 100%; }
+  .tape-title { font-size: 1rem; }
+  .icon-btn { width: 32px; height: 32px; }
+  
+  .player-close {
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+}
 body, html {
   margin: 0;
   padding: 0;
@@ -1503,5 +1675,522 @@ body, html {
   .easter-egg-tv {
     height: 15%;
     width: 25%;
+  }
+}
+
+/* ===== TAPE STACK PLAYER STYLES ===== */
+
+/* Tape Stack Container */
+.tape-stack-container {
+  position: absolute;
+  bottom: 100px;
+  left: 55%;
+  z-index: 10;
+}
+
+/* Cassette player interface removed */
+
+/* Cassette styles removed */
+
+/* Cassette label container removed */
+
+/* Cassette white section removed */
+
+/* Cassette tape container and white space removed */
+
+/* Cassette wheel components removed */
+
+/* Cassette wheel overlap and bar styles removed */
+
+/* Cassette red section, label, and trapazoid removed */
+
+/* Episode controls removed */
+
+/* Episode button styles removed */
+
+/* Episode button hover/focus removed */
+
+/* Episode info styles removed */
+
+/* Platform Selection */
+.platform-selection {
+  margin-top: 20px;
+}
+
+.platform-title {
+  color: white;
+  font-size: 18px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Cassette wheel spin animations removed */
+
+/* Tape Stack Button */
+.tape-stack-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 12px 16px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: #fff;
+  background: rgba(0,0,0,0.35);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-radius: 9999px; /* fully rounded */
+  border: 1px solid rgba(255,255,255,0.18);
+  transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Add a pseudo-element for enhanced circular glow */
+.tape-stack-btn::before { display: none; }
+
+/* Circular glow keyframes */
+/* removed pulseGlow */
+
+/* Inner glow animation for the pseudo-element */
+/* removed pulseGlowInner */
+
+/* Play triangle animation - synced with glow */
+/* removed pulseTriangle */
+
+/* Hide button when overlay is open */
+.tape-stack-btn.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* no hover effect in minimal mode */
+
+.tape-stack-btn:hover .play-triangle { display: none; }
+
+.tape-stack-btn:focus { outline: 2px solid #ffffff; outline-offset: 4px; }
+
+.tape-stack-btn:focus .play-triangle { display: none; }
+
+.tape-stack-btn:active {
+  transform: scale(0.98);
+  animation-play-state: paused;
+}
+
+.tape-stack-btn img {
+  display: none;
+}
+/* Listen label to replace tape image */
+.listen-label {
+  font-size: 1.2rem; /* 2x */
+  text-transform: uppercase; /* match .scroll-text */
+  letter-spacing: 0.1em; /* match .scroll-text */
+  color: #fff;
+  text-shadow: 2px 2px 12px rgba(0,0,0,0.7), 0 1px 0 #222; /* match .scroll-text */
+  opacity: 0.9;
+  font-family: 'Fira Mono', 'Courier New', monospace, sans-serif; /* align with site labels */
+  pointer-events: none; /* purely decorative inside button */
+  width: 150px;
+}
+
+.play-icon {
+  font-size: 1.8rem; /* 2x */
+  opacity: 0.95;
+  text-shadow: 2px 2px 12px rgba(0,0,0,0.7), 0 1px 0 #222;
+}
+
+.wave {
+  font-size: 1.6rem; /* 2x */
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+  font-family: 'Fira Mono', 'Courier New', monospace, sans-serif;
+  text-shadow: 2px 2px 12px rgba(0,0,0,0.7), 0 1px 0 #222;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes wavePulse {
+    0%, 100% { opacity: 0.5; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-1px); }
+  }
+  .wave-left, .wave-right {
+    animation: wavePulse 2.2s ease-in-out infinite;
+  }
+  .wave-right { animation-delay: 1.1s; }
+}
+
+/* Ensure button hit-area is decent without image */
+.tape-stack-btn {
+  min-width: 120px;
+  min-height: 44px;
+}
+
+/* Play Triangle Overlay */
+.play-triangle { display: none; }
+
+.play-triangle svg {
+  width: 60px;
+  height: 60px;
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.5));
+}
+
+/* Removed video overlay styles (minimal mode) */
+
+/* Player Overlay */
+.player-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /* Mobile touch improvements */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  transition: all 0.3s ease-out;
+}
+
+.player-overlay[hidden] {
+  display: none;
+}
+
+.player-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* Player Panel */
+.player {
+  position: relative;
+  border: 1px solid #333;
+  border-radius: 16px 16px 0 0;
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  transition: all 0.3s ease-out;
+}
+
+/* Player Content */
+.player-content {
+  padding: 0;
+  text-align: center;
+}
+
+.player-image {
+  width: 120px;
+  height: auto;
+  margin-bottom: 24px;
+  border-radius: 8px;
+}
+
+.player-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 32px;
+  color: #ffffff;
+  line-height: 1.3;
+}
+
+/* Platform Buttons */
+.platform-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(100px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+  justify-items: center;
+}
+
+.platform-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 12px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 12px;
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+  /* Mobile touch improvements */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  min-height: 72px; /* larger touch target for simple grid */
+  width: 100%;
+  max-width: 180px;
+}
+
+.platform-btn:hover {
+  background: #3a3a3a;
+  border-color: #666;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.platform-btn:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.platform-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.platform-text {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Platform-specific colors */
+.platform-btn.spotify:hover {
+  background: #1db954;
+  border-color: #1db954;
+}
+
+.platform-btn.apple:hover {
+  background: #007cba;
+  border-color: #007cba;
+}
+
+/* Remove unused platform hover styles in minimal mode */
+
+/* Close Button */
+.player-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 1600;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.player-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+}
+
+.player-close:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Animations */
+@media (prefers-reduced-motion: no-preference) {
+  .player {
+    animation: popIn 200ms ease-out both;
+  }
+  
+  @keyframes popIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .player {
+    animation: none;
+  }
+  
+  .tape-stack-btn,
+  .platform-btn,
+  .player-close {
+    transition: none;
+  }
+  
+  /* Disable pulsing animation for users who prefer reduced motion */
+  .tape-stack-btn {
+    animation: none;
+    box-shadow: 0 0 8px 4px rgba(255, 255, 255, 0.2);
+  }
+  
+  .tape-stack-btn::before {
+    animation: none;
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  
+  .play-triangle {
+    animation: none;
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Mobile responsiveness for tape stack */
+@media (max-width: 768px) {
+  .tape-stack-container {
+    bottom: 40vh; /* 40% from bottom on mobile */
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+  
+  .tape-stack-btn img {
+    width: 150px;
+  }
+  
+  .play-triangle svg {
+    width: 45px;
+    height: 45px;
+  }
+  
+  /* Video animation mobile styles removed */
+  
+  .player {
+    margin: 10px;
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+    overflow-y: auto;
+  }
+  
+  .player-content {
+    padding: 20px;
+  }
+  
+/* Cassette UI removed in minimal mode */
+  
+  /* Episode controls mobile removed */
+  
+  /* Episode info mobile styles removed */
+  
+  /* Platform Selection Mobile */
+  .platform-selection {
+    margin-top: 15px;
+  }
+  
+  .platform-title {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+  
+  .platform-buttons {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  
+  .platform-btn {
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+  
+  .platform-icon {
+    font-size: 20px;
+  }
+  
+  .platform-text {
+    font-size: 10px;
+  }
+}
+
+/* Larger viewports: reduce typography by ~30% */
+@media (min-width: 1024px) {
+  .listen-label { font-size: 1.12rem; }
+  .wave { font-size: 1.12rem; }
+  .play-icon { font-size: 1.26rem; }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .player {
+    margin: 5px;
+    max-width: calc(100vw - 10px);
+    max-height: calc(100vh - 10px);
+  }
+  
+  .player-content {
+    padding: 15px;
+  }
+  
+  /* Cassette mobile style removed */
+  
+  /* Cassette and episode controls mobile styles removed */
+  
+  .platform-buttons {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  
+  .platform-btn {
+    padding: 10px 6px;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  
+  .platform-icon {
+    font-size: 18px;
+  }
+  
+  .platform-text {
+    font-size: 11px;
+  }
+  
+  .play-triangle svg {
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* Video animation extra small mobile styles removed */
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+  .player {
+    max-height: calc(100vh - 10px);
+  }
+  
+  .player-content {
+    padding: 15px;
+  }
+  
+  /* Cassette style removed */
+  
+  /* Episode controls removed */
+  
+  .platform-selection {
+    margin-top: 10px;
+  }
+  
+  .platform-buttons {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
   }
 }

@@ -1096,4 +1096,288 @@ document.addEventListener('DOMContentLoaded', function() {
   forceStopAllAudio();
 });
 
+// ===== TAPE STACK PLAYER FUNCTIONALITY =====
+
+// AudioBus adapter for tape stack player
+window.audioBus = {
+  // read-only getter; return true if globally muted
+  get muted() {
+    // Check for the existing mute system in script.js
+    if (typeof window.isMuted === 'boolean') {
+      return window.isMuted;
+    }
+    // fallback (no-op mode)
+    return false;
+  },
+  
+  async loadEpisode(episodeId) {
+    // For now, just log the episode load
+    console.info('[audioBus] loadEpisode called for', episodeId);
+    // You can integrate this with your existing audio system later
+  },
+  
+  playSfx(name) {
+    if (this.muted) return;
+    const map = {
+      pickUp: '/sfx/pickUp.mp3',
+      insert: '/sfx/insert.mp3',
+      uiOpen: '/sfx/uiOpen.mp3'
+    };
+    const src = map[name];
+    if (!src) return;
+    const a = new Audio(src);
+    a.volume = 0.7;
+    a.play().catch(() => {});
+  }
+};
+
+// Tape Stack Player Application
+document.addEventListener('DOMContentLoaded', () => {
+  // Episode data (multiple episodes)
+  // Minimal mode: single set of platform links
+  const PLATFORMS = {
+    apple: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000727234335',
+    spotify: 'https://open.spotify.com/episode/6dK5YoROIIq2vmepcnSATY?si=1c6a7db503ba4194',
+    audible: 'https://www.audible.com/pd/B0FRHS8JRQ?source_code=ASSORAP0511160006&share_location=library_overflow'
+  };
+
+  const EPISODE_TAPES = [
+    { title: 'THE DISAPPEARANCE OF MICHELE HARRIS PART 1: SNEAK PEEK', img: 'images/tapes/Tape1.JPG', available: true, releaseDate: '9/17' },
+    { title: 'INTRODUCTION TO LAST SEEN', img: 'images/tapes/Tape2.JPG', releaseDate: '10/1' },
+    { title: 'NIGHTMARE ON OAK ST.', img: 'images/tapes/Tape3.JPG', releaseDate: '10/3' },
+    { title: 'JULY 4TH: SHOTS  ON RANO BOULEVARD', img: 'images/tapes/Tape4.JPG', releaseDate: '10/6' },
+    { title: 'CLOSE TO HOME', img: 'images/tapes/Tape5.JPG', releaseDate: '10/13' },
+    { title: 'DOMESTIC VIOLENCE', img: 'images/tapes/Tape6.JPG', releaseDate: '10/27' },
+    { title: 'DO YOU RECOGNIZE THIS SUSPECT?', img: 'images/tapes/Tape7.JPG', releaseDate: '11/3' },
+    { title: 'VANISHED ON 9/11 - THE STORY PART 1', img: 'images/tapes/Tape8.JPG', releaseDate: '11/10' },
+    { title: 'VANISHED ON 9/11- WHO DID IT? PART 2', img: 'images/tapes/Tape9.JPG', releaseDate: '11/17' },
+    { title: 'VANISHED ON 9/11', img: 'images/tapes/Tape10.JPG', releaseDate: '11/24' },
+    { title: 'THE GIRL NEXT DOOR', img: 'images/tapes/Tape11.JPG', releaseDate: '12/1' },
+    { title: 'SECRETS OF THE CASTLE ON THE HILL', img: 'images/tapes/Tape12.JPG', releaseDate: '12/8' },
+    { title: 'SILENCE AFTER THE SHOT', img: 'images/tapes/Tape13.JPG', releaseDate: '12/15' },
+    { title: '13 BIRDS IN THE SKY', img: 'images/tapes/Tape14.JPG', releaseDate: '12/22' },
+    { title: 'HATE AT THE GROCERY STORE', img: 'images/tapes/Tape15.JPG', releaseDate: '12/29' },
+    { title: 'WHERE IS BAMBI MADDEN?', img: 'images/tapes/Tape16.JPG', releaseDate: '1/5' },
+    { title: 'LOST TO THE JUNGLE', img: 'images/tapes/Tape16.JPG', releaseDate: '1/12' }
+  ];
+
+  // No episode index in minimal mode
+
+  // DOM elements
+  let tapeStackBtn, playerOverlay, playerClose;
+
+  function initializeTapePlayer() {
+    tapeStackBtn = document.getElementById('tapeStackBtn');
+    playerOverlay = document.getElementById('playerOverlay');
+    playerClose = document.querySelector('.player-close');
+    // bottom sheet elements created in HTML
+
+    if (!tapeStackBtn || !playerOverlay) {
+      console.log('Tape stack player elements not found, skipping initialization');
+      return;
+    }
+
+    setupTapePlayerEventListeners();
+    setupTapeStackAnimation();
+    console.log('Tape Stack Player initialized');
+  }
+
+  function setupTapePlayerEventListeners() {
+    // Tape stack button click
+    if (tapeStackBtn) {
+      tapeStackBtn.addEventListener('click', openTapePlayer);
+      tapeStackBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openTapePlayer();
+        }
+      });
+    }
+
+    // Close button click
+    if (playerClose) {
+      playerClose.addEventListener('click', closeTapePlayer);
+    }
+
+    // Overlay click to close
+    if (playerOverlay) {
+      playerOverlay.addEventListener('click', (e) => {
+        if (e.target === playerOverlay) {
+          closeTapePlayer();
+        }
+      });
+    }
+
+    // Escape key to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !playerOverlay.hidden) {
+        closeTapePlayer();
+      }
+    });
+
+    // No inline platform buttons in minimal mode; handled per tape
+
+    // No episode navigation in minimal mode
+  }
+
+  function openTapePlayer() {
+    console.log('Opening tape player...');
+    
+    // Prevent body scroll on mobile when popup is open
+    document.body.style.overflow = 'hidden';
+    
+    // Show the player overlay immediately (no pre-roll video)
+    showTapePlayerPopup();
+  }
+
+  function showTapePlayerPopup() {
+    console.log('Showing tape player popup...');
+    
+    // Hide the button
+    if (tapeStackBtn) {
+      tapeStackBtn.classList.add('hidden');
+    }
+    
+    // Show the player overlay
+    playerOverlay.hidden = false;
+    
+    // Ensure CSS animation runs
+    requestAnimationFrame(() => {
+      // Play pickup sound effect
+      if (window.audioBus) {
+        window.audioBus.playSfx('pickUp');
+        
+        // Play UI open sound after a short delay
+        setTimeout(() => {
+          window.audioBus.playSfx('uiOpen');
+        }, 100);
+      }
+      
+      // Move focus to the dialog
+      playerOverlay.focus();
+      
+      // Optional: brief delay for UI sound only
+      setTimeout(() => {
+        if (window.audioBus) {
+          window.audioBus.playSfx('insert');
+        }
+      }, 200);
+
+      // Build bottom sheet list
+      buildTapeList();
+      // Open the sheet
+      const sheet = document.getElementById('tapeSheet');
+      if (sheet) sheet.classList.add('open');
+    });
+  }
+
+  function closeTapePlayer() {
+    console.log('Closing tape player...');
+    
+    // Restore body scroll
+    document.body.style.overflow = '';
+    
+    // Hide the overlay
+    playerOverlay.hidden = true;
+    
+    // Show the button again
+    if (tapeStackBtn) {
+      tapeStackBtn.classList.remove('hidden');
+      tapeStackBtn.focus();
+    }
+  }
+
+  function handlePlatformClick(platform) {
+    const url = PLATFORMS[platform];
+    if (url) window.open(url, '_blank', 'noopener');
+  }
+
+  function buildTapeList() {
+    const list = document.getElementById('tapeList');
+    if (!list) return;
+    list.innerHTML = '';
+
+    // Show only first 6 episodes
+    EPISODE_TAPES.slice(0, 6).forEach((ep, index) => {
+      const card = document.createElement('div');
+      card.className = 'tape-card';
+      card.setAttribute('role', 'listitem');
+
+      const img = document.createElement('img');
+      img.className = 'tape-thumb';
+      img.alt = `Tape for ${ep.title}`;
+      img.src = ep.img || 'images/tape/placeholder.jpg';
+
+      const meta = document.createElement('div');
+      meta.className = 'tape-meta';
+
+      const title = document.createElement('div');
+      title.className = 'tape-title';
+      title.textContent = ep.title;
+
+      const actions = document.createElement('div');
+      actions.className = 'tape-actions';
+
+      if (ep.available || index === 0) {
+        const label = document.createElement('span');
+        label.className = 'listen-on-label';
+        label.textContent = 'Listen on:';
+
+        const btnApple = document.createElement('button');
+        btnApple.className = 'icon-btn';
+        btnApple.setAttribute('aria-label', 'Listen on Apple Podcasts');
+        btnApple.innerHTML = '<i class="fa-brands fa-apple"></i>';
+        btnApple.addEventListener('click', () => handlePlatformClick('apple'));
+
+        const btnSpotify = document.createElement('button');
+        btnSpotify.className = 'icon-btn';
+        btnSpotify.setAttribute('aria-label', 'Listen on Spotify');
+        btnSpotify.innerHTML = '<i class="fa-brands fa-spotify"></i>';
+        btnSpotify.addEventListener('click', () => handlePlatformClick('spotify'));
+
+        const btnAudible = document.createElement('button');
+        btnAudible.className = 'icon-btn';
+        btnAudible.setAttribute('aria-label', 'Listen on Audible');
+        btnAudible.innerHTML = '<i class="fa-brands fa-audible"></i>';
+        btnAudible.addEventListener('click', () => handlePlatformClick('audible'));
+
+        actions.appendChild(label);
+        actions.appendChild(btnApple);
+        actions.appendChild(btnSpotify);
+        actions.appendChild(btnAudible);
+      } else {
+        const soon = document.createElement('span');
+        soon.className = 'coming-soon';
+        soon.textContent = `Coming ${ep.releaseDate}`;
+        actions.appendChild(soon);
+      }
+
+      meta.appendChild(title);
+      meta.appendChild(actions);
+
+      card.appendChild(img);
+      card.appendChild(meta);
+
+      list.appendChild(card);
+    });
+  }
+
+  // Minimal mode: no episode state or cassette animation
+
+  function setupTapeStackAnimation() {
+    // No glow/triangle animations in minimal mode
+  }
+
+  // Initialize the tape player
+  initializeTapePlayer();
+
+  // Debug function (can be called from console)
+  window.debugTapePlayer = {
+    openTapePlayer,
+    closeTapePlayer,
+    isAudioBusAvailable: () => typeof window.audioBus === 'object' && window.audioBus !== null,
+    getMuteState: () => window.audioBus ? window.audioBus.muted : 'audioBus not available'
+  };
+});
+
  

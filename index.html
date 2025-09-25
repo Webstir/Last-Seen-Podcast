@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Last Seen in the Twilight Zone</title>
   <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <!-- Favicons -->
   <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png" />
@@ -22,7 +24,7 @@
   </button>
   <nav id="navigation-menu" class="navigation-menu">
     <ul class="menu-list">
-      <li><a href="#attic" class="menu-link">Attic</a></li>
+      <li><a href="#attic" class="menu-link">Home</a></li>
       <li><a href="#living-room" class="menu-link">Listen</a></li>
       <li><a href="#bathroom" class="menu-link">About Us</a></li>
       <li><a href="#contact" class="menu-link">Contact</a></li>
@@ -80,6 +82,17 @@
     <canvas class="living-dust"></canvas>
     <div class="living-rays"></div>
         <div class="section-label">The TV flickers with static, but you heard voices.</div>
+    
+    <!-- Tape Stack Player -->
+    <div class="tape-stack-container">
+      <button id="tapeStackBtn" class="tape-stack-btn" aria-label="Open tape player">
+        <span class="wave wave-left" aria-hidden="true">(((</span>
+        <span class="play-icon" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+        <span class="listen-label">Choose an episode</span>
+        <span class="wave wave-right" aria-hidden="true">)))</span>
+      </button>
+    </div>
+    
     <audio class="room-audio" src="cassette-tape-handling.mp3" loop preload="none"></audio>
     <audio class="room-audio static-audio" src="static-noise.mp3" loop preload="none"></audio>
   </section>
@@ -146,6 +159,27 @@
     <div class="modal-content">
       <button class="modal-close">&times;</button>
       <div id="modal-body"></div>
+    </div>
+  </div>
+
+  
+
+  <!-- Tape Player Popup Overlay -->
+  <div id="playerOverlay" class="player-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="playerTitle">
+    <div class="player-backdrop"></div>
+    <div class="player">
+      <button class="player-close" aria-label="Close player">&times;</button>
+      
+      <div class="player-content">
+        <!-- Tape List Bottom Sheet -->
+        <div id="tapeSheet" class="tape-sheet" aria-labelledby="tapeSheetTitle">
+          <div class="tape-sheet-header">
+            <div class="tape-sheet-handle" aria-hidden="true"></div>
+            <h3 id="tapeSheetTitle" class="tape-sheet-title">Choose an episode</h3>
+          </div>
+          <div id="tapeList" class="tape-list" role="list"></div>
+        </div>
+      </div>
     </div>
   </div>
 
