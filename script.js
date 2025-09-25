@@ -1391,6 +1391,16 @@ const EPISODE_TAPES = [
       startTime = Date.now();
       isDragging = false;
       hasMoved = false;
+      
+      // Add dragging class to disable transitions
+      const tapeSheet = document.getElementById('tapeSheet');
+      if (tapeSheet) {
+        tapeSheet.classList.add('dragging');
+      }
+      if (playerOverlay) {
+        playerOverlay.classList.add('dragging');
+      }
+      
       console.log('Touch start on handle:', startY);
     }, { passive: false });
     
@@ -1410,10 +1420,13 @@ const EPISODE_TAPES = [
         isDragging = true;
       }
       
-      // If dragging down, show visual feedback
-      if (isDragging && deltaY > 0) {
-        const opacity = Math.max(0.1, 1 - (deltaY / 150));
-        playerOverlay.style.opacity = opacity;
+      // If dragging, show visual feedback with slide animation
+      if (isDragging) {
+        // Move the entire player overlay based on drag direction
+        if (playerOverlay) {
+          // Slide based on drag distance (no maximum limit)
+          playerOverlay.style.transform = `translateY(${deltaY}px)`;
+        }
       }
     }, { passive: false });
     
@@ -1429,11 +1442,21 @@ const EPISODE_TAPES = [
       
       console.log('Touch end:', { deltaY, velocity, isDragging, hasMoved });
       
-      // Reset opacity
-      playerOverlay.style.opacity = '';
+      // Reset slide position and remove dragging class
+      if (playerOverlay) {
+        playerOverlay.style.transform = '';
+        playerOverlay.classList.remove('dragging');
+      }
+      const tapeSheet = document.getElementById('tapeSheet');
+      if (tapeSheet) {
+        tapeSheet.classList.remove('dragging');
+      }
       
-      // Close if dragged down more than 80px OR fast swipe down OR just moved down significantly
-      if (deltaY > 80 || (deltaY > 30 && velocity > 0.2) || (hasMoved && deltaY > 50)) {
+      // Close if dragged down more than 30% of screen height OR fast swipe down
+      const screenHeight = window.innerHeight;
+      const closeThreshold = screenHeight * 0.3; // 30% of screen height
+      
+      if (deltaY > closeThreshold || (deltaY > 50 && velocity > 0.3)) {
         console.log('Closing via swipe gesture');
         closeTapePlayer();
       }
@@ -1455,6 +1478,16 @@ const EPISODE_TAPES = [
         startTime = Date.now();
         isDragging = false;
         hasMoved = false;
+        
+        // Add dragging class to disable transitions
+        const tapeSheet = document.getElementById('tapeSheet');
+        if (tapeSheet) {
+          tapeSheet.classList.add('dragging');
+        }
+        if (playerOverlay) {
+          playerOverlay.classList.add('dragging');
+        }
+        
         console.log('Touch start on header:', startY);
       }, { passive: false });
       
@@ -1473,9 +1506,12 @@ const EPISODE_TAPES = [
           isDragging = true;
         }
         
-        if (isDragging && deltaY > 0) {
-          const opacity = Math.max(0.1, 1 - (deltaY / 150));
-          playerOverlay.style.opacity = opacity;
+        if (isDragging) {
+          // Move the entire player overlay based on drag direction
+          if (playerOverlay) {
+            // Slide based on drag distance (no maximum limit)
+            playerOverlay.style.transform = `translateY(${deltaY}px)`;
+          }
         }
       }, { passive: false });
       
@@ -1491,9 +1527,20 @@ const EPISODE_TAPES = [
         
         console.log('Touch end on header:', { deltaY, velocity, isDragging, hasMoved });
         
-        playerOverlay.style.opacity = '';
+        // Reset slide position and remove dragging class
+        if (playerOverlay) {
+          playerOverlay.style.transform = '';
+        }
+        const tapeSheet = document.getElementById('tapeSheet');
+        if (tapeSheet) {
+          tapeSheet.classList.remove('dragging');
+        }
         
-        if (deltaY > 80 || (deltaY > 30 && velocity > 0.2) || (hasMoved && deltaY > 50)) {
+        // Close if dragged down more than 30% of screen height OR fast swipe down
+        const screenHeight = window.innerHeight;
+        const closeThreshold = screenHeight * 0.3; // 30% of screen height
+        
+        if (deltaY > closeThreshold || (deltaY > 50 && velocity > 0.3)) {
           console.log('Closing via header swipe gesture');
           closeTapePlayer();
         }
@@ -1510,6 +1557,15 @@ const EPISODE_TAPES = [
       startTime = Date.now();
       isDragging = false;
       
+      // Add dragging class to disable transitions
+      const tapeSheet = document.getElementById('tapeSheet');
+      if (tapeSheet) {
+        tapeSheet.classList.add('dragging');
+      }
+      if (playerOverlay) {
+        playerOverlay.classList.add('dragging');
+      }
+      
       const handleMouseMove = (e) => {
         currentY = e.clientY;
         const deltaY = currentY - startY;
@@ -1518,9 +1574,12 @@ const EPISODE_TAPES = [
           isDragging = true;
         }
         
-        if (isDragging && deltaY > 0) {
-          const opacity = Math.max(0.1, 1 - (deltaY / 200));
-          playerOverlay.style.opacity = opacity;
+        if (isDragging) {
+          // Move the entire player overlay based on drag direction
+          if (playerOverlay) {
+            // Slide based on drag distance (no maximum limit)
+            playerOverlay.style.transform = `translateY(${deltaY}px)`;
+          }
         }
       };
       
@@ -1534,9 +1593,20 @@ const EPISODE_TAPES = [
         const deltaTime = Date.now() - startTime;
         const velocity = deltaY / deltaTime;
         
-        playerOverlay.style.opacity = '';
+        // Reset slide position and remove dragging class
+        if (playerOverlay) {
+          playerOverlay.style.transform = '';
+        }
+        const tapeSheet = document.getElementById('tapeSheet');
+        if (tapeSheet) {
+          tapeSheet.classList.remove('dragging');
+        }
         
-        if (deltaY > 100 || (deltaY > 50 && velocity > 0.3)) {
+        // Close if dragged down more than 30% of screen height OR fast swipe down
+        const screenHeight = window.innerHeight;
+        const closeThreshold = screenHeight * 0.3; // 30% of screen height
+        
+        if (deltaY > closeThreshold || (deltaY > 50 && velocity > 0.3)) {
           closeTapePlayer();
         }
         
