@@ -26,6 +26,28 @@
   background: rgba(255,255,255,0.25);
   border-radius: 9999px;
   margin: 8px auto 10px;
+  cursor: grab;
+  touch-action: pan-y;
+  transition: background-color 0.2s ease;
+}
+
+.tape-sheet-handle:active {
+  cursor: grabbing;
+  background: rgba(255,255,255,0.4);
+}
+
+/* Mobile touch improvements */
+@media (max-width: 768px) {
+  .tape-sheet-handle {
+    width: 60px;
+    height: 6px;
+    background: rgba(255,255,255,0.3);
+    margin: 12px auto 16px;
+  }
+  
+  .tape-sheet-handle:active {
+    background: rgba(255,255,255,0.5);
+  }
 }
 
 .tape-sheet-title {
@@ -1981,7 +2003,7 @@ body, html {
   color: #fff;
   font-size: 24px;
   cursor: pointer;
-  padding: 8px;
+  padding: 0 8px 5px 8px;
   border-radius: 50%;
   width: 44px;
   height: 44px;

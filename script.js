@@ -1164,12 +1164,13 @@ const EPISODE_TAPES = [
   // No episode index in minimal mode
 
   // DOM elements
-  let tapeStackBtn, playerOverlay, playerClose;
+  let tapeStackBtn, playerOverlay, playerClose, tapeSheetHandle;
 
   function initializeTapePlayer() {
     tapeStackBtn = document.getElementById('tapeStackBtn');
     playerOverlay = document.getElementById('playerOverlay');
     playerClose = document.querySelector('.player-close');
+    tapeSheetHandle = document.querySelector('.tape-sheet-handle');
     // bottom sheet elements created in HTML
 
     if (!tapeStackBtn || !playerOverlay) {
@@ -1179,6 +1180,7 @@ const EPISODE_TAPES = [
 
     setupTapePlayerEventListeners();
     setupTapeStackAnimation();
+    setupSwipeGesture();
     console.log('Tape Stack Player initialized');
   }
 
@@ -1366,6 +1368,109 @@ const EPISODE_TAPES = [
 
   function setupTapeStackAnimation() {
     // No glow/triangle animations in minimal mode
+  }
+
+  function setupSwipeGesture() {
+    if (!tapeSheetHandle) return;
+    
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+    let startTime = 0;
+    
+    // Touch events
+    tapeSheetHandle.addEventListener('touchstart', (e) => {
+      startY = e.touches[0].clientY;
+      startTime = Date.now();
+      isDragging = false;
+    }, { passive: true });
+    
+    tapeSheetHandle.addEventListener('touchmove', (e) => {
+      if (!startY) return;
+      
+      currentY = e.touches[0].clientY;
+      const deltaY = currentY - startY;
+      
+      // Only consider it dragging if moved more than 10px
+      if (Math.abs(deltaY) > 10) {
+        isDragging = true;
+      }
+      
+      // If dragging down, show visual feedback
+      if (isDragging && deltaY > 0) {
+        const opacity = Math.max(0.1, 1 - (deltaY / 200));
+        playerOverlay.style.opacity = opacity;
+      }
+    }, { passive: true });
+    
+    tapeSheetHandle.addEventListener('touchend', (e) => {
+      if (!startY || !isDragging) {
+        startY = 0;
+        return;
+      }
+      
+      const deltaY = currentY - startY;
+      const deltaTime = Date.now() - startTime;
+      const velocity = deltaY / deltaTime;
+      
+      // Reset opacity
+      playerOverlay.style.opacity = '';
+      
+      // Close if dragged down more than 100px OR fast swipe down
+      if (deltaY > 100 || (deltaY > 50 && velocity > 0.3)) {
+        closeTapePlayer();
+      }
+      
+      startY = 0;
+      isDragging = false;
+    }, { passive: true });
+    
+    // Mouse events for desktop testing
+    tapeSheetHandle.addEventListener('mousedown', (e) => {
+      startY = e.clientY;
+      startTime = Date.now();
+      isDragging = false;
+      
+      const handleMouseMove = (e) => {
+        currentY = e.clientY;
+        const deltaY = currentY - startY;
+        
+        if (Math.abs(deltaY) > 10) {
+          isDragging = true;
+        }
+        
+        if (isDragging && deltaY > 0) {
+          const opacity = Math.max(0.1, 1 - (deltaY / 200));
+          playerOverlay.style.opacity = opacity;
+        }
+      };
+      
+      const handleMouseUp = (e) => {
+        if (!startY || !isDragging) {
+          startY = 0;
+          return;
+        }
+        
+        const deltaY = currentY - startY;
+        const deltaTime = Date.now() - startTime;
+        const velocity = deltaY / deltaTime;
+        
+        playerOverlay.style.opacity = '';
+        
+        if (deltaY > 100 || (deltaY > 50 && velocity > 0.3)) {
+          closeTapePlayer();
+        }
+        
+        startY = 0;
+        isDragging = false;
+        
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+      
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    });
   }
 
   // Initialize the tape player
