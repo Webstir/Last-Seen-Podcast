@@ -16,7 +16,7 @@
 }
 
 .tape-sheet-header {
-  padding: 12px 16px 8px;
+  padding: 0 16px 8px;
   text-align: center;
   /* Make entire header draggable on mobile */
   cursor: grab;
@@ -49,8 +49,8 @@
   justify-content: center;
   align-items: center;
   /* Large invisible touch target */
-  width: 250px;
-  height: 100px;
+  width: 180px;
+  height: 50px;
   margin: 0 auto;
   /* Ensure it's clickable */
   cursor: grab;
