@@ -1237,8 +1237,9 @@ const EPISODE_TAPES = [
       tapeStackBtn.classList.add('hidden');
     }
     
-    // Show the player overlay
+    // Show the player overlay and start slide-up animation
     playerOverlay.hidden = false;
+    playerOverlay.classList.add('opening');
     
     // Ensure CSS animation runs
     requestAnimationFrame(() => {
@@ -1273,17 +1274,31 @@ const EPISODE_TAPES = [
   function closeTapePlayer() {
     console.log('Closing tape player...');
     
-    // Restore body scroll
-    document.body.style.overflow = '';
-    
-    // Hide the overlay
-    playerOverlay.hidden = true;
-    
-    // Show the button again
+    // Show the button again immediately
     if (tapeStackBtn) {
       tapeStackBtn.classList.remove('hidden');
       tapeStackBtn.focus();
     }
+    
+    // Remove the open class from tape sheet to start closing animation
+    const tapeSheet = document.getElementById('tapeSheet');
+    if (tapeSheet) {
+      tapeSheet.classList.remove('open');
+    }
+    
+    // Start closing animation
+    playerOverlay.classList.remove('opening');
+    playerOverlay.classList.add('closing');
+    
+    // Wait for animation to complete before hiding
+    setTimeout(() => {
+      // Restore body scroll
+      document.body.style.overflow = '';
+      
+      // Hide the overlay and remove classes
+      playerOverlay.hidden = true;
+      playerOverlay.classList.remove('closing');
+    }, 300); // Match CSS animation duration
   }
 
   function handlePlatformClick(platform) {
@@ -1457,7 +1472,30 @@ const EPISODE_TAPES = [
         closeTapePlayer();
       }
       
+      // Always reset state
       startY = 0;
+      currentY = 0;
+      isDragging = false;
+      hasMoved = false;
+    }, { passive: true });
+    
+    // Add touchcancel event to handle interrupted touches
+    tapeSheetHandleWrapper.addEventListener('touchcancel', (e) => {
+      console.log('Touch cancelled on handle');
+      
+      // Reset slide position and remove dragging class
+      if (playerOverlay) {
+        playerOverlay.style.transform = '';
+        playerOverlay.classList.remove('dragging');
+      }
+      const tapeSheet = document.getElementById('tapeSheet');
+      if (tapeSheet) {
+        tapeSheet.classList.remove('dragging');
+      }
+      
+      // Always reset state
+      startY = 0;
+      currentY = 0;
       isDragging = false;
       hasMoved = false;
     }, { passive: true });
@@ -1526,6 +1564,7 @@ const EPISODE_TAPES = [
         // Reset slide position and remove dragging class
         if (playerOverlay) {
           playerOverlay.style.transform = '';
+          playerOverlay.classList.remove('dragging');
         }
         const tapeSheet = document.getElementById('tapeSheet');
         if (tapeSheet) {
@@ -1541,7 +1580,32 @@ const EPISODE_TAPES = [
           closeTapePlayer();
         }
         
+        // Always reset state
         startY = 0;
+        currentY = 0;
+        isDragging = false;
+        hasMoved = false;
+      }, { passive: true });
+      
+      // Add touchcancel event to handle interrupted touches
+      tapeSheetHeader.addEventListener('touchcancel', (e) => {
+        if (e.target === tapeSheetHandle || e.target === tapeSheetHandleWrapper) return;
+        
+        console.log('Touch cancelled on header');
+        
+        // Reset slide position and remove dragging class
+        if (playerOverlay) {
+          playerOverlay.style.transform = '';
+          playerOverlay.classList.remove('dragging');
+        }
+        const tapeSheet = document.getElementById('tapeSheet');
+        if (tapeSheet) {
+          tapeSheet.classList.remove('dragging');
+        }
+        
+        // Always reset state
+        startY = 0;
+        currentY = 0;
         isDragging = false;
         hasMoved = false;
       }, { passive: true });
@@ -1580,18 +1644,19 @@ const EPISODE_TAPES = [
       };
       
       const handleMouseUp = (e) => {
-        if (!startY || !isDragging) {
+        if (!startY) {
           startY = 0;
           return;
         }
         
         const deltaY = currentY - startY;
         const deltaTime = Date.now() - startTime;
-        const velocity = deltaY / deltaTime;
+        const velocity = deltaTime > 0 ? deltaY / deltaTime : 0;
         
         // Reset slide position and remove dragging class
         if (playerOverlay) {
           playerOverlay.style.transform = '';
+          playerOverlay.classList.remove('dragging');
         }
         const tapeSheet = document.getElementById('tapeSheet');
         if (tapeSheet) {
@@ -1606,7 +1671,9 @@ const EPISODE_TAPES = [
           closeTapePlayer();
         }
         
+        // Always reset state
         startY = 0;
+        currentY = 0;
         isDragging = false;
         
         document.removeEventListener('mousemove', handleMouseMove);
