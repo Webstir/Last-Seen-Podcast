@@ -1515,6 +1515,8 @@ body, html {
   border: 1px solid #ffd700;
   border-radius: 8px;
   overflow: scroll;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .modal-content {
