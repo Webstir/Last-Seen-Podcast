@@ -579,7 +579,7 @@ window.addEventListener('DOMContentLoaded', () => {
       } else if (audioPanel.classList.contains('attic')) {
         audio.volume = 0.15; // 15% volume for attic rain
       } else if (audioPanel.classList.contains('bathroom')) {
-        audio.volume = 0.05; // 5% volume for bathroom dripping water
+        audio.volume = 0.7; // 70% volume for bathroom dripping water
       } else if (audioPanel.classList.contains('basement')) {
         audio.volume = 0.075; // 7.5% volume for basement wind/water (30% of 0.25)
       } else {
