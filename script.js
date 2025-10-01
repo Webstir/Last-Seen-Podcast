@@ -354,7 +354,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // Randomized labels for demo
   const labelOptions = {
     'living-room': [
-      "Launch Countdown: The podcast goes live in <span id='living-room-countdown-2'>Loading...</span> days"
+      "The TV flickers with static, but you heard voices."
     ]
   };
 
@@ -454,54 +454,13 @@ window.addEventListener('DOMContentLoaded', () => {
           if (i !== 0 && p.classList.contains('living-room')) { // skip attic, only process living-room
             if (i === idx) { // Only when living room is active
               if (!isInLivingRoom) {
-                // First time entering living room - show countdown with typewriter effect
+                // First time entering living room - clear any existing text completely
                 isInLivingRoom = true;
-                livingRoomMessageIndex = 0;
-                const currentDays = getCurrentCountdownDays();
-                const countdownMessage = `Launch Countdown: The podcast goes live in ${currentDays} days`;
-                
-                // Clear the section-label first, then type out the countdown message
+                // Clear the section-label completely and remove any attributes
                 label.textContent = '';
-                isTransitioning = true;
-                typewriterEffect(label, countdownMessage, () => {
-                  label.setAttribute('data-fulltext', countdownMessage);
-                  isTransitioning = false; // Allow next transition to start
-                });
-                
-                // Start cycling after 6 seconds
-                livingRoomMessageTimer = setTimeout(() => {
-                  if (isInLivingRoom) {
-                    livingRoomMessageIndex = 1; // Start with first "Coming Soon" message
-                    const nextMessage = labelOptions['living-room'][livingRoomMessageIndex];
-                    
-                    // Use typewriter effect to transition to next message
-                    isTransitioning = true;
-                    typewriterEffect(label, nextMessage, () => {
-                      label.setAttribute('data-fulltext', nextMessage);
-                    });
-                    
-                    // Continue cycling every 4 seconds
-                    const cycleInterval = setInterval(() => {
-                      if (!isInLivingRoom) {
-                        clearInterval(cycleInterval);
-                        return;
-                      }
-                      
-                      // Only start new transition if not currently transitioning
-                      if (!isTransitioning) {
-                        livingRoomMessageIndex = (livingRoomMessageIndex + 1) % labelOptions['living-room'].length;
-                        if (livingRoomMessageIndex === 0) livingRoomMessageIndex = 1; // Skip countdown in cycle
-                        const cycleMessage = labelOptions['living-room'][livingRoomMessageIndex];
-                        
-                        // Use typewriter effect for each transition
-                        isTransitioning = true;
-                        typewriterEffect(label, cycleMessage, () => {
-                          label.setAttribute('data-fulltext', cycleMessage);
-                        });
-                      }
-                    }, 4000);
-                  }
-                }, 6000);
+                label.removeAttribute('data-fulltext');
+                label.style.opacity = '';
+                label.style.transition = '';
               }
             } else {
               // Not in living room - reset state
@@ -1130,27 +1089,36 @@ window.audioBus = {
 // Tape Stack Player Application
 document.addEventListener('DOMContentLoaded', () => {
   // Episode data (multiple episodes)
-  // Minimal mode: single set of platform links
+  // Platform links for episodes 1, 2, and 3
   const PLATFORMS = {
+    // Episode 1 links (original)
     apple: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000727234335',
     spotify: 'https://open.spotify.com/episode/6dK5YoROIIq2vmepcnSATY?si=1c6a7db503ba4194',
-    audible: 'https://www.audible.com/pd/B0FRHS8JRQ?source_code=ASSORAP0511160006&share_location=library_overflow'
+    audible: 'https://www.audible.com/pd/B0FRHS8JRQ?source_code=ASSORAP0511160006&share_location=library_overflow',
+    // Episode 2 links
+    apple2: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000729440118',
+    spotify2: 'https://open.spotify.com/episode/26JuuSoHdThMVK4r7uxFc7?si=010ed14dde424a22',
+    audible2: 'https://www.audible.com/pd/B0FR5L765H?source_code=ASSORAP0511160006&share_location=library_overflow',
+    // Episode 3 links
+    apple3: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000729440199',
+    spotify3: 'https://open.spotify.com/episode/5XUoLJqJe7Aknbvte4t7Y1?si=3232601ee2bd4517',
+    audible3: 'https://www.audible.com/pd/B0FRYJV99X?source_code=ASSORAP0511160006&share_location=library_overflow'
   };
 
 const EPISODE_TAPES = [
   { title: 'THE DISAPPEARANCE OF MICHELE HARRIS PART 1: SNEAK PEEK', img: 'images/tapes/episode-1.jpg', available: true, releaseDate: '9/17' },
-  { title: 'INTRODUCTION TO LAST SEEN', img: 'images/tapes/episode-2.jpg', releaseDate: '10/1' },
-  { title: 'NIGHTMARE ON OAK ST.', img: 'images/tapes/episode-3.jpg', releaseDate: '10/3' },
-  { title: 'JULY 4TH: SHOTS  ON RANO BOULEVARD', img: 'images/tapes/episode-4.jpg', releaseDate: '10/6' },
+  { title: 'INTRODUCTION TO LAST SEEN', img: 'images/tapes/episode-2.jpg', available: true },
+  { title: 'NIGHTMARE ON OAK ST.', img: 'images/tapes/episode-3.jpg', available: true },
+  { title: 'JULY 4TH: SHOTS ON RANO BOULEVARD/ BEHIND CLOSED DOORS: HALL ST HORROR', img: 'images/tapes/episode-4.jpg', releaseDate: '10/6' },
   { title: 'CLOSE TO HOME', img: 'images/tapes/episode-5.jpg', releaseDate: '10/13' },
-  { title: 'DOMESTIC VIOLENCE', img: 'images/tapes/episode-6.jpg', releaseDate: '10/27' },
-  { title: 'DO YOU RECOGNIZE THIS SUSPECT?', img: 'images/tapes/episode-7.jpg', releaseDate: '11/3' },
-  { title: 'VANISHED ON 9/11 - THE STORY PART 1', img: 'images/tapes/episode-8.jpg', releaseDate: '11/10' },
-  { title: 'VANISHED ON 9/11- WHO DID IT? PART 2', img: 'images/tapes/episode-9.jpg', releaseDate: '11/17' },
-  { title: 'VANISHED ON 9/11', img: 'images/tapes/episode-10.jpg', releaseDate: '11/24' },
-  { title: 'THE GIRL NEXT DOOR', img: 'images/tapes/episode-11.jpg', releaseDate: '12/1' },
-  { title: 'SECRETS OF THE CASTLE ON THE HILL', img: 'images/tapes/episode-12.jpg', releaseDate: '12/8' },
-  { title: 'SILENCE AFTER THE SHOT', img: 'images/tapes/episode-13.jpg', releaseDate: '12/15' },
+  { title: 'SECRETS OF THE CASTLE ON THE HILL', img: 'images/tapes/episode-6.jpg', releaseDate: '10/20' },
+  { title: 'FINAL CALL FOR HELP', img: 'images/tapes/episode-7.jpg', releaseDate: '10/27' },
+  { title: 'DO YOU RECOGNIZE THIS SUSPECT?', img: 'images/tapes/episode-8.jpg', releaseDate: '11/3' },
+  { title: 'VANISHED ON 9/11 - THE STORY PART 1', img: 'images/tapes/episode-9.jpg', releaseDate: '11/10' },
+  { title: 'VANISHED ON 9/11- WHO DID IT? PART 2', img: 'images/tapes/episode-10.jpg', releaseDate: '11/17' },
+  { title: 'VANISHED ON 9/11', img: 'images/tapes/episode-11.jpg', releaseDate: '11/24' },
+  { title: 'THE GIRL NEXT DOOR', img: 'images/tapes/episode-12.jpg', releaseDate: '12/1' },
+  { title: 'SILENCE AFTER THE SHOT', img: 'images/tapes/episode-13.jpg', releaseDate: '12/8' },
   { title: '13 BIRDS IN THE SKY', img: 'images/tapes/episode-14.jpg', releaseDate: '12/22' },
   { title: 'HATE AT THE GROCERY STORE', img: 'images/tapes/episode-15.jpg', releaseDate: '12/29' },
   { title: 'WHERE IS BAMBI MADDEN?', img: 'images/tapes/episode-16.jpg', releaseDate: '1/5' },
@@ -1311,8 +1279,8 @@ const EPISODE_TAPES = [
     if (!list) return;
     list.innerHTML = '';
 
-    // Show only first 6 episodes
-    EPISODE_TAPES.slice(0, 6).forEach((ep, index) => {
+    // Show only first 7 episodes
+    EPISODE_TAPES.slice(0, 7).forEach((ep, index) => {
       const card = document.createElement('div');
       card.className = 'tape-card';
       card.setAttribute('role', 'listitem');
@@ -1337,23 +1305,26 @@ const EPISODE_TAPES = [
         label.className = 'listen-on-label';
         label.textContent = 'Listen on:';
 
+        // Determine which platform links to use based on episode index
+        const platformSuffix = index === 1 ? '2' : index === 2 ? '3' : '';
+        
         const btnApple = document.createElement('button');
         btnApple.className = 'icon-btn';
         btnApple.setAttribute('aria-label', 'Listen on Apple Podcasts');
         btnApple.innerHTML = '<i class="fa-brands fa-apple"></i>';
-        btnApple.addEventListener('click', () => handlePlatformClick('apple'));
+        btnApple.addEventListener('click', () => handlePlatformClick(`apple${platformSuffix}`));
 
         const btnSpotify = document.createElement('button');
         btnSpotify.className = 'icon-btn';
         btnSpotify.setAttribute('aria-label', 'Listen on Spotify');
         btnSpotify.innerHTML = '<i class="fa-brands fa-spotify"></i>';
-        btnSpotify.addEventListener('click', () => handlePlatformClick('spotify'));
+        btnSpotify.addEventListener('click', () => handlePlatformClick(`spotify${platformSuffix}`));
 
         const btnAudible = document.createElement('button');
         btnAudible.className = 'icon-btn';
         btnAudible.setAttribute('aria-label', 'Listen on Audible');
         btnAudible.innerHTML = '<i class="fa-brands fa-audible"></i>';
-        btnAudible.addEventListener('click', () => handlePlatformClick('audible'));
+        btnAudible.addEventListener('click', () => handlePlatformClick(`audible${platformSuffix}`));
 
         actions.appendChild(label);
         actions.appendChild(btnApple);
