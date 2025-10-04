@@ -60,12 +60,6 @@ window.addEventListener('DOMContentLoaded', () => {
   const basementDarken = basement ? basement.querySelector('.basement-darken') : null;
   const flickerAudio = basement ? basement.querySelector('.flicker-audio') : null;
   
-  console.log('Basement elements found:', {
-    basement: !!basement,
-    flickerGlow: !!flickerGlow,
-    basementDarken: !!basementDarken,
-    flickerAudio: !!flickerAudio
-  });
 
   if (flickerGlow && basementDarken) {
     let flickerTimeout;
@@ -78,42 +72,15 @@ window.addEventListener('DOMContentLoaded', () => {
       if (isFlickering) return;
       isFlickering = true;
       
-      // Debug: log flicker conditions
-      console.log('Flicker sequence started:', {
-        flickerAudio: !!flickerAudio,
-        currentSectionIndex,
-        isMuted,
-        shouldPlayAudio: flickerAudio && currentSectionIndex === 4 && !isMuted
-      });
       
       // Play buzzing sound when light comes on (only if in basement and not muted)
       if (flickerAudio && currentSectionIndex === 4 && !isMuted) {
-        console.log('Playing flicker audio');
-        console.log('Flicker audio state before play:', {
-          muted: flickerAudio.muted,
-          volume: flickerAudio.volume,
-          paused: flickerAudio.paused,
-          currentTime: flickerAudio.currentTime
-        });
-        
-        flickerAudio.volume = 0.5; // Reduced volume for flicker sound (was 1.0)
+        flickerAudio.volume = 0.5;
         flickerAudio.currentTime = 0;
-        flickerAudio.muted = false; // Ensure it's not muted
+        flickerAudio.muted = isMuted;
         
         flickerAudio.play().catch((e) => {
-          console.log('Flicker audio play failed:', e);
-        });
-        
-        console.log('Flicker audio state after play attempt:', {
-          muted: flickerAudio.muted,
-          volume: flickerAudio.volume,
-          paused: flickerAudio.paused
-        });
-      } else {
-        console.log('Flicker audio not playing because:', {
-          noFlickerAudio: !flickerAudio,
-          wrongSection: currentSectionIndex !== 4,
-          isMuted
+          console.error('Flicker audio play failed:', e);
         });
       }
 
@@ -166,21 +133,13 @@ window.addEventListener('DOMContentLoaded', () => {
     // Start flicker sequence every 8-15 seconds
     function scheduleNextFlicker() {
       const delay = 8000 + Math.random() * 7000; // 8-15 seconds
-      console.log('Scheduling next flicker in', Math.round(delay/1000), 'seconds');
       flickerTimeout = setTimeout(() => {
-        console.log('Flicker timeout triggered, starting sequence');
         startFlickerSequence();
         scheduleNextFlicker();
       }, delay);
     }
 
-    console.log('Starting flicker system');
     scheduleNextFlicker();
-  } else {
-    console.log('Flicker system not started - missing elements:', {
-      flickerGlow: !!flickerGlow,
-      basementDarken: !!basementDarken
-    });
   }
 
   // Ambient sound design (robust per-section logic)
@@ -190,6 +149,7 @@ window.addEventListener('DOMContentLoaded', () => {
   let currentAudio = null;
   let isMuted = false;
   let currentSectionIndex = 0; // Track current section globally
+  let isVideoTransitioning = false; // Flag to ignore intersection changes during video transitions
 
   audios.forEach(a => { 
     if (a) { 
@@ -200,22 +160,16 @@ window.addEventListener('DOMContentLoaded', () => {
     } 
   });
   
-  // Ensure flicker audio is not muted and ready to play
+  // Ensure flicker audio respects global mute state
   if (flickerAudio) {
-    flickerAudio.muted = false;
+    flickerAudio.muted = isMuted;
     flickerAudio.volume = 0.5;
-    console.log('Flicker audio initialized:', {
-      muted: flickerAudio.muted,
-      volume: flickerAudio.volume,
-      paused: flickerAudio.paused
-    });
   }
   
   muteBtn.textContent = '🔇';
 
   function setMute(state) {
     isMuted = state;
-    console.log('Mute state changed to:', isMuted);
     
     if (isMuted) {
       // When muting, pause all audio and ensure they stay paused
@@ -229,7 +183,6 @@ window.addEventListener('DOMContentLoaded', () => {
       
       // Handle flicker audio mute state
       if (flickerAudio) {
-        console.log('Muting flicker audio');
         flickerAudio.pause();
         flickerAudio.currentTime = 0;
       }
@@ -243,7 +196,6 @@ window.addEventListener('DOMContentLoaded', () => {
       
       // Ensure flicker audio is ready to play when unmuting
       if (flickerAudio) {
-        console.log('Unmuting flicker audio');
         flickerAudio.muted = false;
       }
       
@@ -258,25 +210,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Helper function to force stop all audio
-  function forceStopAllAudio() {
-    audios.forEach(a => { 
-      if (a) {
-        a.pause();
-        a.currentTime = 0;
-        a.muted = true;
-      }
-    });
-    
-    // Don't stop flicker audio - let it work independently
-    // if (flickerAudio) {
-    //   flickerAudio.pause();
-    //   flickerAudio.currentTime = 0;
-    // }
-    
-    
-    currentAudio = null;
-  }
 
   // Intersection Observer for section detection
   const observerOptions = {
@@ -302,30 +235,14 @@ window.addEventListener('DOMContentLoaded', () => {
         maxIdx = idx;
       }
     });
-    if (currentSectionIndex !== maxIdx) {
+    if (currentSectionIndex !== maxIdx && !isVideoTransitioning) {
       currentSectionIndex = maxIdx;
-      console.log('Section changed to index:', maxIdx, 'Panel class:', panels[maxIdx]?.className);
       
       // Only play audio if not muted
       if (!isMuted) {
         playCurrentRoomAudio();
       }
       
-      // Update hamburger menu position based on current section
-      const hamburgerMenu = document.getElementById('hamburger-menu');
-      const navigationMenu = document.querySelector('.navigation-menu');
-      
-      if (hamburgerMenu) {
-        if (maxIdx === 0) {
-          // Attic section - keep menu in current position
-          hamburgerMenu.classList.remove('top-position');
-          if (navigationMenu) navigationMenu.classList.remove('top-position');
-        } else {
-          // Other sections - move menu to top
-          hamburgerMenu.classList.add('top-position');
-          if (navigationMenu) navigationMenu.classList.add('top-position');
-        }
-      }
     }
   }, observerOptions);
 
@@ -444,7 +361,6 @@ window.addEventListener('DOMContentLoaded', () => {
     // Debug: log current section index and class
     if (idx !== -1) {
       const panel = panels[idx];
-      console.log('Current section index:', idx, 'Class:', panel.className);
       // Typewriter effect for label (only when section changes)
       panels.forEach((p, i) => {
         const label = p.querySelector('.section-label');
@@ -496,7 +412,6 @@ window.addEventListener('DOMContentLoaded', () => {
         }
       });
     } else {
-      console.log('No section in view');
     }
     audios.forEach((audio, i) => {
       if (!audio) return;
@@ -558,7 +473,6 @@ window.addEventListener('DOMContentLoaded', () => {
       } else {
         // In basement - let the flicker sequence control the audio
         // Don't pause it here, let it play during flicker sequences
-        console.log('In basement section, flicker audio should be available');
       }
     }
 
@@ -576,17 +490,38 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }, 200);
   
+
   // Progressive loading system - above the fold first, then below
-  const atticVideo = document.querySelector('.panel.attic .bg-video');
-  const livingRoomVideo = document.querySelector('.panel.living-room .bg-video');
+  const atticVideo = document.getElementById('attic-video');
+  const livingRoomVideo = document.getElementById('living-room-video');
   const atticThumbnail = document.querySelector('.panel.attic .video-thumbnail');
   const livingRoomThumbnail = document.querySelector('.panel.living-room .video-thumbnail');
+  
+  // Simple solution: hide videos completely if they won't autoplay cleanly
+  function setupCleanVideoFallback(video, videoName) {
+    if (!video) return;
+    
+    // Try to play the video
+    video.play().then(() => {
+      video._autoplaySuccessful = true;
+    }).catch(() => {
+      // Video won't autoplay, hide it completely so no play buttons show
+      video.style.display = 'none';
+      video.style.visibility = 'hidden';
+      video.style.opacity = '0';
+      video.style.pointerEvents = 'none';
+      video._autoplaySuccessful = false;
+    });
+  }
+  
+  // Setup both videos with clean fallback
+  setupCleanVideoFallback(atticVideo, 'Attic video');
+  setupCleanVideoFallback(livingRoomVideo, 'Living room video');
   
   // Function to handle thumbnail-first video loading with fade-in effect
   function loadVideoWithThumbnail(video, thumbnail, duration = 2000) {
     if (!video || !thumbnail) return;
     
-    console.log('Starting video loading for:', video.src);
     
     // Start with thumbnail invisible and video hidden
     thumbnail.style.opacity = '0';
@@ -596,12 +531,13 @@ window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       thumbnail.style.transition = 'opacity 1.5s ease-in';
       thumbnail.style.opacity = '1';
-      console.log('Thumbnail fade-in started');
     }, 100);
     
     // Add multiple event listeners for better reliability
     const videoReady = () => {
-      console.log('Video ready, transitioning from thumbnail:', video.src);
+      
+      // Set flag to prevent intersection observer from triggering during video transition
+      isVideoTransitioning = true;
       
       // Fade out thumbnail
       thumbnail.classList.add('fade-out');
@@ -610,11 +546,16 @@ window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         video.style.transition = `opacity ${duration}ms ease-in`;
         video.style.opacity = '1';
+        
       }, 100);
       
-      // Remove thumbnail after transition
+      // Remove thumbnail after transition and clear flag
       setTimeout(() => {
-        thumbnail.style.display = 'none';
+        // Only hide thumbnail if video autoplay was successful
+        if (video._autoplaySuccessful) {
+          thumbnail.style.display = 'none';
+        }
+        isVideoTransitioning = false; // Clear flag after transition is complete
       }, duration + 500); // Wait for video fade-in to complete
     };
     
@@ -629,13 +570,11 @@ window.addEventListener('DOMContentLoaded', () => {
     // Fallback: if video doesn't load, keep thumbnail visible and retry
     setTimeout(() => {
       if (video.readyState < 2) { // HAVE_CURRENT_DATA
-        console.log('Video not ready after 5s, retrying:', video.src);
         video.load(); // Try loading again
         
         // Second fallback: keep thumbnail visible indefinitely
         setTimeout(() => {
           if (video.readyState < 2) {
-            console.log('Video still not ready, keeping thumbnail visible:', video.src);
           }
         }, 10000);
       }
@@ -648,11 +587,9 @@ window.addEventListener('DOMContentLoaded', () => {
       if (atticVideo && atticThumbnail) {
         // Start attic video loading with thumbnail
         loadVideoWithThumbnail(atticVideo, atticThumbnail, 2500);
-        console.log('Above-the-fold content loaded (attic with thumbnail)');
         
         // Wait for attic video to be ready, then resolve
         atticVideo.addEventListener('canplay', () => {
-          console.log('Attic video ready, proceeding to below-the-fold');
           resolve();
         }, { once: true });
         
@@ -671,7 +608,6 @@ window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         atticThumbnail.style.transition = 'opacity 1.5s ease-in';
         atticThumbnail.style.opacity = '1';
-        console.log('Attic thumbnail fade-in started');
       }, 100);
     }
     
@@ -680,7 +616,6 @@ window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         livingRoomThumbnail.style.transition = 'opacity 1.5s ease-in';
         livingRoomThumbnail.style.opacity = '1';
-        console.log('Living room thumbnail fade-in started');
       }, 100);
     }
   }
@@ -689,18 +624,15 @@ window.addEventListener('DOMContentLoaded', () => {
   function startVideoLoading() {
     if (atticVideo && atticThumbnail) {
       loadVideoWithThumbnail(atticVideo, atticThumbnail, 2500);
-      console.log('Attic video loading started');
     }
     
     if (livingRoomVideo && livingRoomThumbnail) {
       loadVideoWithThumbnail(livingRoomVideo, livingRoomThumbnail, 2000);
-      console.log('Living room video loading started');
     }
   }
   
   // Load below-the-fold content after above-the-fold is ready
   function loadBelowTheFold() {
-    console.log('Below-the-fold assets loading completed');
     
       // Initialize basement lighting immediately (don't wait for flicker sequence)
   const basement = document.querySelector('.panel.basement');
@@ -711,7 +643,6 @@ window.addEventListener('DOMContentLoaded', () => {
     // Ensure basement starts with light on and minimal darkening
     flickerGlow.style.opacity = '0.95';
     basementDarken.style.opacity = '0.1'; // Very light darkening instead of full dark
-    console.log('Basement lighting initialized');
     
     // Make basement light responsive to scroll position
     let isBasementVisible = false;
@@ -722,7 +653,6 @@ window.addEventListener('DOMContentLoaded', () => {
       if (flickerGlow && basementDarken) {
         flickerGlow.style.opacity = '0.95';
         basementDarken.style.opacity = '0.1';
-        console.log('Basement light turned on');
       }
     }
     
@@ -731,7 +661,6 @@ window.addEventListener('DOMContentLoaded', () => {
       if (flickerGlow && basementDarken) {
         flickerGlow.style.opacity = '0';
         basementDarken.style.opacity = '0.92';
-        console.log('Basement light turned off');
       }
     }
     
@@ -769,7 +698,6 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     });
     
-    console.log('Below-the-fold assets loaded');
   }
   
   // Start progressive loading
@@ -782,7 +710,6 @@ window.addEventListener('DOMContentLoaded', () => {
   
   // Add network status monitoring
   window.addEventListener('online', () => {
-    console.log('Network connection restored, retrying video loading');
     // Retry loading videos when network comes back
     setTimeout(() => {
       if (atticVideo) atticVideo.load();
@@ -955,13 +882,24 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Global function to force stop all audio
+function forceStopAllAudio() {
+  const audios = document.querySelectorAll('audio');
+  audios.forEach(a => { 
+    if (a) {
+      a.pause();
+      a.currentTime = 0;
+      a.muted = true;
+    }
+  });
+}
+
 // Modal functionality - moved outside main event listener
 document.addEventListener('DOMContentLoaded', function() {
   const modalOverlay = document.getElementById('modal-overlay');
   const modalBody = document.getElementById('modal-body');
   const modalClose = document.querySelector('.modal-close');
 
-  console.log('Modal elements found:', { modalOverlay, modalBody, modalClose });
 
   // Bio content
   const bios = {
@@ -992,24 +930,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // About link clicks
   document.addEventListener('click', function(e) {
-    console.log('Click detected on:', e.target);
     if (e.target.classList.contains('about-link')) {
       e.preventDefault();
       const modalType = e.target.getAttribute('data-modal');
-      console.log('About link clicked:', modalType);
       openModal(modalType);
     }
   });
 
   // Close modal
   modalClose.addEventListener('click', function() {
-    console.log('Close button clicked');
     closeModal();
   });
   
   modalOverlay.addEventListener('click', function(e) {
     if (e.target === modalOverlay) {
-      console.log('Overlay clicked');
       closeModal();
     }
   });
@@ -1017,33 +951,28 @@ document.addEventListener('DOMContentLoaded', function() {
   // Close modal with Escape key
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
-      console.log('Escape key pressed');
       closeModal();
     }
   });
 
   function openModal(type) {
-    console.log('Opening modal for:', type);
     const bio = bios[type];
     if (bio) {
       modalBody.innerHTML = bio.content;
       modalOverlay.classList.add('active');
       document.body.style.overflow = 'hidden'; // Prevent background scrolling
-      console.log('Modal opened:', type);
     } else {
       console.error('Bio not found for type:', type);
     }
   }
 
   function closeModal() {
-    console.log('Closing modal');
     modalOverlay.classList.remove('active');
     document.body.style.overflow = ''; // Restore scrolling
   }
 
   // Test modal function (for debugging)
   window.testModal = function() {
-    console.log('Testing modal...');
     openModal('quinn');
   };
   
@@ -1053,8 +982,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ===== TAPE STACK PLAYER FUNCTIONALITY =====
 
-// AudioBus adapter for tape stack player
-window.audioBus = {
+  // AudioBus adapter for tape stack player
+  window.audioBus = window.audioBus || {};
+  
+  
+  window.audioBus = {
   // read-only getter; return true if globally muted
   get muted() {
     // Check for the existing mute system in script.js
@@ -1139,14 +1071,12 @@ const EPISODE_TAPES = [
     // bottom sheet elements created in HTML
 
     if (!tapeStackBtn || !playerOverlay) {
-      console.log('Tape stack player elements not found, skipping initialization');
       return;
     }
 
     setupTapePlayerEventListeners();
     setupTapeStackAnimation();
     setupSwipeGesture();
-    console.log('Tape Stack Player initialized');
   }
 
   function setupTapePlayerEventListeners() {
@@ -1188,7 +1118,6 @@ const EPISODE_TAPES = [
   }
 
   function openTapePlayer() {
-    console.log('Opening tape player...');
     
     // Prevent body scroll on mobile when popup is open
     document.body.style.overflow = 'hidden';
@@ -1198,7 +1127,6 @@ const EPISODE_TAPES = [
   }
 
   function showTapePlayerPopup() {
-    console.log('Showing tape player popup...');
     
     // Hide the button
     if (tapeStackBtn) {
@@ -1240,7 +1168,6 @@ const EPISODE_TAPES = [
   }
 
   function closeTapePlayer() {
-    console.log('Closing tape player...');
     
     // Show the button again immediately
     if (tapeStackBtn) {
@@ -1383,7 +1310,6 @@ const EPISODE_TAPES = [
         playerOverlay.classList.add('dragging');
       }
       
-      console.log('Touch start on handle:', startY);
     }, { passive: false });
     
     tapeSheetHandleWrapper.addEventListener('touchmove', (e) => {
@@ -1422,7 +1348,6 @@ const EPISODE_TAPES = [
       const deltaTime = Date.now() - startTime;
       const velocity = deltaTime > 0 ? deltaY / deltaTime : 0;
       
-      console.log('Touch end:', { deltaY, velocity, isDragging, hasMoved });
       
       // Reset slide position and remove dragging class
       if (playerOverlay) {
@@ -1439,7 +1364,6 @@ const EPISODE_TAPES = [
       const closeThreshold = screenHeight * 0.3; // 30% of screen height
       
       if (deltaY > closeThreshold || (deltaY > 50 && velocity > 0.3)) {
-        console.log('Closing via swipe gesture');
         closeTapePlayer();
       }
       
@@ -1452,7 +1376,6 @@ const EPISODE_TAPES = [
     
     // Add touchcancel event to handle interrupted touches
     tapeSheetHandleWrapper.addEventListener('touchcancel', (e) => {
-      console.log('Touch cancelled on handle');
       
       // Reset slide position and remove dragging class
       if (playerOverlay) {
@@ -1493,7 +1416,6 @@ const EPISODE_TAPES = [
           playerOverlay.classList.add('dragging');
         }
         
-        console.log('Touch start on header:', startY);
       }, { passive: false });
       
       tapeSheetHeader.addEventListener('touchmove', (e) => {
@@ -1530,7 +1452,6 @@ const EPISODE_TAPES = [
         const deltaTime = Date.now() - startTime;
         const velocity = deltaTime > 0 ? deltaY / deltaTime : 0;
         
-        console.log('Touch end on header:', { deltaY, velocity, isDragging, hasMoved });
         
         // Reset slide position and remove dragging class
         if (playerOverlay) {
@@ -1547,7 +1468,6 @@ const EPISODE_TAPES = [
         const closeThreshold = screenHeight * 0.3; // 30% of screen height
         
         if (deltaY > closeThreshold || (deltaY > 50 && velocity > 0.3)) {
-          console.log('Closing via header swipe gesture');
           closeTapePlayer();
         }
         
@@ -1562,7 +1482,6 @@ const EPISODE_TAPES = [
       tapeSheetHeader.addEventListener('touchcancel', (e) => {
         if (e.target === tapeSheetHandle || e.target === tapeSheetHandleWrapper) return;
         
-        console.log('Touch cancelled on header');
         
         // Reset slide position and remove dragging class
         if (playerOverlay) {

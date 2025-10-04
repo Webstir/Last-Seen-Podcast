@@ -33,28 +33,39 @@
   <section id="attic" class="panel attic">
     <div class="video-container">
       <img class="video-thumbnail" src="./attic-thumbnail.jpg" alt="Attic preview" />
-      <video class="bg-video" src="./attic.mp4" autoplay loop muted playsinline></video>
+      <video id="attic-video" class="bg-video" src="./attic.mp4" autoplay loop muted playsinline disablepictureinpicture></video>
     </div>
     <canvas class="dust-overlay"></canvas>
           <div class="tv-static"></div>
+    
+    <!-- Temporary banner for comparison -->
     <div class="attic-countdown">
-      <div class="countdown-display">
-        <div class="countdown-label">PODCAST LAUNCH COUNTDOWN</div>
-        <div class="countdown-number" id="attic-days">00</div>
-        <div class="countdown-unit">DAYS</div>
-        <div class="countdown-subtitle">UNTIL OCTOBER 1ST</div>
+      <div class="countdown-content">
+        <h2>🎙️ PODCAST LAUNCHED! 🎙️</h2>
+        <p>Last Seen in the Twilight Zone is now live!</p>
+        <p>Listen to our first episodes on all major platforms</p>
       </div>
     </div>
+    
     <div class="section-label title">Last Seen<br/>in the Twilight Zone</div>
     <div class="social-icons">
-      <a href="https://www.patreon.com/c/LastSeenintheTwilightZone" class="social-icon patreon" target="_blank" rel="noopener">
+      <a href="https://www.patreon.com/c/LastSeenintheTwilightZone" class="social-icon patreon" target="_blank" rel="noopener" title="Support us on Patreon">
         <img src="./Social Icons/PATREON_SYMBOL.png" alt="Patreon" />
       </a>
-      <a href="https://www.facebook.com/share/g/16qYRs5e3/" class="social-icon facebook" target="_blank" rel="noopener">
+      <a href="https://www.facebook.com/share/g/16qYRs5e3/" class="social-icon facebook" target="_blank" rel="noopener" title="Join the conversation on Facebook">
         <img src="./Social Icons/facebook-logo.png" alt="Facebook" />
       </a>
-      <a href="https://www.instagram.com/lastseeninthetwilightzone/" class="social-icon instagram" target="_blank" rel="noopener">
+      <a href="https://www.instagram.com/lastseeninthetwilightzone/" class="social-icon instagram" target="_blank" rel="noopener" title="Follow us on Instagram">
         <img src="./Social Icons/instagram-logo.png" alt="Instagram" />
+      </a>
+      <a href="https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980" class="social-icon platform-icon apple" target="_blank" rel="noopener" title="Listen on Apple Podcasts">
+        <i class="fa-brands fa-apple"></i>
+      </a>
+      <a href="https://open.spotify.com/show/70BWdMF3YWZoL0pMkscO17?si=922f1c352b154309" class="social-icon platform-icon spotify" target="_blank" rel="noopener" title="Listen on Spotify">
+        <i class="fa-brands fa-spotify"></i>
+      </a>
+      <a href="https://www.audible.com/pd/B0FRHK44ZG?source_code=ASSORAP0511160006&share_location=podcast_show_detail" class="social-icon platform-icon audible" target="_blank" rel="noopener" title="Listen on Audible">
+        <i class="fa-brands fa-audible"></i>
       </a>
     </div>
     <div class="scroll-indicator">
@@ -77,7 +88,7 @@
   <section id="living-room" class="panel living-room">
     <div class="video-container">
       <img class="video-thumbnail" src="./living-room-thumbnail.jpg" alt="Living room preview" />
-      <video class="bg-video" src="./living-room.mp4" autoplay loop muted playsinline></video>
+      <video id="living-room-video" class="bg-video" src="./living-room.mp4" autoplay loop muted playsinline disablepictureinpicture></video>
             </div>
     <canvas class="living-dust"></canvas>
     <div class="living-rays"></div>
@@ -160,8 +171,6 @@
       <div id="modal-body"></div>
     </div>
   </div>
-
-  
 
   <!-- Tape Player Popup Overlay -->
   <div id="playerOverlay" class="player-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="playerTitle">

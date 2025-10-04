@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Last Seen in the Twilight Zone</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   
   <!-- Favicons -->
   <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
@@ -1379,10 +1380,10 @@
             <p class="placeholder-subtitle">Investigating disappearances in forgotten places</p>
             
             <div class="placeholder-message">
-              <p>The investigation continues. Our podcast is currently being prepared in a dimension just beyond your reach.</p>
+              <p>The investigation has begun. Our podcast is now live, bringing you stories from the real Twilight Zone.</p>
             </div>
             
-            <button id="demo-button" class="demo-link">Back to the House →</button>
+            <button id="demo-button" class="demo-link">Enter the House →</button>
             
             <div class="index-social-links">
               <a href="https://www.patreon.com/c/LastSeenintheTwilightZone" class="index-social-link patreon" target="_blank" rel="noopener">Support us on Patreon →</a>
@@ -1391,9 +1392,20 @@
             </div>
             
             <div class="placeholder-status">
-              STATUS: UNDER CONSTRUCTION<br>
-              DIMENSION: IN PROGRESS<br>
-              ETA: <span id="launch-countdown">Loading...</span> DAYS
+              STATUS: LIVE<br>
+              DIMENSION: ACTIVE<br>
+              PODCAST: NOW STREAMING<br>
+              <div class="podcast-platforms">
+                <a href="https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980" target="_blank" rel="noopener" class="platform-link apple" title="Listen on Apple Podcasts">
+                  <i class="fa-brands fa-apple"></i>
+                </a>
+                <a href="https://open.spotify.com/show/70BWdMF3YWZoL0pMkscO17?si=922f1c352b154309" target="_blank" rel="noopener" class="platform-link spotify" title="Listen on Spotify">
+                  <i class="fa-brands fa-spotify"></i>
+                </a>
+                <a href="https://www.audible.com/pd/B0FRHK44ZG?source_code=ASSORAP0511160006&share_location=podcast_show_detail" target="_blank" rel="noopener" class="platform-link audible" title="Listen on Audible">
+                  <i class="fa-brands fa-audible"></i>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -1500,24 +1512,6 @@
     // Start preloading after a short delay
     setTimeout(preloadDemoAssets, 1000);
 
-    // Countdown timer functionality
-    function updateLaunchCountdown() {
-      const launchDate = new Date('October 1, 2025 00:00:00').getTime();
-      const now = new Date().getTime();
-      const distance = launchDate - now;
-
-      if (distance > 0) {
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        document.getElementById('launch-countdown').textContent = days.toString();
-      } else {
-        // Launch day has arrived
-        document.getElementById('launch-countdown').textContent = '0';
-      }
-    }
-
-    // Update countdown every day
-    updateLaunchCountdown();
-    setInterval(updateLaunchCountdown, 86400000);
     
     // TV Button Interactive Functionality
     document.addEventListener('DOMContentLoaded', function() {
