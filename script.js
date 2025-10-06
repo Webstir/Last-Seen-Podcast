@@ -1021,7 +1021,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Tape Stack Player Application
 document.addEventListener('DOMContentLoaded', () => {
   // Episode data (multiple episodes)
-  // Platform links for episodes 1, 2, and 3
+  // Platform links for episodes 1, 2, 3, and 4
   const PLATFORMS = {
     // Episode 1 links (original)
     apple: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000727234335',
@@ -1034,14 +1034,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Episode 3 links
     apple3: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000729440199',
     spotify3: 'https://open.spotify.com/episode/5XUoLJqJe7Aknbvte4t7Y1?si=3232601ee2bd4517',
-    audible3: 'https://www.audible.com/pd/B0FRYJV99X?source_code=ASSORAP0511160006&share_location=library_overflow'
+    audible3: 'https://www.audible.com/pd/B0FRYJV99X?source_code=ASSORAP0511160006&share_location=library_overflow',
+    // Episode 4 links
+    apple4: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000730339282',
+    spotify4: 'https://open.spotify.com/episode/76KrUFJdgknMlVulZqoBwr?si=8b4b1661c42f4256',
+    audible4: 'https://www.audible.com/pd/B0FTY6Z6GQ?source_code=ASSORAP0511160006&share_location=library_overflow'
   };
 
 const EPISODE_TAPES = [
   { title: 'THE DISAPPEARANCE OF MICHELE HARRIS PART 1: SNEAK PEEK', img: 'images/tapes/episode-1.jpg', available: true, releaseDate: '9/17' },
   { title: 'INTRODUCTION TO LAST SEEN', img: 'images/tapes/episode-2.jpg', available: true },
   { title: 'NIGHTMARE ON OAK ST.', img: 'images/tapes/episode-3.jpg', available: true },
-  { title: 'JULY 4TH: SHOTS ON RANO BOULEVARD/ BEHIND CLOSED DOORS: HALL ST HORROR', img: 'images/tapes/episode-4.jpg', releaseDate: '10/6' },
+  { title: 'JULY 4TH: SHOTS ON RANO BOULEVARD/ BEHIND CLOSED DOORS: HALL ST HORROR', img: 'images/tapes/episode-4.jpg', available: true },
   { title: 'CLOSE TO HOME', img: 'images/tapes/episode-5.jpg', releaseDate: '10/13' },
   { title: 'SECRETS OF THE CASTLE ON THE HILL', img: 'images/tapes/episode-6.jpg', releaseDate: '10/20' },
   { title: 'FINAL CALL FOR HELP', img: 'images/tapes/episode-7.jpg', releaseDate: '10/27' },
@@ -1233,7 +1237,7 @@ const EPISODE_TAPES = [
         label.textContent = 'Listen on:';
 
         // Determine which platform links to use based on episode index
-        const platformSuffix = index === 1 ? '2' : index === 2 ? '3' : '';
+        const platformSuffix = index === 1 ? '2' : index === 2 ? '3' : index === 3 ? '4' : '';
         
         const btnApple = document.createElement('button');
         btnApple.className = 'icon-btn';
