@@ -1021,7 +1021,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Tape Stack Player Application
 document.addEventListener('DOMContentLoaded', () => {
   // Episode data (multiple episodes)
-  // Platform links for episodes 1, 2, 3, and 4
+  // Platform links for episodes 1, 2, 3, 4, and 5
   const PLATFORMS = {
     // Episode 1 links (original)
     apple: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000727234335',
@@ -1038,7 +1038,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Episode 4 links
     apple4: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000730339282',
     spotify4: 'https://open.spotify.com/episode/76KrUFJdgknMlVulZqoBwr?si=8b4b1661c42f4256',
-    audible4: 'https://www.audible.com/pd/B0FTY6Z6GQ?source_code=ASSORAP0511160006&share_location=library_overflow'
+    audible4: 'https://www.audible.com/pd/B0FTY6Z6GQ?source_code=ASSORAP0511160006&share_location=library_overflow',
+    // Episode 5 links
+    apple5: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000731526633',
+    spotify5: 'https://open.spotify.com/episode/4NtNo5Y5paNlZBVp4aw0Lz?si=3615dca4744d4b93',
+    audible5: 'https://www.audible.com/pd/B0FVWTHTZ4?source_code=ASSGB149080119000H&share_location=pdp'
   };
 
 const EPISODE_TAPES = [
@@ -1046,7 +1050,7 @@ const EPISODE_TAPES = [
   { title: 'INTRODUCTION TO LAST SEEN', img: 'images/tapes/episode-2.jpg', available: true },
   { title: 'NIGHTMARE ON OAK ST.', img: 'images/tapes/episode-3.jpg', available: true },
   { title: 'JULY 4TH: SHOTS ON RANO BOULEVARD/ BEHIND CLOSED DOORS: HALL ST HORROR', img: 'images/tapes/episode-4.jpg', available: true },
-  { title: 'CLOSE TO HOME', img: 'images/tapes/episode-5.jpg', releaseDate: '10/13' },
+  { title: 'CLOSE TO HOME', img: 'images/tapes/episode-5.jpg', available: true },
   { title: 'SECRETS OF THE CASTLE ON THE HILL', img: 'images/tapes/episode-6.jpg', releaseDate: '10/20' },
   { title: 'FINAL CALL FOR HELP', img: 'images/tapes/episode-7.jpg', releaseDate: '10/27' },
   { title: 'DO YOU RECOGNIZE THIS SUSPECT?', img: 'images/tapes/episode-8.jpg', releaseDate: '11/3' },
@@ -1210,8 +1214,8 @@ const EPISODE_TAPES = [
     if (!list) return;
     list.innerHTML = '';
 
-    // Show only first 7 episodes
-    EPISODE_TAPES.slice(0, 7).forEach((ep, index) => {
+    // Show only first 8 episodes
+    EPISODE_TAPES.slice(0, 8).forEach((ep, index) => {
       const card = document.createElement('div');
       card.className = 'tape-card';
       card.setAttribute('role', 'listitem');
@@ -1237,7 +1241,7 @@ const EPISODE_TAPES = [
         label.textContent = 'Listen on:';
 
         // Determine which platform links to use based on episode index
-        const platformSuffix = index === 1 ? '2' : index === 2 ? '3' : index === 3 ? '4' : '';
+        const platformSuffix = index === 1 ? '2' : index === 2 ? '3' : index === 3 ? '4' : index === 4 ? '5' : '';
         
         const btnApple = document.createElement('button');
         btnApple.className = 'icon-btn';
