@@ -1021,7 +1021,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Tape Stack Player Application
 document.addEventListener('DOMContentLoaded', () => {
   // Episode data (multiple episodes)
-  // Platform links for episodes 1, 2, 3, 4, and 5
+  // Platform links for episodes 1, 2, 3, 4, 5, and 6
   const PLATFORMS = {
     // Episode 1 links (original)
     apple: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000727234335',
@@ -1042,7 +1042,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Episode 5 links
     apple5: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000731526633',
     spotify5: 'https://open.spotify.com/episode/4NtNo5Y5paNlZBVp4aw0Lz?si=3615dca4744d4b93',
-    audible5: 'https://www.audible.com/pd/B0FVWTHTZ4?source_code=ASSGB149080119000H&share_location=pdp'
+    audible5: 'https://www.audible.com/pd/B0FVWTHTZ4?source_code=ASSGB149080119000H&share_location=pdp',
+    // Episode 6 links - Castle on the Hill
+    apple6: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000732586427',
+    spotify6: 'https://open.spotify.com/episode/6wfkJMKa04LfnXbTabpKdv?si=591b146ddf83480f',
+    audible6: 'https://www.audible.com/pd/B0FX27FP6Z?source_code=ASSORAP0511160006&share_location=library_overflow'
   };
 
 const EPISODE_TAPES = [
@@ -1051,7 +1055,7 @@ const EPISODE_TAPES = [
   { title: 'NIGHTMARE ON OAK ST.', img: 'images/tapes/episode-3.jpg', available: true },
   { title: 'JULY 4TH: SHOTS ON RANO BOULEVARD/ BEHIND CLOSED DOORS: HALL ST HORROR', img: 'images/tapes/episode-4.jpg', available: true },
   { title: 'CLOSE TO HOME', img: 'images/tapes/episode-5.jpg', available: true },
-  { title: 'SECRETS OF THE CASTLE ON THE HILL', img: 'images/tapes/episode-6.jpg', releaseDate: '10/20' },
+  { title: 'CASTLE ON THE HILL', img: 'images/tapes/episode-6.jpg', available: true },
   { title: 'FINAL CALL FOR HELP', img: 'images/tapes/episode-7.jpg', releaseDate: '10/27' },
   { title: 'DO YOU RECOGNIZE THIS SUSPECT?', img: 'images/tapes/episode-8.jpg', releaseDate: '11/3' },
   { title: 'VANISHED ON 9/11 - THE STORY PART 1', img: 'images/tapes/episode-9.jpg', releaseDate: '11/10' },
@@ -1241,7 +1245,7 @@ const EPISODE_TAPES = [
         label.textContent = 'Listen on:';
 
         // Determine which platform links to use based on episode index
-        const platformSuffix = index === 1 ? '2' : index === 2 ? '3' : index === 3 ? '4' : index === 4 ? '5' : '';
+        const platformSuffix = index === 1 ? '2' : index === 2 ? '3' : index === 3 ? '4' : index === 4 ? '5' : index === 5 ? '6' : '';
         
         const btnApple = document.createElement('button');
         btnApple.className = 'icon-btn';
