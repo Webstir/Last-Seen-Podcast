@@ -1097,6 +1097,7 @@ const EPISODE_TAPES = [
     setupTapePlayerEventListeners();
     setupTapeStackAnimation();
     setupSwipeGesture();
+    setupSortButtons();
   }
 
   function setupTapePlayerEventListeners() {
@@ -1148,6 +1149,9 @@ const EPISODE_TAPES = [
 
   function showTapePlayerPopup() {
     
+    // Reset expanded state when opening
+    expandedTapeIndex = null;
+    
     // Hide the button
     if (tapeStackBtn) {
       tapeStackBtn.classList.add('hidden');
@@ -1187,6 +1191,40 @@ const EPISODE_TAPES = [
     });
   }
 
+  // Sort button handlers
+  function setupSortButtons() {
+    // Use event delegation since buttons might not exist yet
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('sort-btn') || e.target.closest('.sort-btn')) {
+        const btn = e.target.classList.contains('sort-btn') ? e.target : e.target.closest('.sort-btn');
+        if (!btn) return;
+        
+        e.stopPropagation();
+        const sortOrder = btn.getAttribute('data-sort');
+        if (sortOrder && sortOrder !== currentSortOrder) {
+          currentSortOrder = sortOrder;
+          expandedTapeIndex = null; // Reset expansion when sorting
+          
+          // Update active state
+          const sortButtons = document.querySelectorAll('.sort-btn');
+          sortButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          // Rebuild list
+          buildTapeList();
+        }
+      }
+    });
+    
+    // Set initial active state after a short delay to ensure DOM is ready
+    setTimeout(() => {
+      const initialBtn = document.querySelector(`.sort-btn[data-sort="${currentSortOrder}"]`);
+      if (initialBtn) {
+        initialBtn.classList.add('active');
+      }
+    }, 100);
+  }
+
   function closeTapePlayer() {
     
     // Show the button again immediately
@@ -1221,57 +1259,104 @@ const EPISODE_TAPES = [
     if (url) window.open(url, '_blank', 'noopener');
   }
 
+  let currentSortOrder = 'newest'; // 'newest' or 'oldest'
+  let expandedTapeIndex = null; // Track which tape is expanded
+
   function buildTapeList() {
     const list = document.getElementById('tapeList');
     if (!list) return;
     list.innerHTML = '';
 
-    // Show only first 8 episodes
-    EPISODE_TAPES.slice(0, 8).forEach((ep, index) => {
+    // Show first 10 episodes (8 available + 2 coming soon)
+    let episodesToShow = EPISODE_TAPES.slice(0, 10);
+    
+    // Sort episodes based on current sort order
+    // Newest first = reverse array (Episode 8 at top)
+    // Oldest first = keep original order (Episode 1 at top)
+    if (currentSortOrder === 'oldest') {
+      // Keep original order - Episode 1 first
+      // episodesToShow stays as is
+    } else {
+      // Newest first - reverse so Episode 8 (newest available) is at top
+      episodesToShow = [...episodesToShow].reverse();
+    }
+
+    episodesToShow.forEach((ep, displayIndex) => {
+      // Find original index for platform links
+      const originalIndex = EPISODE_TAPES.indexOf(ep);
+      
       const card = document.createElement('div');
-      card.className = 'tape-card';
+      card.className = 'tape-card-stacked';
       card.setAttribute('role', 'listitem');
+      card.setAttribute('data-episode-index', originalIndex);
+      card.setAttribute('data-display-index', displayIndex);
+      
+      // Add expanded class if this is the expanded tape
+      if (expandedTapeIndex === displayIndex) {
+        card.classList.add('expanded');
+      }
 
       const img = document.createElement('img');
-      img.className = 'tape-thumb';
+      img.className = 'tape-thumb-stacked';
       img.alt = `Last Seen in the Twilight Zone Episode: ${ep.title} - True Crime Podcast`;
       img.src = ep.img || 'images/tape/placeholder.jpg';
 
-      const meta = document.createElement('div');
-      meta.className = 'tape-meta';
+      const titleBar = document.createElement('div');
+        titleBar.className = 'tape-title-bar';
+        titleBar.textContent = ep.title;
+        // Title bar z-index will be set dynamically based on card's z-index
+        // We'll set it to be slightly higher than the card's z-index
+      
+      // Click handler to expand/collapse - make entire card clickable
+      card.addEventListener('click', (e) => {
+        // Don't trigger if clicking on platform buttons
+        if (e.target.closest('.icon-btn') || e.target.closest('.tape-actions')) {
+          return;
+        }
+        e.stopPropagation();
+        toggleTapeExpansion(displayIndex);
+      });
 
-      const title = document.createElement('div');
-      title.className = 'tape-title';
-      title.textContent = ep.title;
+      const expandableContent = document.createElement('div');
+      expandableContent.className = 'tape-expandable-content';
 
       const actions = document.createElement('div');
       actions.className = 'tape-actions';
 
-      if (ep.available || index === 0) {
+      if (ep.available || originalIndex === 0) {
         const label = document.createElement('span');
         label.className = 'listen-on-label';
         label.textContent = 'Listen on:';
 
-        // Determine which platform links to use based on episode index
-        const platformSuffix = index === 1 ? '2' : index === 2 ? '3' : index === 3 ? '4' : index === 4 ? '5' : index === 5 ? '6' : index === 6 ? '7' : index === 7 ? '8' : '';
+        // Determine which platform links to use based on original episode index
+        const platformSuffix = originalIndex === 1 ? '2' : originalIndex === 2 ? '3' : originalIndex === 3 ? '4' : originalIndex === 4 ? '5' : originalIndex === 5 ? '6' : originalIndex === 6 ? '7' : originalIndex === 7 ? '8' : '';
         
         const btnApple = document.createElement('button');
         btnApple.className = 'icon-btn';
         btnApple.setAttribute('aria-label', 'Listen on Apple Podcasts');
         btnApple.innerHTML = '<i class="fa-brands fa-apple"></i>';
-        btnApple.addEventListener('click', () => handlePlatformClick(`apple${platformSuffix}`));
+        btnApple.addEventListener('click', (e) => {
+          e.stopPropagation();
+          handlePlatformClick(`apple${platformSuffix}`);
+        });
 
         const btnSpotify = document.createElement('button');
         btnSpotify.className = 'icon-btn';
         btnSpotify.setAttribute('aria-label', 'Listen on Spotify');
         btnSpotify.innerHTML = '<i class="fa-brands fa-spotify"></i>';
-        btnSpotify.addEventListener('click', () => handlePlatformClick(`spotify${platformSuffix}`));
+        btnSpotify.addEventListener('click', (e) => {
+          e.stopPropagation();
+          handlePlatformClick(`spotify${platformSuffix}`);
+        });
 
         const btnAudible = document.createElement('button');
         btnAudible.className = 'icon-btn';
         btnAudible.setAttribute('aria-label', 'Listen on Audible');
         btnAudible.innerHTML = '<i class="fa-brands fa-audible"></i>';
-        btnAudible.addEventListener('click', () => handlePlatformClick(`audible${platformSuffix}`));
+        btnAudible.addEventListener('click', (e) => {
+          e.stopPropagation();
+          handlePlatformClick(`audible${platformSuffix}`);
+        });
 
         actions.appendChild(label);
         actions.appendChild(btnApple);
@@ -1284,13 +1369,75 @@ const EPISODE_TAPES = [
         actions.appendChild(soon);
       }
 
-      meta.appendChild(title);
-      meta.appendChild(actions);
-
+      expandableContent.appendChild(actions);
+      
       card.appendChild(img);
-      card.appendChild(meta);
+      card.appendChild(titleBar);
+      card.appendChild(expandableContent);
+
+      // Set z-index: With negative margins, later items (higher displayIndex) visually stack on top
+      // So we want: displayIndex 0 (first) = lowest z-index (bottom), displayIndex 9 (last) = highest z-index (top)
+      // Higher displayIndex = higher z-index = visually on top
+      const zIndexValue = displayIndex + 101; // displayIndex 0 = 101 (bottom), displayIndex 9 = 110 (top)
+      card.style.zIndex = zIndexValue;
+      // Set title bar z-index to be slightly higher than card so it's visible above tape images
+      titleBar.style.zIndex = (zIndexValue + 10).toString();
 
       list.appendChild(card);
+    });
+  }
+
+  function toggleTapeExpansion(displayIndex) {
+    const list = document.getElementById('tapeList');
+    if (!list) return;
+    
+    const cards = list.querySelectorAll('.tape-card-stacked');
+    const clickedCard = list.querySelector(`[data-display-index="${displayIndex}"]`);
+    
+    if (!clickedCard) return;
+    
+    // If clicking the already expanded tape, collapse it
+    if (expandedTapeIndex === displayIndex) {
+      expandedTapeIndex = null;
+      clickedCard.classList.remove('expanded');
+      
+      // Reset all cards to their original positions - just remove transforms
+      cards.forEach((card, idx) => {
+        card.style.transform = '';
+      });
+      return;
+    }
+    
+    // Collapse previously expanded tape - just remove the class and reset transforms
+    if (expandedTapeIndex !== null) {
+      const prevCard = list.querySelector(`[data-display-index="${expandedTapeIndex}"]`);
+      if (prevCard) {
+        prevCard.classList.remove('expanded');
+        
+        // Reset transforms for cards that were above the previous expanded card
+        cards.forEach((card, idx) => {
+          const cardDisplayIndex = parseInt(card.getAttribute('data-display-index'));
+          if (cardDisplayIndex > expandedTapeIndex) {
+            card.style.transform = '';
+          }
+        });
+      }
+    }
+    
+    // Expand the clicked tape
+    expandedTapeIndex = displayIndex;
+    clickedCard.classList.add('expanded');
+    clickedCard.style.transform = 'translateY(0)';
+    
+    // Slide down all cards that are visually on top of the clicked one
+    // With reversed stacking, cards with higher displayIndex are visually on top
+    cards.forEach((card, idx) => {
+      const cardDisplayIndex = parseInt(card.getAttribute('data-display-index'));
+      if (cardDisplayIndex > displayIndex) {
+        // Cards above slide down - just apply transform, z-index stays as set
+        const offset = 160;
+        card.style.transform = `translateY(${offset}px)`;
+      }
     });
   }
 
