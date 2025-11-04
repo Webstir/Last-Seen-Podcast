@@ -1234,7 +1234,7 @@ const EPISODE_TAPES = [
 
       const img = document.createElement('img');
       img.className = 'tape-thumb';
-      img.alt = `Tape for ${ep.title}`;
+      img.alt = `Last Seen in the Twilight Zone Episode: ${ep.title} - True Crime Podcast`;
       img.src = ep.img || 'images/tape/placeholder.jpg';
 
       const meta = document.createElement('div');
