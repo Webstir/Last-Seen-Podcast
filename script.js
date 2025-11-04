@@ -1195,24 +1195,24 @@ const EPISODE_TAPES = [
   function setupSortButtons() {
     // Use event delegation since buttons might not exist yet
     document.addEventListener('click', function(e) {
-      if (e.target.classList.contains('sort-btn') || e.target.closest('.sort-btn')) {
-        const btn = e.target.classList.contains('sort-btn') ? e.target : e.target.closest('.sort-btn');
-        if (!btn) return;
+      const btn = e.target.closest('.sort-btn');
+      if (!btn) return;
+      
+      e.preventDefault();
+      e.stopPropagation();
+      const sortOrder = btn.getAttribute('data-sort');
+      
+      if (sortOrder) {
+        currentSortOrder = sortOrder;
+        expandedTapeIndex = null; // Reset expansion when sorting
         
-        e.stopPropagation();
-        const sortOrder = btn.getAttribute('data-sort');
-        if (sortOrder && sortOrder !== currentSortOrder) {
-          currentSortOrder = sortOrder;
-          expandedTapeIndex = null; // Reset expansion when sorting
-          
-          // Update active state
-          const sortButtons = document.querySelectorAll('.sort-btn');
-          sortButtons.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          
-          // Rebuild list
-          buildTapeList();
-        }
+        // Update active state
+        const sortButtons = document.querySelectorAll('.sort-btn');
+        sortButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Rebuild list
+        buildTapeList();
       }
     });
     
