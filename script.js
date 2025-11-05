@@ -1117,13 +1117,26 @@ const EPISODE_TAPES = [
       playerClose.addEventListener('click', closeTapePlayer);
     }
 
-    // Overlay click to close
+    // Overlay click to close - only close when clicking the backdrop area (not the player content)
     if (playerOverlay) {
       playerOverlay.addEventListener('click', (e) => {
-        if (e.target === playerOverlay) {
+        // Only close if clicking directly on the backdrop (not on player content)
+        const backdrop = playerOverlay.querySelector('.player-backdrop');
+        if (e.target === backdrop) {
           closeTapePlayer();
         }
       });
+      
+      // Prevent touch events on backdrop from propagating and causing rubber band
+      const backdrop = playerOverlay.querySelector('.player-backdrop');
+      if (backdrop) {
+        backdrop.addEventListener('touchstart', (e) => {
+          e.stopPropagation();
+        }, { passive: true });
+        backdrop.addEventListener('touchmove', (e) => {
+          e.stopPropagation();
+        }, { passive: true });
+      }
     }
 
     // Escape key to close
