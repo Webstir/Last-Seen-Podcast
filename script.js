@@ -112,6 +112,7 @@ window.addEventListener('DOMContentLoaded', () => {
             if (flickerAudio) {
               flickerAudio.pause();
               flickerAudio.currentTime = 0;
+              flickerAudio.muted = isMuted; // Ensure mute state is respected
             }
             return;
           }
@@ -166,10 +167,14 @@ window.addEventListener('DOMContentLoaded', () => {
     flickerAudio.volume = 0.5;
   }
   
+  // Expose isMuted to window for audioBus
+  window.isMuted = isMuted;
+  
   muteBtn.textContent = '🔇';
 
   function setMute(state) {
     isMuted = state;
+    window.isMuted = isMuted; // Update window for audioBus
     
     if (isMuted) {
       // When muting, pause all audio and ensure they stay paused
@@ -181,8 +186,9 @@ window.addEventListener('DOMContentLoaded', () => {
         }
       });
       
-      // Handle flicker audio mute state
+      // Handle flicker audio mute state - immediately mute if playing
       if (flickerAudio) {
+        flickerAudio.muted = true;
         flickerAudio.pause();
         flickerAudio.currentTime = 0;
       }
@@ -731,7 +737,35 @@ window.addEventListener('DOMContentLoaded', () => {
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
   }
+  
+  // Recalculate on resize
   window.addEventListener('resize', setPanelHeight);
+  
+  // Recalculate when viewport changes (handles Apple Podcasts banner close)
+  window.addEventListener('orientationchange', () => {
+    setTimeout(setPanelHeight, 100);
+  });
+  
+  // Watch for viewport height changes (handles Apple banner dismiss)
+  let lastHeight = window.innerHeight;
+  const checkViewportChange = () => {
+    const currentHeight = window.innerHeight;
+    if (currentHeight !== lastHeight) {
+      lastHeight = currentHeight;
+      setPanelHeight();
+    }
+  };
+  
+  // Check periodically for viewport changes (especially when banner closes)
+  setInterval(checkViewportChange, 100);
+  
+  // Also check on visual viewport changes (more reliable for mobile)
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', setPanelHeight);
+    window.visualViewport.addEventListener('scroll', setPanelHeight);
+  }
+  
+  // Initial calculation
   setPanelHeight();
 
   // Countdown timer functionality
@@ -1162,7 +1196,7 @@ const EPISODE_TAPES = [
 
   function showTapePlayerPopup() {
     
-    // Reset expanded state when opening
+    // Reset expanded state when opening so bottom tape will be expanded by default
     expandedTapeIndex = null;
     
     // Hide the button
@@ -1196,7 +1230,7 @@ const EPISODE_TAPES = [
         }
       }, 200);
 
-      // Build bottom sheet list
+      // Build bottom sheet list (will auto-expand bottom tape)
       buildTapeList();
       // Open the sheet
       const sheet = document.getElementById('tapeSheet');
@@ -1217,14 +1251,14 @@ const EPISODE_TAPES = [
       
       if (sortOrder) {
         currentSortOrder = sortOrder;
-        expandedTapeIndex = null; // Reset expansion when sorting
+        expandedTapeIndex = null; // Reset to null so buildTapeList will set default bottom tape
         
         // Update active state
         const sortButtons = document.querySelectorAll('.sort-btn');
         sortButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
-        // Rebuild list
+        // Rebuild list (will auto-expand bottom tape)
         buildTapeList();
       }
     }
@@ -1302,6 +1336,11 @@ const EPISODE_TAPES = [
     } else {
       // Newest first - reverse so Episode 8 (newest available) is at top
       episodesToShow = [...episodesToShow].reverse();
+    }
+
+    // Expand the bottom tape (last in list) by default if no tape is currently expanded
+    if (expandedTapeIndex === null) {
+      expandedTapeIndex = episodesToShow.length - 1; // Last tape (bottom one)
     }
 
     episodesToShow.forEach((ep, displayIndex) => {
@@ -1408,6 +1447,25 @@ const EPISODE_TAPES = [
 
       list.appendChild(card);
     });
+    
+    // If we set a default expanded tape, apply the expansion styling
+    if (expandedTapeIndex !== null) {
+      const defaultCard = list.querySelector(`[data-display-index="${expandedTapeIndex}"]`);
+      if (defaultCard) {
+        defaultCard.classList.add('expanded');
+        defaultCard.style.transform = 'translateY(0)';
+        
+        // Slide down any cards above the expanded one
+        const cards = list.querySelectorAll('.tape-card-stacked');
+        cards.forEach((card) => {
+          const cardDisplayIndex = parseInt(card.getAttribute('data-display-index'));
+          if (cardDisplayIndex > expandedTapeIndex) {
+            const offset = 160;
+            card.style.transform = `translateY(${offset}px)`;
+          }
+        });
+      }
+    }
   }
 
   function toggleTapeExpansion(displayIndex) {
