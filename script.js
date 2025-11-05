@@ -1193,8 +1193,8 @@ const EPISODE_TAPES = [
 
   // Sort button handlers
   function setupSortButtons() {
-    // Use event delegation since buttons might not exist yet
-    document.addEventListener('click', function(e) {
+    // Handle both click and touch events for mobile compatibility
+    function handleSortClick(e) {
       const btn = e.target.closest('.sort-btn');
       if (!btn) return;
       
@@ -1214,7 +1214,17 @@ const EPISODE_TAPES = [
         // Rebuild list
         buildTapeList();
       }
-    });
+    }
+    
+    // Use event delegation - add both click and touchstart for mobile
+    document.addEventListener('click', handleSortClick);
+    document.addEventListener('touchstart', function(e) {
+      // Only handle touch if it's on a sort button
+      const btn = e.target.closest('.sort-btn');
+      if (btn) {
+        handleSortClick(e);
+      }
+    }, { passive: false });
     
     // Set initial active state after a short delay to ensure DOM is ready
     setTimeout(() => {
