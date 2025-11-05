@@ -2,7 +2,6 @@
 .tape-sheet {
   position: relative;
   width: 100%;
-  height: 100%;
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
   transform: translateY(100%);
@@ -223,18 +222,17 @@
   height: 240px;
   z-index: 10;
   transform: translateY(0);
-  box-shadow: 0 8px 30px rgba(255, 215, 0, 0.3);
   margin-bottom: 20px;
 }
 
 .tape-thumb-stacked {
-  width: 100%;
-  height: 100%;
+  width: 95%;
   object-fit: fill;
   border-radius: 8px;
   background: #222;
   position: relative;
   display: block;
+  margin: 0 auto;
 }
 
 .tape-title-bar {
@@ -278,7 +276,6 @@
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease, opacity 0.3s ease;
-  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
   opacity: 0;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
@@ -401,7 +398,7 @@
     padding: 10px 12px;
     font-size: 1rem;
     min-height: 50px;
-    margin-top: 20px;
+    margin-top: 22px;
     margin-left: 20px;
     margin-right: 20px;
     color: #000;
