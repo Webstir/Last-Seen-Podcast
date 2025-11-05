@@ -1058,23 +1058,23 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
 const EPISODE_TAPES = [
-  { title: 'THE DISAPPEARANCE OF MICHELE HARRIS PART 1: SNEAK PEEK', img: 'images/tapes/episode-1.jpg', available: true, releaseDate: '9/17' },
-  { title: 'INTRODUCTION TO LAST SEEN', img: 'images/tapes/episode-2.jpg', available: true },
-  { title: 'NIGHTMARE ON OAK ST.', img: 'images/tapes/episode-3.jpg', available: true },
-  { title: 'JULY 4TH: SHOTS ON RANO BOULEVARD/ BEHIND CLOSED DOORS: HALL ST HORROR', img: 'images/tapes/episode-4.jpg', available: true },
-  { title: 'CLOSE TO HOME', img: 'images/tapes/episode-5.jpg', available: true },
-  { title: 'CASTLE ON THE HILL', img: 'images/tapes/episode-6.jpg', available: true },
-  { title: 'FINAL CALL FOR HELP', img: 'images/tapes/episode-7.jpg', available: true },
-  { title: 'DO YOU RECOGNIZE THIS SUSPECT?', img: 'images/tapes/episode-8.jpg', available: true },
-  { title: 'VANISHED ON 9/11 - THE STORY PART 1', img: 'images/tapes/episode-9.jpg', releaseDate: '11/10' },
-  { title: 'VANISHED ON 9/11- WHO DID IT? PART 2', img: 'images/tapes/episode-10.jpg', releaseDate: '11/17' },
-  { title: 'VANISHED ON 9/11', img: 'images/tapes/episode-11.jpg', releaseDate: '11/24' },
-  { title: 'THE GIRL NEXT DOOR', img: 'images/tapes/episode-12.jpg', releaseDate: '12/1' },
-  { title: 'SILENCE AFTER THE SHOT', img: 'images/tapes/episode-13.jpg', releaseDate: '12/8' },
-  { title: '13 BIRDS IN THE SKY', img: 'images/tapes/episode-14.jpg', releaseDate: '12/22' },
-  { title: 'HATE AT THE GROCERY STORE', img: 'images/tapes/episode-15.jpg', releaseDate: '12/29' },
-  { title: 'WHERE IS BAMBI MADDEN?', img: 'images/tapes/episode-16.jpg', releaseDate: '1/5' },
-  { title: 'LOST TO THE JUNGLE', img: 'images/tapes/episode-16.jpg', releaseDate: '1/12' }
+  { title: 'THE DISAPPEARANCE OF MICHELE HARRIS PART 1: SNEAK PEEK', img: 'images/tapes/casette-tape.png', available: true, releaseDate: '9/17' },
+  { title: 'INTRODUCTION TO LAST SEEN', img: 'images/tapes/casette-tape.png', available: true },
+  { title: 'NIGHTMARE ON OAK ST.', img: 'images/tapes/casette-tape.png', available: true },
+  { title: 'JULY 4TH: SHOTS ON RANO BOULEVARD/ BEHIND CLOSED DOORS: HALL ST HORROR', img: 'images/tapes/casette-tape.png', available: true },
+  { title: 'CLOSE TO HOME', img: 'images/tapes/casette-tape.png', available: true },
+  { title: 'CASTLE ON THE HILL', img: 'images/tapes/casette-tape.png', available: true },
+  { title: 'FINAL CALL FOR HELP', img: 'images/tapes/casette-tape.png', available: true },
+  { title: 'DO YOU RECOGNIZE THIS SUSPECT?', img: 'images/tapes/casette-tape.png', available: true },
+  { title: 'VANISHED ON 9/11 - THE STORY PART 1', img: 'images/tapes/casette-tape.png', releaseDate: '11/10' },
+  { title: 'VANISHED ON 9/11- WHO DID IT? PART 2', img: 'images/tapes/casette-tape.png', releaseDate: '11/17' },
+  { title: 'VANISHED ON 9/11', img: 'images/tapes/casette-tape.png', releaseDate: '11/24' },
+  { title: 'THE GIRL NEXT DOOR', img: 'images/tapes/casette-tape.png', releaseDate: '12/1' },
+  { title: 'SILENCE AFTER THE SHOT', img: 'images/tapes/casette-tape.png', releaseDate: '12/8' },
+  { title: '13 BIRDS IN THE SKY', img: 'images/tapes/casette-tape.png', releaseDate: '12/22' },
+  { title: 'HATE AT THE GROCERY STORE', img: 'images/tapes/casette-tape.png', releaseDate: '12/29' },
+  { title: 'WHERE IS BAMBI MADDEN?', img: 'images/tapes/casette-tape.png', releaseDate: '1/5' },
+  { title: 'LOST TO THE JUNGLE', img: 'images/tapes/casette-tape.png', releaseDate: '1/12' }
 ];
 
   // No episode index in minimal mode
