@@ -2482,18 +2482,17 @@ body, html {
   width: 100%;
   height: 100%;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  overflow-y: auto;
+  overflow: hidden; /* Disable scrolling - let tape-list handle it */
   transition: all 0.3s ease-out;
   z-index: 1501; /* Above backdrop, below close button */
   pointer-events: auto; /* Ensure player content can receive touch events */
-  touch-action: pan-y; /* Allow vertical scrolling in player content */
 }
 
 /* Player Content */
 .player-content {
   padding: 0;
   text-align: center;
-  overflow-y: auto;
+  overflow: hidden; /* Disable scrolling - let tape-list handle it */
   height: 100%;
 }
 
