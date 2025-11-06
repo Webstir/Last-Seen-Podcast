@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  
+  <!-- Primary Meta Tags -->
+  <title>404 - Page Not Found | Last Seen in the Twilight Zone</title>
+  <meta name="title" content="404 - Page Not Found | Last Seen in the Twilight Zone" />
+  <meta name="description" content="The page you're looking for has disappeared. Lost in the twilight zone of the internet, just like the cold cases and missing persons we investigate." />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://lastseenpodcast.com/404.html" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://lastseenpodcast.com/404.html" />
+  <meta property="og:title" content="404 - Page Not Found" />
+  <meta property="og:description" content="The page you're looking for has disappeared. Lost in the twilight zone of the internet, just like the cold cases and missing persons we investigate." />
+  <meta property="og:image" content="https://lastseenpodcast.com/living-room-thumbnail.jpg" />
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="404 - Page Not Found" />
+  <meta name="twitter:description" content="The page you're looking for has disappeared. Lost in the twilight zone of the internet, just like the cold cases and missing persons we investigate." />
+  <meta name="twitter:image" content="https://lastseenpodcast.com/living-room-thumbnail.jpg" />
+  
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon/android-chrome-192x192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon/android-chrome-512x512.png" />
+  <link rel="icon" type="image/x-icon" href="favicon/favicon.ico" />
+  <link rel="manifest" href="favicon/site.webmanifest" />
+  
+  <style>
+    body {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Courier New', monospace;
+      color: #fff;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* TV Static Effect */
+    .static-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.03) 2px,
+        rgba(255, 255, 255, 0.03) 4px
+      );
+      animation: static-flicker 0.1s infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    @keyframes static-flicker {
+      0%, 100% { 
+        opacity: 0.8;
+        transform: translateX(0) translateY(0);
+      }
+      25% { 
+        opacity: 0.9;
+        transform: translateX(1px) translateY(-1px);
+      }
+      50% { 
+        opacity: 0.7;
+        transform: translateX(-1px) translateY(1px);
+      }
+      75% { 
+        opacity: 0.8;
+        transform: translateX(1px) translateY(1px);
+      }
+    }
+    
+    .error-container {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 800px;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+    }
+    
+    .error-code {
+      font-size: 8rem;
+      font-weight: bold;
+      color: #ffd700;
+      text-shadow: 
+        0 0 10px rgba(255, 215, 0, 0.5),
+        2px 2px 12px rgba(0,0,0,0.8);
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.2em;
+      animation: flicker 3s infinite alternate;
+    }
+    
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+      75% { opacity: 0.9; }
+    }
+    
+    .error-title {
+      font-size: 2rem;
+      color: #fff;
+      margin: 1rem 0;
+      text-shadow: 2px 2px 12px rgba(0,0,0,0.8);
+      font-family: 'Reenie Beanie', cursive;
+      letter-spacing: 0.1em;
+    }
+    
+    .error-message {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: rgba(255, 255, 255, 0.9);
+      margin: 2rem 0;
+      font-style: italic;
+      text-shadow: 1px 1px 8px rgba(0,0,0,0.6);
+    }
+    
+    .missing-page-message {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin: 2rem 0;
+      padding: 1.5rem;
+      border-left: 3px solid #ffd700;
+      background: rgba(0, 0, 0, 0.3);
+      font-style: italic;
+      text-align: left;
+    }
+    
+    .home-link {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      background: rgba(255, 215, 0, 0.1);
+      border: 2px solid #ffd700;
+      color: #ffd700;
+      text-decoration: none;
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      border-radius: 4px;
+    }
+    
+    .home-link:hover {
+      background: rgba(255, 215, 0, 0.2);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+      transform: translateY(-2px);
+    }
+    
+    .dimension-text {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 2rem;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.15em;
+    }
+    
+    @media (max-width: 768px) {
+      .error-code {
+        font-size: 5rem;
+      }
+      
+      .error-title {
+        font-size: 1.5rem;
+      }
+      
+      .error-message {
+        font-size: 1rem;
+      }
+      
+      .error-container {
+        padding: 1.5rem;
+        margin: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="static-overlay"></div>
+  
+  <div class="error-container">
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">Page Not Found</h2>
+    
+    <p class="error-message">
+      You've entered a place where pages disappear,<br/>
+      where digital paths lead to nowhere,<br/>
+      and where what you seek has been... Last Seen.
+    </p>
+    
+    <div class="missing-page-message">
+      In Binghamton, New York, there are stories of people who vanished without a trace. Cold cases that remain unsolved. Mysteries that linger in the shadows. This page has joined them—lost in the twilight zone of the internet, where broken links and missing content drift like forgotten memories.
+    </div>
+    
+    <a href="/" class="home-link">Return to Last Seen</a>
+    
+    <p class="dimension-text">
+      STATUS: PAGE NOT FOUND<br/>
+      LOCATION: UNKNOWN<br/>
+      LAST SEEN: NEVER
+    </p>
+  </div>
+</body>
+</html>
+
