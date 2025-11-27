@@ -1088,27 +1088,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // Episode 8 links - Do You Recognize this Suspect?
     apple8: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000734954808',
     spotify8: 'https://open.spotify.com/episode/6wKsFm50nGaLofmgMyfLOC?si=485b95fd91a940d7',
-    audible8: 'https://www.audible.com/pd/B0FZ8XMZDP?source_code=ASSORAP0511160006&share_location=library_overflow'
+    audible8: 'https://www.audible.com/pd/B0FZ8XMZDP?source_code=ASSORAP0511160006&share_location=library_overflow',
+    // Episode 9 links - Vanished on 9/11 Part 1
+    apple9: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000736039559',
+    spotify9: 'https://open.spotify.com/episode/10oxcO1bUgY2h3H5eIunI1?si=283fed3db1d144c2',
+    audible9: 'https://www.audible.com/pd/B0G1LVDVFN?source_code=ASSORAP0511160006&share_location=library_overflow',
+    // Episode 10 links - Vanished on 9/11 Part 2
+    apple10: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000737032380',
+    spotify10: 'https://open.spotify.com/episode/7odHJOWyVpxxkUPAozVlzt?si=e99330b247f64356',
+    audible10: 'https://www.audible.com/pd/B0G2L7L5BG?source_code=ASSORAP0511160006&share_location=library_overflow',
+    // Episode 11 links - Vanished on 9/11 Part 3
+    apple11: 'https://podcasts.apple.com/us/podcast/last-seen-in-the-twilight-zone/id1840472980?i=1000738063426',
+    spotify11: 'https://open.spotify.com/episode/0bV4eaCpldfc5O0z0laQ4x?si=0bb7928d24ef45c9',
+    audible11: 'https://www.audible.com/pd/B0G3NXZV9V?source_code=ASSORAP0511160006&share_location=library_overflow'
   };
 
 const EPISODE_TAPES = [
-  { title: 'THE DISAPPEARANCE OF MICHELE HARRIS PART 1: SNEAK PEEK', img: 'images/tapes/casette-tape.png', available: true, releaseDate: '9/17' },
-  { title: 'INTRODUCTION TO LAST SEEN', img: 'images/tapes/casette-tape.png', available: true },
-  { title: 'NIGHTMARE ON OAK ST.', img: 'images/tapes/casette-tape.png', available: true },
-  { title: 'JULY 4TH: SHOTS ON RANO BOULEVARD/ BEHIND CLOSED DOORS: HALL ST HORROR', img: 'images/tapes/casette-tape.png', available: true },
-  { title: 'CLOSE TO HOME', img: 'images/tapes/casette-tape.png', available: true },
-  { title: 'CASTLE ON THE HILL', img: 'images/tapes/casette-tape.png', available: true },
-  { title: 'FINAL CALL FOR HELP', img: 'images/tapes/casette-tape.png', available: true },
-  { title: 'DO YOU RECOGNIZE THIS SUSPECT?', img: 'images/tapes/casette-tape.png', available: true },
-  { title: 'VANISHED ON 9/11 - THE STORY PART 1', img: 'images/tapes/casette-tape.png', releaseDate: '11/10' },
-  { title: 'VANISHED ON 9/11- WHO DID IT? PART 2', img: 'images/tapes/casette-tape.png', releaseDate: '11/17' },
-  { title: 'VANISHED ON 9/11', img: 'images/tapes/casette-tape.png', releaseDate: '11/24' },
-  { title: 'THE GIRL NEXT DOOR', img: 'images/tapes/casette-tape.png', releaseDate: '12/1' },
-  { title: 'SILENCE AFTER THE SHOT', img: 'images/tapes/casette-tape.png', releaseDate: '12/8' },
-  { title: '13 BIRDS IN THE SKY', img: 'images/tapes/casette-tape.png', releaseDate: '12/22' },
-  { title: 'HATE AT THE GROCERY STORE', img: 'images/tapes/casette-tape.png', releaseDate: '12/29' },
-  { title: 'WHERE IS BAMBI MADDEN?', img: 'images/tapes/casette-tape.png', releaseDate: '1/5' },
-  { title: 'LOST TO THE JUNGLE', img: 'images/tapes/casette-tape.png', releaseDate: '1/12' }
+  { title: 'Introduction to Last Seen', img: 'images/tapes/casette-tape.png', available: true, releaseDate: '10/1' },
+  { title: 'Nightmare on Oak St.', img: 'images/tapes/casette-tape.png', available: true, releaseDate: '10/3' },
+  { title: 'July 4th: Shots on Rano Boulevard/ Behind Closed Doors: Hall St Horror', img: 'images/tapes/casette-tape.png', available: true, releaseDate: '10/6' },
+  { title: 'Close to Home', img: 'images/tapes/casette-tape.png', available: true, releaseDate: '10/13' },
+  { title: 'Secrets of the Castle on the Hill', img: 'images/tapes/casette-tape.png', available: true, releaseDate: '10/20' },
+  { title: 'Final Call for Help', img: 'images/tapes/casette-tape.png', available: true, releaseDate: '10/27' },
+  { title: 'Do You Recognize This Suspect?', img: 'images/tapes/casette-tape.png', available: true, releaseDate: '11/3' },
+  { title: 'Vanished on 9/11 - The Story. Part 1', img: 'images/tapes/casette-tape.png', available: true, releaseDate: '11/10' },
+  { title: 'Vanished on 9/11 - Who Is Cal?. Part 2', img: 'images/tapes/casette-tape.png', available: true, releaseDate: '11/17' },
+  { title: 'Vanished on 9/11 - The Others. Part 3', img: 'images/tapes/casette-tape.png', available: true, releaseDate: '11/24' },
+  { title: '13 Birds in the Sky', img: 'images/tapes/casette-tape.png', releaseDate: '12/1' },
+  { title: 'The Girl Next Door', img: 'images/tapes/casette-tape.png', releaseDate: '12/8' },
+  { title: 'Silence After the Shot', img: 'images/tapes/casette-tape.png', releaseDate: '12/15' },
+  { title: 'Hate at the Grocery Store', img: 'images/tapes/casette-tape.png', releaseDate: '12/22' },
+  { title: 'Where Is Bambi Madden?', img: 'images/tapes/casette-tape.png', releaseDate: '12/29' },
+  { title: 'The Jungle', img: 'images/tapes/casette-tape.png', releaseDate: '1/5' },
+  { title: 'The Burning Truth', img: 'images/tapes/casette-tape.png', releaseDate: '1/12' },
+  { title: 'Aunt Sandy', img: 'images/tapes/casette-tape.png', releaseDate: '1/19' }
 ];
 
   // No episode index in minimal mode
@@ -1324,8 +1337,8 @@ const EPISODE_TAPES = [
     if (!list) return;
     list.innerHTML = '';
 
-    // Show first 10 episodes (8 available + 2 coming soon)
-    let episodesToShow = EPISODE_TAPES.slice(0, 10);
+    // Show episodes up to and including "The Girl Next Door" (12 episodes total)
+    let episodesToShow = EPISODE_TAPES.slice(0, 12);
     
     // Sort episodes based on current sort order
     // Newest first = reverse array (Episode 8 at top)
@@ -1385,13 +1398,23 @@ const EPISODE_TAPES = [
       const actions = document.createElement('div');
       actions.className = 'tape-actions';
 
-      if (ep.available || originalIndex === 0) {
+      if (ep.available) {
         const label = document.createElement('span');
         label.className = 'listen-on-label';
         label.textContent = 'Listen on:';
 
         // Determine which platform links to use based on original episode index
-        const platformSuffix = originalIndex === 1 ? '2' : originalIndex === 2 ? '3' : originalIndex === 3 ? '4' : originalIndex === 4 ? '5' : originalIndex === 5 ? '6' : originalIndex === 6 ? '7' : originalIndex === 7 ? '8' : '';
+        // After removing sneak peek, index 0 = episode 2, index 1 = episode 3, etc.
+        const platformSuffix = originalIndex === 0 ? '2' : 
+                               originalIndex === 1 ? '3' : 
+                               originalIndex === 2 ? '4' : 
+                               originalIndex === 3 ? '5' : 
+                               originalIndex === 4 ? '6' : 
+                               originalIndex === 5 ? '7' : 
+                               originalIndex === 6 ? '8' : 
+                               originalIndex === 7 ? '9' : 
+                               originalIndex === 8 ? '10' : 
+                               originalIndex === 9 ? '11' : '';
         
         const btnApple = document.createElement('button');
         btnApple.className = 'icon-btn';
